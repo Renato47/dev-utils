@@ -1,0 +1,74 @@
+unit uSqlBuilder._Case;
+
+interface
+
+uses
+  System.Classes, System.Rtti, uSqlBuilder.Interfaces;
+
+type
+  TSqlCase = class(TInterfacedObject, ISqlCase)
+  private
+    expression: string;
+    whenThenList: TStringList;
+    alias: string;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    function TestExpression(aExpression: string): ISqlCase;
+
+    function WhenThen(aCondition: string; aResult: TValue): ISqlCase;
+    function &Else(aResult: TValue): ISqlCase;
+
+    function &EndAs(aAlias: string): ISqlCase;
+
+    function ToString: string; override;
+  end;
+
+implementation
+
+uses
+  System.SysUtils, uSqlBuilder;
+
+constructor TSqlCase.Create;
+begin
+  whenThenList := TStringList.Create;
+end;
+
+destructor TSqlCase.Destroy;
+begin
+  whenThenList.Free;
+
+  inherited;
+end;
+
+function TSqlCase.&Else(aResult: TValue): ISqlCase;
+begin
+  Result := Self;
+  whenThenList.Append(' ELSE ' + TSqlValue.ValueToSql(aResult));
+end;
+
+function TSqlCase.EndAs(aAlias: string): ISqlCase;
+begin
+  Result := Self;
+  alias := aAlias;
+end;
+
+function TSqlCase.TestExpression(aExpression: string): ISqlCase;
+begin
+  Result := Self;
+  expression := ' ' + aExpression;
+end;
+
+function TSqlCase.ToString: string;
+begin
+  Result := 'CASE' + expression + whenThenList.Text.Replace(sLineBreak, '') + ' END AS ' + alias;
+end;
+
+function TSqlCase.WhenThen(aCondition: string; aResult: TValue): ISqlCase;
+begin
+  Result := Self;
+  whenThenList.Append(' WHEN ' + aCondition + ' THEN ' + TSqlValue.ValueToSql(aResult));
+end;
+
+end.
