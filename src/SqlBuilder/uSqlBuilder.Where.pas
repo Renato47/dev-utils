@@ -8,9 +8,12 @@ uses
 type
   TSqlWhere = class(TInterfacedObject, ISqlWhere)
   private
+    fComparisonOperator: string;
     fColumn: string;
-    fOperator: string;
+    fLogicalOperator: string;
     conditionList: TStringList;
+
+    procedure AddCondition(aCriteria: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -44,7 +47,8 @@ type
 
     function Between(aStart, aEnd: TValue): ISqlWhere;
 
-    function &Or(aSqlWhere: ISqlWhere): ISqlWhere;
+    function &Or(aColumn: string): ISqlWhere; overload;
+    function &Or(aSqlWhere: ISqlWhere): ISqlWhere; overload;
     function &And(aSqlWhere: ISqlWhere): ISqlWhere;
 
     function ToString: string; override;
@@ -54,6 +58,21 @@ implementation
 
 uses
   System.SysUtils, uSqlBuilder;
+
+function TSqlWhere.&Or(aColumn: string): ISqlWhere;
+begin
+  Result := Self;
+  fColumn := aColumn;
+  fLogicalOperator := ' OR ';
+end;
+
+procedure TSqlWhere.AddCondition(aCriteria: string);
+begin
+  if not conditionList.Text.IsEmpty then
+    conditionList.Append(fLogicalOperator);
+
+  conditionList.Append(aCriteria);
+end;
 
 function TSqlWhere.&And(aSqlWhere: ISqlWhere): ISqlWhere;
 begin
@@ -68,12 +87,14 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' BETWEEN ' + TSqlValue.ValueToSql(aStart) + ' AND ' + TSqlValue.ValueToSql(aEnd));
+  AddCondition(fColumn + ' BETWEEN ' + TSqlValue.ValueToSql(aStart) + ' AND ' + TSqlValue.ValueToSql(aEnd));
 end;
 
 function TSqlWhere.Column(aColumn: string): ISqlWhere;
 begin
   Result := Self;
+
+  fLogicalOperator := ' AND ';
   fColumn := aColumn;
 end;
 
@@ -89,10 +110,10 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  if fOperator.IsEmpty then
+  if fComparisonOperator.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + fOperator + 'CURRENT_DATE');
+  AddCondition(fColumn + fComparisonOperator + 'CURRENT_DATE');
 end;
 
 function TSqlWhere.CurrentTime: ISqlWhere;
@@ -102,10 +123,10 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  if fOperator.IsEmpty then
+  if fComparisonOperator.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + fOperator + 'CURRENT_TIME');
+  AddCondition(fColumn + fComparisonOperator + 'CURRENT_TIME');
 end;
 
 function TSqlWhere.CurrentTimestamp: ISqlWhere;
@@ -115,10 +136,10 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  if fOperator.IsEmpty then
+  if fComparisonOperator.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + fOperator + 'CURRENT_TIMESTAMP');
+  AddCondition(fColumn + fComparisonOperator + 'CURRENT_TIMESTAMP');
 end;
 
 destructor TSqlWhere.Destroy;
@@ -135,7 +156,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  fOperator := ' <> ';
+  fComparisonOperator := ' <> ';
 end;
 
 function TSqlWhere.Different(aValue: TValue): ISqlWhere;
@@ -145,7 +166,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' <> ' + TSqlValue.ValueToSql(aValue));
+  AddCondition(fColumn + ' <> ' + TSqlValue.ValueToSql(aValue));
 end;
 
 function TSqlWhere.Equal: ISqlWhere;
@@ -155,7 +176,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  fOperator := ' = ';
+  fComparisonOperator := ' = ';
 end;
 
 function TSqlWhere.Equal(aValue: TValue): ISqlWhere;
@@ -165,7 +186,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' = ' + TSqlValue.ValueToSql(aValue));
+  AddCondition(fColumn + ' = ' + TSqlValue.ValueToSql(aValue));
 end;
 
 function TSqlWhere.Greater: ISqlWhere;
@@ -175,7 +196,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  fOperator := ' > ';
+  fComparisonOperator := ' > ';
 end;
 
 function TSqlWhere.Greater(aValue: TValue): ISqlWhere;
@@ -185,7 +206,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' > ' + TSqlValue.ValueToSql(aValue));
+  AddCondition(fColumn + ' > ' + TSqlValue.ValueToSql(aValue));
 end;
 
 function TSqlWhere.GreaterOrEqual: ISqlWhere;
@@ -195,7 +216,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  fOperator := ' >= ';
+  fComparisonOperator := ' >= ';
 end;
 
 function TSqlWhere.GreaterOrEqual(aValue: TValue): ISqlWhere;
@@ -205,7 +226,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' >= ' + TSqlValue.ValueToSql(aValue));
+  AddCondition(fColumn + ' >= ' + TSqlValue.ValueToSql(aValue));
 end;
 
 function TSqlWhere.IsNotNull: ISqlWhere;
@@ -215,7 +236,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' IS NOT NULL');
+  AddCondition(fColumn + ' IS NOT NULL');
 end;
 
 function TSqlWhere.IsNull: ISqlWhere;
@@ -225,7 +246,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' IS NULL');
+  AddCondition(fColumn + ' IS NULL');
 end;
 
 function TSqlWhere.Less: ISqlWhere;
@@ -235,7 +256,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  fOperator := ' < ';
+  fComparisonOperator := ' < ';
 end;
 
 function TSqlWhere.Less(aValue: TValue): ISqlWhere;
@@ -245,7 +266,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' < ' + TSqlValue.ValueToSql(aValue));
+  AddCondition(fColumn + ' < ' + TSqlValue.ValueToSql(aValue));
 end;
 
 function TSqlWhere.LessOrEqual: ISqlWhere;
@@ -255,7 +276,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  fOperator := ' <= ';
+  fComparisonOperator := ' <= ';
 end;
 
 function TSqlWhere.LessOrEqual(aValue: TValue): ISqlWhere;
@@ -265,7 +286,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' <= ' + TSqlValue.ValueToSql(aValue));
+  AddCondition(fColumn + ' <= ' + TSqlValue.ValueToSql(aValue));
 end;
 
 function TSqlWhere.Like(aValue: TValue): ISqlWhere;
@@ -275,7 +296,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' LIKE ' + TSqlValue.ValueToSql(aValue, True));
+  AddCondition(fColumn + ' LIKE ' + TSqlValue.ValueToSql(aValue, True));
 end;
 
 function TSqlWhere.NotLike(aValue: TValue): ISqlWhere;
@@ -285,28 +306,20 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  conditionList.Append(fColumn + ' NOT LIKE ' + TSqlValue.ValueToSql(aValue));
+  AddCondition(fColumn + ' NOT LIKE ' + TSqlValue.ValueToSql(aValue, True));
 end;
 
 function TSqlWhere.&Or(aSqlWhere: ISqlWhere): ISqlWhere;
 begin
   Result := Self;
-  conditionList.Append(' OR (' + aSqlWhere.ToString + ')');
+
+  fLogicalOperator := ' OR ';
+  AddCondition('(' + aSqlWhere.ToString + ')');
 end;
 
 function TSqlWhere.ToString: string;
-var
-  nCondition: Integer;
 begin
-  for nCondition := 0 to Pred(conditionList.Count) do begin
-    if nCondition > 0 then
-      if conditionList.Strings[nCondition].StartsWith(' OR ') then
-        Result := '(' + Result + ')'
-      else
-        Result := Result + ' AND ';
-
-    Result := Result + conditionList.Strings[nCondition];
-  end;
+  Result := conditionList.Text.Replace(sLineBreak, '');
 end;
 
 end.
