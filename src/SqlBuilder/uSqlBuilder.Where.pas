@@ -9,6 +9,7 @@ type
   TSqlWhere = class(TInterfacedObject, ISqlWhere)
   private
     fColumn: string;
+    fOperator: string;
     conditionList: TStringList;
   public
     constructor Create;
@@ -16,14 +17,24 @@ type
 
     function Column(aColumn: string): ISqlWhere;
 
-    function Less(aValue: TValue): ISqlWhere;
-    function LessOrEqual(aValue: TValue): ISqlWhere;
+    function Less: ISqlWhere; overload;
+    function Less(aValue: TValue): ISqlWhere; overload;
+    function LessOrEqual: ISqlWhere; overload;
+    function LessOrEqual(aValue: TValue): ISqlWhere; overload;
 
-    function Equal(aValue: TValue): ISqlWhere;
-    function Different(aValue: TValue): ISqlWhere;
+    function Equal: ISqlWhere; overload;
+    function Equal(aValue: TValue): ISqlWhere; overload;
+    function Different: ISqlWhere; overload;
+    function Different(aValue: TValue): ISqlWhere; overload;
 
-    function Greater(aValue: TValue): ISqlWhere;
-    function GreaterOrEqual(aValue: TValue): ISqlWhere;
+    function Greater: ISqlWhere; overload;
+    function Greater(aValue: TValue): ISqlWhere; overload;
+    function GreaterOrEqual: ISqlWhere; overload;
+    function GreaterOrEqual(aValue: TValue): ISqlWhere; overload;
+
+    function CurrentDate: ISqlWhere;
+    function CurrentTime: ISqlWhere;
+    function CurrentTimestamp: ISqlWhere;
 
     function Like(aValue: TValue): ISqlWhere;
     function NotLike(aValue: TValue): ISqlWhere;
@@ -64,11 +75,60 @@ begin
   conditionList := TStringList.Create;
 end;
 
+function TSqlWhere.CurrentDate: ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  if fOperator.IsEmpty then
+    Exit;
+
+  conditionList.Append(fColumn + fOperator + 'CURRENT_DATE');
+end;
+
+function TSqlWhere.CurrentTime: ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  if fOperator.IsEmpty then
+    Exit;
+
+  conditionList.Append(fColumn + fOperator + 'CURRENT_TIME');
+end;
+
+function TSqlWhere.CurrentTimestamp: ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  if fOperator.IsEmpty then
+    Exit;
+
+  conditionList.Append(fColumn + fOperator + 'CURRENT_TIMESTAMP');
+end;
+
 destructor TSqlWhere.Destroy;
 begin
   conditionList.Free;
 
   inherited;
+end;
+
+function TSqlWhere.Different: ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  fOperator := ' <> ';
 end;
 
 function TSqlWhere.Different(aValue: TValue): ISqlWhere;
@@ -81,6 +141,16 @@ begin
   conditionList.Append(fColumn + ' <> ' + TSqlValue.ValueToSql(aValue));
 end;
 
+function TSqlWhere.Equal: ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  fOperator := ' = ';
+end;
+
 function TSqlWhere.Equal(aValue: TValue): ISqlWhere;
 begin
   Result := Self;
@@ -91,6 +161,16 @@ begin
   conditionList.Append(fColumn + ' = ' + TSqlValue.ValueToSql(aValue));
 end;
 
+function TSqlWhere.Greater: ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  fOperator := ' > ';
+end;
+
 function TSqlWhere.Greater(aValue: TValue): ISqlWhere;
 begin
   Result := Self;
@@ -99,6 +179,16 @@ begin
     Exit;
 
   conditionList.Append(fColumn + ' > ' + TSqlValue.ValueToSql(aValue));
+end;
+
+function TSqlWhere.GreaterOrEqual: ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  fOperator := ' >= ';
 end;
 
 function TSqlWhere.GreaterOrEqual(aValue: TValue): ISqlWhere;
@@ -131,6 +221,16 @@ begin
   conditionList.Append(fColumn + ' IS NULL');
 end;
 
+function TSqlWhere.Less: ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  fOperator := ' < ';
+end;
+
 function TSqlWhere.Less(aValue: TValue): ISqlWhere;
 begin
   Result := Self;
@@ -139,6 +239,16 @@ begin
     Exit;
 
   conditionList.Append(fColumn + ' < ' + TSqlValue.ValueToSql(aValue));
+end;
+
+function TSqlWhere.LessOrEqual: ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  fOperator := ' <= ';
 end;
 
 function TSqlWhere.LessOrEqual(aValue: TValue): ISqlWhere;

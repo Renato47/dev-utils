@@ -20,14 +20,24 @@ type
   ISqlWhere = interface
     function Column(aColumn: string): ISqlWhere;
 
-    function Less(aValue: TValue): ISqlWhere;
-    function LessOrEqual(aValue: TValue): ISqlWhere;
+    function Less: ISqlWhere; overload;
+    function Less(aValue: TValue): ISqlWhere; overload;
+    function LessOrEqual: ISqlWhere; overload;
+    function LessOrEqual(aValue: TValue): ISqlWhere; overload;
 
-    function Equal(aValue: TValue): ISqlWhere;
-    function Different(aValue: TValue): ISqlWhere;
+    function Equal: ISqlWhere; overload;
+    function Equal(aValue: TValue): ISqlWhere; overload;
+    function Different: ISqlWhere; overload;
+    function Different(aValue: TValue): ISqlWhere; overload;
 
-    function Greater(aValue: TValue): ISqlWhere;
-    function GreaterOrEqual(aValue: TValue): ISqlWhere;
+    function Greater: ISqlWhere; overload;
+    function Greater(aValue: TValue): ISqlWhere; overload;
+    function GreaterOrEqual: ISqlWhere; overload;
+    function GreaterOrEqual(aValue: TValue): ISqlWhere; overload;
+
+    function CurrentDate: ISqlWhere;
+    function CurrentTime: ISqlWhere;
+    function CurrentTimestamp: ISqlWhere;
 
     function Like(aValue: TValue): ISqlWhere;
     function NotLike(aValue: TValue): ISqlWhere;
