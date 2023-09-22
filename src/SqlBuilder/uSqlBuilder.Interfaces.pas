@@ -48,6 +48,7 @@ type
     function Between(aStart, aEnd: TValue): ISqlWhere;
 
     function &Or(aSqlWhere: ISqlWhere): ISqlWhere;
+    function &And(aSqlWhere: ISqlWhere): ISqlWhere;
 
     function ToString: string;
   end;

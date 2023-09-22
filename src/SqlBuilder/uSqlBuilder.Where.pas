@@ -45,6 +45,7 @@ type
     function Between(aStart, aEnd: TValue): ISqlWhere;
 
     function &Or(aSqlWhere: ISqlWhere): ISqlWhere;
+    function &And(aSqlWhere: ISqlWhere): ISqlWhere;
 
     function ToString: string; override;
   end;
@@ -53,6 +54,12 @@ implementation
 
 uses
   System.SysUtils, uSqlBuilder;
+
+function TSqlWhere.&And(aSqlWhere: ISqlWhere): ISqlWhere;
+begin
+  Result := Self;
+  conditionList.Append(' AND (' + aSqlWhere.ToString + ')');
+end;
 
 function TSqlWhere.Between(aStart, aEnd: TValue): ISqlWhere;
 begin

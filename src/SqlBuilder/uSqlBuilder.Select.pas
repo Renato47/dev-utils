@@ -153,7 +153,15 @@ end;
 
 function TSqlSelect.ToString: string;
 begin
-  Result := 'SELECT ' + firstRows + skipRows + columns.DelimitedText + ' FROM ' + source + joinList.DelimitedText + conditions + groupList + aggregateCondition + orderList;
+  Result :=
+    'SELECT ' +
+    firstRows + skipRows + columns.DelimitedText +
+    ' FROM ' + source +
+    joinList.Text.Replace(sLineBreak, '') +
+    conditions +
+    groupList +
+    aggregateCondition +
+    orderList;
 end;
 
 function TSqlSelect.Where(aSqlWhere: ISqlWhere): ISqlSelect;
