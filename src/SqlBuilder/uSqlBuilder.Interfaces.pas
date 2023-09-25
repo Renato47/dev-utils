@@ -9,10 +9,11 @@ type
   ISqlCase = interface
     function TestExpression(aExpression: string): ISqlCase;
 
+    function WhenThenColumn(aCondition, aColumn: string): ISqlCase;
     function WhenThen(aCondition: string; aResult: TValue): ISqlCase;
     function &Else(aResult: TValue): ISqlCase;
 
-    function &EndAs(aAlias: string): ISqlCase;
+    function &As(aAlias: string): ISqlCase;
 
     function ToString: string;
   end;
@@ -47,6 +48,9 @@ type
 
     function Between(aStart, aEnd: TValue): ISqlWhere;
 
+    function &In(aValues: string): ISqlWhere;
+    function NotIn(aValues: string): ISqlWhere;
+
     function &Or(aColumn: string): ISqlWhere; overload;
     function &Or(aSqlWhere: ISqlWhere): ISqlWhere; overload;
     function &And(aSqlWhere: ISqlWhere): ISqlWhere;
@@ -59,11 +63,16 @@ type
     function Column(aName: string): ISqlSelect; overload;
     function Column(aCase: ISqlCase): ISqlSelect; overload;
 
+    function Cast(aAsType, aAlias: string): ISqlSelect;
+
     function From(aSource: string): ISqlSelect;
 
-    function InnerJoin(aSource, aConditions: string): ISqlSelect;
-    function LeftJoin(aSource, aConditions: string): ISqlSelect;
-    function RightJoin(aSource, aConditions: string): ISqlSelect;
+    function InnerJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
+    function InnerJoin(aSource, aConditions: string): ISqlSelect; overload;
+    function LeftJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
+    function LeftJoin(aSource, aConditions: string): ISqlSelect; overload;
+    function RightJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
+    function RightJoin(aSource, aConditions: string): ISqlSelect; overload;
 
     //function SubSelect(select: ISqlSelect, alias: string): ISqlSelect;
 

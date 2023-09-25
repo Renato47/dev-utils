@@ -17,10 +17,11 @@ type
 
     function TestExpression(aExpression: string): ISqlCase;
 
+    function WhenThenColumn(aCondition, aColumn: string): ISqlCase;
     function WhenThen(aCondition: string; aResult: TValue): ISqlCase;
     function &Else(aResult: TValue): ISqlCase;
 
-    function &EndAs(aAlias: string): ISqlCase;
+    function &As(aAlias: string): ISqlCase;
 
     function ToString: string; override;
   end;
@@ -48,7 +49,7 @@ begin
   whenThenList.Append(' ELSE ' + TSqlValue.ValueToSql(aResult));
 end;
 
-function TSqlCase.EndAs(aAlias: string): ISqlCase;
+function TSqlCase.&As(aAlias: string): ISqlCase;
 begin
   Result := Self;
   alias := aAlias;
@@ -62,13 +63,22 @@ end;
 
 function TSqlCase.ToString: string;
 begin
-  Result := 'CASE' + expression + whenThenList.Text.Replace(sLineBreak, '') + ' END AS ' + alias;
+  Result := 'CASE' + expression + whenThenList.Text.Replace(sLineBreak, '') + ' END';
+
+  if not alias.IsEmpty then
+    Result := Result + ' AS ' + alias;
 end;
 
 function TSqlCase.WhenThen(aCondition: string; aResult: TValue): ISqlCase;
 begin
   Result := Self;
   whenThenList.Append(' WHEN ' + aCondition + ' THEN ' + TSqlValue.ValueToSql(aResult));
+end;
+
+function TSqlCase.WhenThenColumn(aCondition, aColumn: string): ISqlCase;
+begin
+  Result := Self;
+  whenThenList.Append(' WHEN ' + aCondition + ' THEN ' + aColumn);
 end;
 
 end.

@@ -25,11 +25,16 @@ type
     function Column(aName: string): ISqlSelect; overload;
     function Column(aCase: ISqlCase): ISqlSelect; overload;
 
+    function Cast(aAsType, aAlias: string): ISqlSelect;
+
     function From(aSource: string): ISqlSelect;
 
-    function InnerJoin(aSource, aConditions: string): ISqlSelect;
-    function LeftJoin(aSource, aConditions: string): ISqlSelect;
-    function RightJoin(aSource, aConditions: string): ISqlSelect;
+    function InnerJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
+    function InnerJoin(aSource, aConditions: string): ISqlSelect; overload;
+    function LeftJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
+    function LeftJoin(aSource, aConditions: string): ISqlSelect; overload;
+    function RightJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
+    function RightJoin(aSource, aConditions: string): ISqlSelect; overload;
 
     function Where(aConditions: string): ISqlSelect; overload;
     function Where(aSqlWhere: ISqlWhere): ISqlSelect; overload;
@@ -58,6 +63,16 @@ function TSqlSelect.Column(aName: string): ISqlSelect;
 begin
   Result := Self;
   columns.Append(aName);
+end;
+
+function TSqlSelect.Cast(aAsType, aAlias: string): ISqlSelect;
+begin
+  Result := Self;
+
+  if columns.Count = 0 then
+    Exit;
+
+  columns.Strings[Pred(columns.Count)] := 'CAST(' + columns.Strings[Pred(columns.Count)] + ' AS ' + aAsType + ') AS ' + aAlias;
 end;
 
 function TSqlSelect.Column(aCase: ISqlCase): ISqlSelect;
@@ -115,10 +130,22 @@ begin
   aggregateCondition := ' HAVING ' + aAggregateCondition;
 end;
 
+function TSqlSelect.InnerJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect;
+begin
+  Result := Self;
+  InnerJoin('(' + aSelect.ToString + ') ' + aAlias, aConditions);
+end;
+
 function TSqlSelect.InnerJoin(aSource, aConditions: string): ISqlSelect;
 begin
   Result := Self;
   joinList.Append(' INNER JOIN ' + aSource + ' ON ' + aConditions);
+end;
+
+function TSqlSelect.LeftJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect;
+begin
+  Result := Self;
+  LeftJoin('(' + aSelect.ToString + ') ' + aAlias, aConditions);
 end;
 
 function TSqlSelect.LeftJoin(aSource, aConditions: string): ISqlSelect;
@@ -135,6 +162,12 @@ begin
     orderList := ' ORDER BY ' + aOrder
   else
     orderList := orderList + ', ' + aOrder;
+end;
+
+function TSqlSelect.RightJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect;
+begin
+  Result := Self;
+  RightJoin('(' + aSelect.ToString + ') ' + aAlias, aConditions);
 end;
 
 function TSqlSelect.RightJoin(aSource, aConditions: string): ISqlSelect;

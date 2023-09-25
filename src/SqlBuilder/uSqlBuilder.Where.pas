@@ -47,6 +47,9 @@ type
 
     function Between(aStart, aEnd: TValue): ISqlWhere;
 
+    function &In(aValues: string): ISqlWhere;
+    function NotIn(aValues: string): ISqlWhere;
+
     function &Or(aColumn: string): ISqlWhere; overload;
     function &Or(aSqlWhere: ISqlWhere): ISqlWhere; overload;
     function &And(aSqlWhere: ISqlWhere): ISqlWhere;
@@ -66,12 +69,26 @@ begin
   fLogicalOperator := ' OR ';
 end;
 
+function TSqlWhere.&In(aValues: string): ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  AddCondition(fColumn + ' IN (' + aValues + ')');
+end;
+
 procedure TSqlWhere.AddCondition(aCriteria: string);
 begin
   if not conditionList.Text.IsEmpty then
     conditionList.Append(fLogicalOperator);
 
   conditionList.Append(aCriteria);
+
+  fLogicalOperator := '';
+  fColumn := '';
+  fComparisonOperator := '';
 end;
 
 function TSqlWhere.&And(aSqlWhere: ISqlWhere): ISqlWhere;
@@ -94,8 +111,12 @@ function TSqlWhere.Column(aColumn: string): ISqlWhere;
 begin
   Result := Self;
 
-  fLogicalOperator := ' AND ';
-  fColumn := aColumn;
+  if fColumn.IsEmpty or fComparisonOperator.IsEmpty then begin
+    fLogicalOperator := ' AND ';
+    fColumn := aColumn;
+  end
+  else
+    AddCondition(fColumn + fComparisonOperator + aColumn);
 end;
 
 constructor TSqlWhere.Create;
@@ -296,7 +317,17 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  AddCondition(fColumn + ' LIKE ' + TSqlValue.ValueToSql(aValue, True));
+  AddCondition(fColumn + ' LIKE ' + TSqlValue.ValueToSql(aValue));
+end;
+
+function TSqlWhere.NotIn(aValues: string): ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  AddCondition(fColumn + ' NOT IN (' + aValues + ')');
 end;
 
 function TSqlWhere.NotLike(aValue: TValue): ISqlWhere;
@@ -306,7 +337,7 @@ begin
   if fColumn.IsEmpty then
     Exit;
 
-  AddCondition(fColumn + ' NOT LIKE ' + TSqlValue.ValueToSql(aValue, True));
+  AddCondition(fColumn + ' NOT LIKE ' + TSqlValue.ValueToSql(aValue));
 end;
 
 function TSqlWhere.&Or(aSqlWhere: ISqlWhere): ISqlWhere;

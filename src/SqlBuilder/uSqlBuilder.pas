@@ -25,7 +25,7 @@ type
     class function AsTime(aValue: TDate): string;
     class function AsDateTime(aValue: TDate): string;
 
-    class function ValueToSql(Value: TValue; aIsLike: Boolean = False): string;
+    class function ValueToSql(Value: TValue): string;
   end;
 
 implementation
@@ -105,15 +105,12 @@ begin
     Result := FormatDateTime('hh:mm:ss', aValue);
 end;
 
-class function TSqlValue.ValueToSql(Value: TValue; aIsLike: Boolean): string;
+class function TSqlValue.ValueToSql(Value: TValue): string;
 begin
   Result := Value.ToString;
 
   if LowerCase(Result) = 'null' then
     Exit('NULL');
-
-  if aIsLike then
-    Result := '%' + Result + '%';
 
   case Value.Kind of
     tkUString, tkWChar, tkLString, tkWString, tkString, tkChar:
