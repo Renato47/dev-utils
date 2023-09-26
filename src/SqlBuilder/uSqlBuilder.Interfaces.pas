@@ -11,6 +11,7 @@ type
 
     function WhenThenColumn(aCondition, aColumn: string): ISqlCase;
     function WhenThen(aCondition: string; aResult: TValue): ISqlCase;
+    function ElseColumn(aColumn: string): ISqlCase;
     function &Else(aResult: TValue): ISqlCase;
 
     function &As(aAlias: string): ISqlCase;

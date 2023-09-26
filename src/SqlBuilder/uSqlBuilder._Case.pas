@@ -19,6 +19,7 @@ type
 
     function WhenThenColumn(aCondition, aColumn: string): ISqlCase;
     function WhenThen(aCondition: string; aResult: TValue): ISqlCase;
+    function ElseColumn(aColumn: string): ISqlCase;
     function &Else(aResult: TValue): ISqlCase;
 
     function &As(aAlias: string): ISqlCase;
@@ -47,6 +48,12 @@ function TSqlCase.&Else(aResult: TValue): ISqlCase;
 begin
   Result := Self;
   whenThenList.Append(' ELSE ' + TSqlValue.ValueToSql(aResult));
+end;
+
+function TSqlCase.ElseColumn(aColumn: string): ISqlCase;
+begin
+  Result := Self;
+  whenThenList.Append(' ELSE ' + aColumn);
 end;
 
 function TSqlCase.&As(aAlias: string): ISqlCase;
