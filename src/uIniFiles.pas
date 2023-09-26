@@ -43,12 +43,14 @@ end;
 function ReadIni(aFilePath, aSection, aIdentification: string; aDefValue: string = ''): string;
 var
   ArqIni: TIniFile;
-  nIdent: Integer;
 begin
   Result := aDefValue;
 
   if ExtractFilePath(aFilePath).Trim.IsEmpty then
     aFilePath := ExtractFilePath(ParamStr(0)) + aFilePath;
+
+  if ExtractFileExt(aFilePath).IsEmpty then
+    aFilePath := ChangeFileExt(aFilePath, '.ini');
 
   if not FileExists(aFilePath) then
     Exit;
