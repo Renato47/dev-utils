@@ -6,6 +6,8 @@ uses
   System.Rtti;
 
 type
+  ISqlSelect = interface;
+
   ISqlCase = interface
     function TestExpression(aExpression: string): ISqlCase;
 
@@ -56,7 +58,13 @@ type
     function &Or(aSqlWhere: ISqlWhere): ISqlWhere; overload;
     function &And(aSqlWhere: ISqlWhere): ISqlWhere;
 
+    function Exists(aSelect: ISqlSelect): ISqlWhere;
+    function NotExists(aSelect: ISqlSelect): ISqlWhere;
+    function OrExists(aSelect: ISqlSelect): ISqlWhere;
+    function OrNotExists(aSelect: ISqlSelect): ISqlWhere;
+
     function ToString: string;
+    function IsEmpty: Boolean;
   end;
 
   ISqlSelect = interface
@@ -85,6 +93,7 @@ type
 
     function First(aCount: Integer): ISqlSelect;
     function Skip(aCount: Integer): ISqlSelect;
+    function Distinct: ISqlSelect;
 
     function ToString: string;
   end;

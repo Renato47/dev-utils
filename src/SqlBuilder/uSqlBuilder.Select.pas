@@ -12,6 +12,7 @@ type
     source: string;
     firstRows: string;
     skipRows: string;
+    sDistinct: string;
     joinList: TStringList;
     conditions: string;
     groupList: string;
@@ -44,6 +45,7 @@ type
 
     function First(aCount: Integer): ISqlSelect;
     function Skip(aCount: Integer): ISqlSelect;
+    function Distinct: ISqlSelect;
 
     function ToString: string; override;
   end;
@@ -98,6 +100,12 @@ begin
   joinList.Free;
 
   inherited;
+end;
+
+function TSqlSelect.Distinct: ISqlSelect;
+begin
+  Result := Self;
+  sDistinct := 'DISTINCT ';
 end;
 
 function TSqlSelect.First(aCount: Integer): ISqlSelect;
@@ -188,7 +196,7 @@ function TSqlSelect.ToString: string;
 begin
   Result :=
     'SELECT ' +
-    firstRows + skipRows + columns.DelimitedText +
+    firstRows + skipRows + sDistinct + columns.DelimitedText +
     ' FROM ' + source +
     joinList.Text.Replace(sLineBreak, '') +
     conditions +

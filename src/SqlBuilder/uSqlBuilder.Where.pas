@@ -54,7 +54,13 @@ type
     function &Or(aSqlWhere: ISqlWhere): ISqlWhere; overload;
     function &And(aSqlWhere: ISqlWhere): ISqlWhere;
 
+    function Exists(aSelect: ISqlSelect): ISqlWhere;
+    function NotExists(aSelect: ISqlSelect): ISqlWhere;
+    function OrExists(aSelect: ISqlSelect): ISqlWhere;
+    function OrNotExists(aSelect: ISqlSelect): ISqlWhere;
+
     function ToString: string; override;
+    function IsEmpty: Boolean;
   end;
 
 implementation
@@ -210,6 +216,14 @@ begin
   AddCondition(fColumn + ' = ' + TSqlValue.ValueToSql(aValue));
 end;
 
+function TSqlWhere.Exists(aSelect: ISqlSelect): ISqlWhere;
+begin
+  Result := Self;
+
+  fLogicalOperator := ' AND ';
+  AddCondition('EXISTS (' + aSelect.ToString + ')');
+end;
+
 function TSqlWhere.Greater: ISqlWhere;
 begin
   Result := Self;
@@ -248,6 +262,11 @@ begin
     Exit;
 
   AddCondition(fColumn + ' >= ' + TSqlValue.ValueToSql(aValue));
+end;
+
+function TSqlWhere.IsEmpty: Boolean;
+begin
+  Result := conditionList.Count = 0;
 end;
 
 function TSqlWhere.IsNotNull: ISqlWhere;
@@ -320,6 +339,14 @@ begin
   AddCondition(fColumn + ' LIKE ' + TSqlValue.ValueToSql(aValue));
 end;
 
+function TSqlWhere.NotExists(aSelect: ISqlSelect): ISqlWhere;
+begin
+  Result := Self;
+
+  fLogicalOperator := ' AND ';
+  AddCondition('NOT EXISTS (' + aSelect.ToString + ')');
+end;
+
 function TSqlWhere.NotIn(aValues: string): ISqlWhere;
 begin
   Result := Self;
@@ -346,6 +373,22 @@ begin
 
   fLogicalOperator := ' OR ';
   AddCondition('(' + aSqlWhere.ToString + ')');
+end;
+
+function TSqlWhere.OrExists(aSelect: ISqlSelect): ISqlWhere;
+begin
+  Result := Self;
+
+  fLogicalOperator := ' OR ';
+  AddCondition('EXISTS (' + aSelect.ToString + ')');
+end;
+
+function TSqlWhere.OrNotExists(aSelect: ISqlSelect): ISqlWhere;
+begin
+  Result := Self;
+
+  fLogicalOperator := ' OR ';
+  AddCondition('NOT EXISTS (' + aSelect.ToString + ')');
 end;
 
 function TSqlWhere.ToString: string;
