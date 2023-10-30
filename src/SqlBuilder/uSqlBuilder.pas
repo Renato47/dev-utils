@@ -13,10 +13,13 @@ type
     class function UpdateOrInsert: ISqlUpdateOrInsert;
     class function Delete: ISqlDelete;
 
-    class function &Procedure(aProcName: string): ISqlProcedure;
+    class function ExecuteProc(aProcedureName: string): ISqlExecProcedure;
+
+    class function &CreateProcedure(aProcName: string): ISqlProcedureCreate;
 
     class function &Case: ISqlCase; overload;
     class function &Case(aExpression: string): ISqlCase; overload;
+    class function &Procedure(aProcedureName: string): ISqlProcedure;
     class function Where: ISqlWhere;
   end;
 
@@ -31,8 +34,8 @@ type
 implementation
 
 uses
-  System.SysUtils, System.Variants, uSqlBuilder.Select, uSqlBuilder.Update, uSqlBuilder.Insert, uSqlBuilder.Delete, uSqlBuilder._Case, uSqlBuilder.UpdateOrInsert, uSqlBuilder.Where,
-  uSqlBuilder._Procedure;
+  System.SysUtils, System.Variants, uSqlBuilder.Select, uSqlBuilder.Update, uSqlBuilder.Insert, uSqlBuilder.Delete, uSqlBuilder.SqlCase, uSqlBuilder.UpdateOrInsert, uSqlBuilder.Where,
+  uSqlBuilder.CreateProcedure, uSqlBuilder.SqlProcedure, uSqlBuilder.ExecProcedure;
 
 class function SQL.&Case: ISqlCase;
 begin
@@ -42,6 +45,12 @@ end;
 class function SQL.Delete: ISqlDelete;
 begin
   Result := TSqlDelete.Create;
+end;
+
+class function SQL.ExecuteProc(aProcedureName: string): ISqlExecProcedure;
+begin
+  Result := TSqlExecProcedure.Create;
+  Result.&Procedure(aProcedureName);
 end;
 
 class function SQL.Insert: ISqlInsert;
@@ -69,10 +78,16 @@ begin
   Result := TSqlWhere.Create;
 end;
 
-class function SQL.&Procedure(aProcName: string): ISqlProcedure;
+class function SQL.&CreateProcedure(aProcName: string): ISqlProcedureCreate;
+begin
+  Result := TSqlCreateProcedure.Create;
+  Result.Name(aProcName);
+end;
+
+class function SQL.&Procedure(aProcedureName: string): ISqlProcedure;
 begin
   Result := TSqlProcedure.Create;
-  Result.Name(aProcName);
+  Result.&Procedure(aProcedureName);
 end;
 
 class function SQL.&Case(aExpression: string): ISqlCase;

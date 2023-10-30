@@ -1,4 +1,4 @@
-unit uSqlBuilder._Procedure;
+unit uSqlBuilder.CreateProcedure;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   System.Classes, uSqlBuilder.Interfaces;
 
 type
-  TSqlProcedure = class(TInterfacedObject, ISqlProcedure)
+  TSqlCreateProcedure = class(TInterfacedObject, ISqlProcedureCreate)
   private
     fName: string;
     inputList: TStringList;
@@ -17,18 +17,18 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function Name(aName: string): ISqlProcedure;
-    function Input(aName, aType: string): ISqlProcedure;
-    function Return(aName, aType: string): ISqlProcedure;
-    function Variable(aName, aType: string): ISqlProcedure;
-    function Instruction(aSqlInstruction: string): ISqlProcedure;
+    function Name(aName: string): ISqlProcedureCreate;
+    function Input(aName, aType: string): ISqlProcedureCreate;
+    function Return(aName, aType: string): ISqlProcedureCreate;
+    function Variable(aName, aType: string): ISqlProcedureCreate;
+    function Instruction(aSqlInstruction: string): ISqlProcedureCreate;
 
     function ToString: string; override;
   end;
 
 implementation
 
-constructor TSqlProcedure.Create;
+constructor TSqlCreateProcedure.Create;
 begin
   inputList := TStringList.Create;
   inputList.QuoteChar := #0;
@@ -42,7 +42,7 @@ begin
   instructions := TStringList.Create;
 end;
 
-destructor TSqlProcedure.Destroy;
+destructor TSqlCreateProcedure.Destroy;
 begin
   inputList.Free;
   returnList.Free;
@@ -52,31 +52,31 @@ begin
   inherited;
 end;
 
-function TSqlProcedure.Input(aName, aType: string): ISqlProcedure;
+function TSqlCreateProcedure.Input(aName, aType: string): ISqlProcedureCreate;
 begin
   Result := Self;
   inputList.Append(aName + ' ' + aType);
 end;
 
-function TSqlProcedure.Instruction(aSqlInstruction: string): ISqlProcedure;
+function TSqlCreateProcedure.Instruction(aSqlInstruction: string): ISqlProcedureCreate;
 begin
   Result := Self;
   instructions.Append(aSqlInstruction);
 end;
 
-function TSqlProcedure.Name(aName: string): ISqlProcedure;
+function TSqlCreateProcedure.Name(aName: string): ISqlProcedureCreate;
 begin
   Result := Self;
   fName := aName;
 end;
 
-function TSqlProcedure.Return(aName, aType: string): ISqlProcedure;
+function TSqlCreateProcedure.Return(aName, aType: string): ISqlProcedureCreate;
 begin
   Result := Self;
   returnList.Append(aName + ' ' + aType);
 end;
 
-function TSqlProcedure.ToString: string;
+function TSqlCreateProcedure.ToString: string;
 var
   slSql: TStringList;
 begin
@@ -110,7 +110,7 @@ begin
   slSql.Free;
 end;
 
-function TSqlProcedure.Variable(aName, aType: string): ISqlProcedure;
+function TSqlCreateProcedure.Variable(aName, aType: string): ISqlProcedureCreate;
 begin
   Result := Self;
   variableList.Append('DECLARE VARIABLE ' + aName + ' ' + aType + ';');

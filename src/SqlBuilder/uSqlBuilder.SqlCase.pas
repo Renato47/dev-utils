@@ -1,4 +1,4 @@
-unit uSqlBuilder._Case;
+unit uSqlBuilder.SqlCase;
 
 interface
 

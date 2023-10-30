@@ -28,7 +28,9 @@ type
 
     function Cast(aAsType, aAlias: string): ISqlSelect;
 
-    function From(aSource: string): ISqlSelect;
+    function From(aSource: string): ISqlSelect; overload;
+    function From(aSelect: ISqlSelect; aAlias: string): ISqlSelect; overload;
+    function From(aSqlProcedure: ISqlProcedure; aAlias: string = ''): ISqlSelect; overload;
 
     function InnerJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
     function InnerJoin(aSource, aConditions: string): ISqlSelect; overload;
@@ -114,6 +116,22 @@ begin
 
   if aCount > 0 then
     firstRows := 'FIRST ' + IntToStr(aCount) + ' ';
+end;
+
+function TSqlSelect.From(aSqlProcedure: ISqlProcedure; aAlias: string): ISqlSelect;
+begin
+  Result := Self;
+
+  if not aAlias.IsEmpty then
+    source := aSqlProcedure.ToString + ' ' + aAlias
+  else
+    source := aSqlProcedure.ToString;
+end;
+
+function TSqlSelect.From(aSelect: ISqlSelect; aAlias: string): ISqlSelect;
+begin
+  Result := Self;
+  source := '(' + aSelect.ToString + ') AS ' + aAlias;
 end;
 
 function TSqlSelect.From(aSource: string): ISqlSelect;

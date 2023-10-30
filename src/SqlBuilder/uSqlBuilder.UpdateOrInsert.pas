@@ -3,7 +3,7 @@ unit uSqlBuilder.UpdateOrInsert;
 interface
 
 uses
-  System.Classes, System.Rtti, uSqlBuilder.Interfaces;
+  System.SysUtils, System.Classes, System.Rtti, uSqlBuilder.Interfaces;
 
 type
   TSqlUpdateOrInsert = class(TInterfacedObject, ISqlUpdateOrInsert)
@@ -17,7 +17,17 @@ type
     destructor Destroy; override;
 
     function Into(aTarget: string): ISqlUpdateOrInsert;
+
     function Value(aColumn: string; aValue: TValue): ISqlUpdateOrInsert;
+    function ValueExpression(aColumn, aExpression: string): ISqlUpdateOrInsert;
+
+    function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlUpdateOrInsert; overload;
+    function ValueNull(aColumn: string; aValue: Integer; aNullValue: Integer = 0): ISqlUpdateOrInsert; overload;
+
+    function ValueDate(aColumn: string; aDate: TDate): ISqlUpdateOrInsert;
+    function ValueTime(aColumn: string; aTime: TTime): ISqlUpdateOrInsert;
+    function ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlUpdateOrInsert;
+
     function Matching(aColumnList: string): ISqlUpdateOrInsert;
 
     function ToString: string; override;
@@ -70,6 +80,53 @@ begin
 
   columns.Append(aColumn);
   values.Append(TSqlValue.ValueToSql(aValue));
+end;
+
+function TSqlUpdateOrInsert.ValueDate(aColumn: string; aDate: TDate): ISqlUpdateOrInsert;
+begin
+  Result := Value(aColumn, FormatDateTime('dd.mm.yyyy', aDate));
+end;
+
+function TSqlUpdateOrInsert.ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlUpdateOrInsert;
+begin
+  Result := Value(aColumn, FormatDateTime('dd.mm.yyyy hh:mm:ss', aDateTime));
+end;
+
+function TSqlUpdateOrInsert.ValueExpression(aColumn, aExpression: string): ISqlUpdateOrInsert;
+begin
+  Result := Self;
+
+  columns.Append(aColumn);
+  values.Append(aExpression);
+end;
+
+function TSqlUpdateOrInsert.ValueNull(aColumn, aValue, aNullValue: string): ISqlUpdateOrInsert;
+begin
+  Result := Self;
+
+  columns.Append(aColumn);
+
+  if aValue = aNullValue then
+    values.Append('NULL')
+  else
+    values.Append(TSqlValue.ValueToSql(aValue));
+end;
+
+function TSqlUpdateOrInsert.ValueNull(aColumn: string; aValue, aNullValue: Integer): ISqlUpdateOrInsert;
+begin
+  Result := Self;
+
+  columns.Append(aColumn);
+
+  if aValue = aNullValue then
+    values.Append('NULL')
+  else
+    values.Append(TSqlValue.ValueToSql(aValue));
+end;
+
+function TSqlUpdateOrInsert.ValueTime(aColumn: string; aTime: TTime): ISqlUpdateOrInsert;
+begin
+  Result := Value(aColumn, FormatDateTime('hh:mm:ss', aTime));
 end;
 
 end.
