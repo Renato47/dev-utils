@@ -145,8 +145,10 @@ function TSqlWhere.Column(aColumn: string): ISqlWhere;
 begin
   Result := Self;
 
-  if fColumn.IsEmpty or fComparisonOperator.IsEmpty then
-    fColumn := aColumn
+  if fColumn.IsEmpty or fComparisonOperator.IsEmpty then begin
+    fColumn := aColumn;
+    fLogicalOperator := ' AND ';
+  end
   else
     AddCondition(fColumn + fComparisonOperator + aColumn);
 end;
