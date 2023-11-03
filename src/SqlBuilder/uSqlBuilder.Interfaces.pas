@@ -23,7 +23,12 @@ type
 
   ISqlProcedure = interface
     function &Procedure(aName: string): ISqlProcedure;
+
     function Value(aValue: TValue): ISqlProcedure;
+    function Null: ISqlProcedure;
+    function CurrentDate: ISqlProcedure;
+    function CurrentTime: ISqlProcedure;
+    function CurrentTimestamp: ISqlProcedure;
 
     function ToString: string;
   end;

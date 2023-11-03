@@ -10,9 +10,16 @@ type
   private
     fName: string;
     fInputList: string;
+
+    procedure AddInput(aValue: string);
   public
     function &Procedure(aName: string): ISqlProcedure;
+
     function Value(aValue: TValue): ISqlProcedure;
+    function Null: ISqlProcedure;
+    function CurrentDate: ISqlProcedure;
+    function CurrentTime: ISqlProcedure;
+    function CurrentTimestamp: ISqlProcedure;
 
     function ToString: string; override;
   end;
@@ -21,6 +28,38 @@ implementation
 
 uses
   uSqlBuilder;
+
+procedure TSqlProcedure.AddInput(aValue: string);
+begin
+  if not fInputList.IsEmpty then
+    fInputList := fInputList + ', ';
+
+  fInputList := fInputList + aValue;
+end;
+
+function TSqlProcedure.CurrentDate: ISqlProcedure;
+begin
+  Result := Self;
+  AddInput('CURRENT_DATE');
+end;
+
+function TSqlProcedure.CurrentTimestamp: ISqlProcedure;
+begin
+  Result := Self;
+  AddInput('CURRENT_TIMESTAMP');
+end;
+
+function TSqlProcedure.CurrentTime: ISqlProcedure;
+begin
+  Result := Self;
+  AddInput('CURRENT_TIME');
+end;
+
+function TSqlProcedure.Null: ISqlProcedure;
+begin
+  Result := Self;
+  AddInput('NULL');
+end;
 
 function TSqlProcedure.&Procedure(aName: string): ISqlProcedure;
 begin
@@ -36,11 +75,7 @@ end;
 function TSqlProcedure.Value(aValue: TValue): ISqlProcedure;
 begin
   Result := Self;
-
-  if not fInputList.IsEmpty then
-    fInputList := fInputList + ', ';
-
-  fInputList := fInputList + TSqlValue.ValueToSql(aValue);
+  AddInput(TSqlValue.ValueToSql(aValue));
 end;
 
 end.
