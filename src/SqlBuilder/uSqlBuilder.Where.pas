@@ -218,7 +218,7 @@ begin
     Exit;
 
   if aDate <> 0 then
-    AddCondition(fColumn + fComparisonOperator + FormatDateTime('dd.mm.yyyy', aDate))
+    AddCondition(fColumn + fComparisonOperator + FormatDateTime('dd.mm.yyyy', aDate).QuotedString)
   else
     AddCondition(fColumn + fComparisonOperator + 'NULL');
 end;
@@ -234,7 +234,7 @@ begin
     Exit;
 
   if aDateTime <> 0 then
-    AddCondition(fColumn + fComparisonOperator + FormatDateTime('dd.mm.yyyy hh:mm:ss', aDateTime))
+    AddCondition(fColumn + fComparisonOperator + FormatDateTime('dd.mm.yyyy hh:mm:ss', aDateTime).QuotedString)
   else
     AddCondition(fColumn + fComparisonOperator + 'NULL');
 end;
@@ -520,7 +520,7 @@ begin
     Exit;
 
   if aTime <> 0 then
-    AddCondition(fColumn + fComparisonOperator + FormatDateTime('hh:mm:ss', aTime))
+    AddCondition(fColumn + fComparisonOperator + FormatDateTime('hh:mm:ss', aTime).QuotedString)
   else
     AddCondition(fColumn + fComparisonOperator + 'NULL');
 end;
