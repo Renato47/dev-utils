@@ -58,7 +58,8 @@ type
     function NotBetween(aStart, aEnd: TValue): ISqlWhere;
 
     //Existential predicates [IN, EXISTS, SINGULAR, ALL, ANY, SOME]
-    function &In(aValues: string): ISqlWhere;
+    function &In(aValues: string): ISqlWhere; overload;
+    function &In(aSelect: ISqlSelect): ISqlWhere; overload;
     function NotIn(aValues: string): ISqlWhere;
 
     function Exists(aSelect: ISqlSelect): ISqlWhere;
@@ -100,6 +101,16 @@ begin
     Exit;
 
   AddCondition(fColumn + ' IN (' + aValues + ')');
+end;
+
+function TSqlWhere.&In(aSelect: ISqlSelect): ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  AddCondition(fColumn + ' IN (' + aSelect.ToString + ')');
 end;
 
 procedure TSqlWhere.AddCondition(aCriteria: string);

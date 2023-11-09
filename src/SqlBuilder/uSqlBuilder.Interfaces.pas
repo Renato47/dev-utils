@@ -80,7 +80,8 @@ type
     function NotBetween(aStart, aEnd: TValue): ISqlWhere;
 
     //Existential predicates [IN, EXISTS, SINGULAR, ALL, ANY, SOME]
-    function &In(aValues: string): ISqlWhere;
+    function &In(aValues: string): ISqlWhere; overload;
+    function &In(aSelect: ISqlSelect): ISqlWhere; overload;
     function NotIn(aValues: string): ISqlWhere;
 
     function Exists(aSelect: ISqlSelect): ISqlWhere;
