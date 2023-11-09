@@ -147,6 +147,7 @@ type
     function ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlInsert;
 
     function ToString: string;
+    function IsEmpty: Boolean;
   end;
 
   ISqlUpdateOrInsert = interface
@@ -165,6 +166,7 @@ type
     function Matching(aColumnList: string): ISqlUpdateOrInsert;
 
     function ToString: string;
+    function IsEmpty: Boolean;
   end;
 
   ISqlUpdate = interface

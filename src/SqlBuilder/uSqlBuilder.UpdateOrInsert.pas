@@ -31,6 +31,7 @@ type
     function Matching(aColumnList: string): ISqlUpdateOrInsert;
 
     function ToString: string; override;
+    function IsEmpty: Boolean;
   end;
 
 implementation
@@ -61,6 +62,11 @@ function TSqlUpdateOrInsert.Into(aTarget: string): ISqlUpdateOrInsert;
 begin
   Result := Self;
   target := aTarget;
+end;
+
+function TSqlUpdateOrInsert.IsEmpty: Boolean;
+begin
+  Result := values.Count = 0;
 end;
 
 function TSqlUpdateOrInsert.Matching(aColumnList: string): ISqlUpdateOrInsert;

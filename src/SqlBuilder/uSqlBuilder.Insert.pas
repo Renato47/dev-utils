@@ -28,6 +28,7 @@ type
     function ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlInsert;
 
     function ToString: string; override;
+    function IsEmpty: Boolean;
   end;
 
 implementation
@@ -58,6 +59,11 @@ function TSqlInsert.Into(aTarget: string): ISqlInsert;
 begin
   Result := Self;
   target := aTarget;
+end;
+
+function TSqlInsert.IsEmpty: Boolean;
+begin
+  Result := values.Count = 0;
 end;
 
 function TSqlInsert.ToString: string;
