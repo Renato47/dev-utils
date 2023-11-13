@@ -10,9 +10,26 @@ type
   private
     fName: string;
     fInputList: string;
+
+    procedure AddInput(aValue: string);
   public
     function &Procedure(aName: string): ISqlExecProcedure;
+
     function Value(aValue: TValue): ISqlExecProcedure;
+    function ValueExpression(aExpression: string): ISqlExecProcedure;
+
+    function ValueNull(aValue: string; aNullValue: string = ''): ISqlExecProcedure; overload;
+    function ValueNull(aValue: Integer; aNullValue: Integer = 0): ISqlExecProcedure; overload;
+
+    function Null: ISqlExecProcedure;
+
+    function Date(aDate: TDate): ISqlExecProcedure;
+    function Time(aTime: TTime): ISqlExecProcedure;
+    function DateTime(aDateTime: TDateTime): ISqlExecProcedure;
+
+    function CurrentDate: ISqlExecProcedure;
+    function CurrentTime: ISqlExecProcedure;
+    function CurrentTimestamp: ISqlExecProcedure;
 
     function ToString: string; override;
   end;
@@ -22,10 +39,60 @@ implementation
 uses
   uSqlBuilder;
 
+procedure TSqlExecProcedure.AddInput(aValue: string);
+begin
+  if not fInputList.IsEmpty then
+    fInputList := fInputList + ', ';
+
+  fInputList := fInputList + aValue;
+end;
+
+function TSqlExecProcedure.CurrentDate: ISqlExecProcedure;
+begin
+  Result := Self;
+  AddInput('CURRENT_DATE');
+end;
+
+function TSqlExecProcedure.CurrentTime: ISqlExecProcedure;
+begin
+  Result := Self;
+  AddInput('CURRENT_TIME');
+end;
+
+function TSqlExecProcedure.CurrentTimestamp: ISqlExecProcedure;
+begin
+  Result := Self;
+  AddInput('CURRENT_TIMESTAMP');
+end;
+
+function TSqlExecProcedure.Date(aDate: TDate): ISqlExecProcedure;
+begin
+  Result := Self;
+  AddInput(TSqlValue.AsDate(aDate).QuotedString);
+end;
+
+function TSqlExecProcedure.DateTime(aDateTime: TDateTime): ISqlExecProcedure;
+begin
+  Result := Self;
+  AddInput(TSqlValue.AsDateTime(aDateTime).QuotedString);
+end;
+
+function TSqlExecProcedure.Null: ISqlExecProcedure;
+begin
+  Result := Self;
+  AddInput('NULL');
+end;
+
 function TSqlExecProcedure.&Procedure(aName: string): ISqlExecProcedure;
 begin
   Result := Self;
   fName := aName;
+end;
+
+function TSqlExecProcedure.Time(aTime: TTime): ISqlExecProcedure;
+begin
+  Result := Self;
+  AddInput(TSqlValue.AsTime(aTime).QuotedString);
 end;
 
 function TSqlExecProcedure.ToString: string;
@@ -39,11 +106,33 @@ end;
 function TSqlExecProcedure.Value(aValue: TValue): ISqlExecProcedure;
 begin
   Result := Self;
+  AddInput(TSqlValue.ValueToSql(aValue));
+end;
 
-  if not fInputList.IsEmpty then
-    fInputList := fInputList + ', ';
+function TSqlExecProcedure.ValueExpression(aExpression: string): ISqlExecProcedure;
+begin
+  Result := Self;
+  AddInput(aExpression);
+end;
 
-  fInputList := fInputList + TSqlValue.ValueToSql(aValue);
+function TSqlExecProcedure.ValueNull(aValue, aNullValue: Integer): ISqlExecProcedure;
+begin
+  Result := Self;
+
+  if aValue = aNullValue then
+    AddInput('NULL')
+  else
+    AddInput(TSqlValue.ValueToSql(aValue));
+end;
+
+function TSqlExecProcedure.ValueNull(aValue, aNullValue: string): ISqlExecProcedure;
+begin
+  Result := Self;
+
+  if aValue = aNullValue then
+    AddInput('NULL')
+  else
+    AddInput(TSqlValue.ValueToSql(aValue));
 end;
 
 end.

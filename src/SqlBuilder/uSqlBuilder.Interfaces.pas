@@ -25,7 +25,17 @@ type
     function &Procedure(aName: string): ISqlProcedure;
 
     function Value(aValue: TValue): ISqlProcedure;
+    function ValueExpression(aExpression: string): ISqlProcedure;
+
+    function ValueNull(aValue: string; aNullValue: string = ''): ISqlProcedure; overload;
+    function ValueNull(aValue: Integer; aNullValue: Integer = 0): ISqlProcedure; overload;
+
     function Null: ISqlProcedure;
+
+    function Date(aDate: TDate): ISqlProcedure;
+    function Time(aTime: TTime): ISqlProcedure;
+    function DateTime(aDateTime: TDateTime): ISqlProcedure;
+
     function CurrentDate: ISqlProcedure;
     function CurrentTime: ISqlProcedure;
     function CurrentTimestamp: ISqlProcedure;
@@ -35,7 +45,22 @@ type
 
   ISqlExecProcedure = interface
     function &Procedure(aName: string): ISqlExecProcedure;
+
     function Value(aValue: TValue): ISqlExecProcedure;
+    function ValueExpression(aExpression: string): ISqlExecProcedure;
+
+    function ValueNull(aValue: string; aNullValue: string = ''): ISqlExecProcedure; overload;
+    function ValueNull(aValue: Integer; aNullValue: Integer = 0): ISqlExecProcedure; overload;
+
+    function Null: ISqlExecProcedure;
+
+    function Date(aDate: TDate): ISqlExecProcedure;
+    function Time(aTime: TTime): ISqlExecProcedure;
+    function DateTime(aDateTime: TDateTime): ISqlExecProcedure;
+
+    function CurrentDate: ISqlExecProcedure;
+    function CurrentTime: ISqlExecProcedure;
+    function CurrentTimestamp: ISqlExecProcedure;
 
     function ToString: string;
   end;
