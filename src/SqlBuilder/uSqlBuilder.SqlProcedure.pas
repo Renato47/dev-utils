@@ -62,13 +62,13 @@ end;
 function TSqlProcedure.Date(aDate: TDate): ISqlProcedure;
 begin
   Result := Self;
-  AddInput(TSqlValue.AsDate(aDate).QuotedString);
+  AddInput(TSqlValue.ValueToSql(TSqlValue.AsDate(aDate)));
 end;
 
 function TSqlProcedure.DateTime(aDateTime: TDateTime): ISqlProcedure;
 begin
   Result := Self;
-  AddInput(TSqlValue.AsDateTime(aDateTime).QuotedString);
+  AddInput(TSqlValue.ValueToSql(TSqlValue.AsDateTime(aDateTime)));
 end;
 
 function TSqlProcedure.CurrentTime: ISqlProcedure;
@@ -92,7 +92,7 @@ end;
 function TSqlProcedure.Time(aTime: TTime): ISqlProcedure;
 begin
   Result := Self;
-  AddInput(TSqlValue.AsTime(aTime).QuotedString);
+  AddInput(TSqlValue.ValueToSql(TSqlValue.AsTime(aTime)));
 end;
 
 function TSqlProcedure.ToString: string;

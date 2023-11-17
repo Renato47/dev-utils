@@ -229,7 +229,7 @@ begin
     Exit;
 
   if aDate <> 0 then
-    AddCondition(fColumn + fComparisonOperator + FormatDateTime('dd.mm.yyyy', aDate).QuotedString)
+    AddCondition(fColumn + fComparisonOperator + TSqlValue.ValueToSql(TSqlValue.AsDate(aDate)))
   else
     AddCondition(fColumn + fComparisonOperator + 'NULL');
 end;
@@ -245,7 +245,7 @@ begin
     Exit;
 
   if aDateTime <> 0 then
-    AddCondition(fColumn + fComparisonOperator + FormatDateTime('dd.mm.yyyy hh:mm:ss', aDateTime).QuotedString)
+    AddCondition(fColumn + fComparisonOperator + TSqlValue.ValueToSql(TSqlValue.AsDateTime(aDateTime)))
   else
     AddCondition(fColumn + fComparisonOperator + 'NULL');
 end;
@@ -531,7 +531,7 @@ begin
     Exit;
 
   if aTime <> 0 then
-    AddCondition(fColumn + fComparisonOperator + FormatDateTime('hh:mm:ss', aTime).QuotedString)
+    AddCondition(fColumn + fComparisonOperator + TSqlValue.ValueToSql(TSqlValue.AsTime(aTime)))
   else
     AddCondition(fColumn + fComparisonOperator + 'NULL');
 end;
