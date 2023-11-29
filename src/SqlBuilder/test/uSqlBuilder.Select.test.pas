@@ -184,9 +184,6 @@ begin
     .RightJoin('CATEGORIAS C', 'C.CODIGO = CL.COD_CATEGORIA')
     .ToString;
   CompareSql(sSqlCompare, sSqlBuilder);
-
-  //sSqlCompare := '';
-  //CompareSql(sSqlCompare, SQL.Select.ToString);
 end;
 
 end.

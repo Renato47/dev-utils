@@ -147,6 +147,15 @@
         <DCCReference Include="..\uSqlBuilder.Where.pas"/>
         <DCCReference Include="uSqlBuilder.Select.test.pas"/>
         <DCCReference Include="uCompare.pas"/>
+        <DCCReference Include="uSqlBuilder.Delete.test.pas"/>
+        <DCCReference Include="uSqlBuilder.ExecProcedure.test.pas"/>
+        <DCCReference Include="uSqlBuilder.Insert.test.pas"/>
+        <DCCReference Include="uSqlBuilder.SqlCase.test.pas"/>
+        <DCCReference Include="uSqlBuilder.Update.test.pas"/>
+        <DCCReference Include="uSqlBuilder.UpdateOrInsert.test.pas"/>
+        <DCCReference Include="uSqlBuilder.SqlProcedure.test.pas"/>
+        <DCCReference Include="uSqlBuilder.SqlValue.test.pas"/>
+        <DCCReference Include="uSqlBuilder.Where.test.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
