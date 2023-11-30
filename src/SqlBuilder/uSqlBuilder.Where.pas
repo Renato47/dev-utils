@@ -3,7 +3,7 @@ unit uSqlBuilder.Where;
 interface
 
 uses
-  System.Classes, System.Rtti, uSqlBuilder.Interfaces;
+  System.Classes, uSqlBuilder.Interfaces;
 
 type
   TSqlWhere = class(TInterfacedObject, ISqlWhere)
@@ -15,6 +15,7 @@ type
 
     procedure AddCondition(aCriteria: string);
     procedure AddParenthesesCondition(aCriteria: string);
+    function ConcatArray(aArry: TArray<Variant>): string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -29,19 +30,19 @@ type
 
     //Comparison operators [=, <>, <, <=, >, >=, ...]
     function Equal: ISqlWhere; overload;
-    function Equal(aValue: TValue): ISqlWhere; overload;
+    function Equal(aValue: Variant): ISqlWhere; overload;
     function Different: ISqlWhere; overload;
-    function Different(aValue: TValue): ISqlWhere; overload;
+    function Different(aValue: Variant): ISqlWhere; overload;
 
     function Less: ISqlWhere; overload;
-    function Less(aValue: TValue): ISqlWhere; overload;
+    function Less(aValue: Variant): ISqlWhere; overload;
     function LessOrEqual: ISqlWhere; overload;
-    function LessOrEqual(aValue: TValue): ISqlWhere; overload;
+    function LessOrEqual(aValue: Variant): ISqlWhere; overload;
 
     function Greater: ISqlWhere; overload;
-    function Greater(aValue: TValue): ISqlWhere; overload;
+    function Greater(aValue: Variant): ISqlWhere; overload;
     function GreaterOrEqual: ISqlWhere; overload;
-    function GreaterOrEqual(aValue: TValue): ISqlWhere; overload;
+    function GreaterOrEqual(aValue: Variant): ISqlWhere; overload;
 
     //Comparison predicates [LIKE, STARTING WITH, CONTAINING, SIMILAR TO, BETWEEN, IS [NOT] NULL, IS [NOT] DISTINCT FROM]
     function Like(aValue: string): ISqlWhere;
@@ -54,13 +55,19 @@ type
     function IsNull: ISqlWhere;
     function IsNotNull: ISqlWhere;
 
-    function Between(aStart, aEnd: TValue): ISqlWhere;
-    function NotBetween(aStart, aEnd: TValue): ISqlWhere;
+    function Between(aStart, aEnd: Variant): ISqlWhere;
+    function BetweenDate(aStart, aEnd: TDate): ISqlWhere;
+    function BetweenTime(aStart, aEnd: TTime): ISqlWhere;
+    function BetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
+    function NotBetween(aStart, aEnd: Variant): ISqlWhere;
+    function NotBetweenDate(aStart, aEnd: TDate): ISqlWhere;
+    function NotBetweenTime(aStart, aEnd: TTime): ISqlWhere;
+    function NotBetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
 
     //Existential predicates [IN, EXISTS, SINGULAR, ALL, ANY, SOME]
-    function &In(aValues: string): ISqlWhere; overload;
+    function &In(aValues: TArray<Variant>): ISqlWhere; overload;
     function &In(aSelect: ISqlSelect): ISqlWhere; overload;
-    function NotIn(aValues: string): ISqlWhere;
+    function NotIn(aValues: TArray<Variant>): ISqlWhere;
 
     function Exists(aSelect: ISqlSelect): ISqlWhere;
     function NotExists(aSelect: ISqlSelect): ISqlWhere;
@@ -93,14 +100,14 @@ begin
   fLogicalOperator := ' OR ';
 end;
 
-function TSqlWhere.&In(aValues: string): ISqlWhere;
+function TSqlWhere.&In(aValues: TArray<Variant>): ISqlWhere;
 begin
   Result := Self;
 
   if fColumn.IsEmpty then
     Exit;
 
-  AddCondition(fColumn + ' IN (' + aValues + ')');
+  AddCondition(fColumn + ' IN (' + ConcatArray(aValues) + ')');
 end;
 
 function TSqlWhere.&In(aSelect: ISqlSelect): ISqlWhere;
@@ -142,7 +149,7 @@ begin
   AddParenthesesCondition(aSqlWhere.ToString);
 end;
 
-function TSqlWhere.Between(aStart, aEnd: TValue): ISqlWhere;
+function TSqlWhere.Between(aStart, aEnd: Variant): ISqlWhere;
 begin
   Result := Self;
 
@@ -150,6 +157,21 @@ begin
     Exit;
 
   AddCondition(fColumn + ' BETWEEN ' + TSqlValue.ValueToSql(aStart) + ' AND ' + TSqlValue.ValueToSql(aEnd));
+end;
+
+function TSqlWhere.BetweenDate(aStart, aEnd: TDate): ISqlWhere;
+begin
+  Result := Between(TSqlValue.AsDate(aStart), TSqlValue.AsDate(aEnd));
+end;
+
+function TSqlWhere.BetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
+begin
+  Result := Between(TSqlValue.AsDateTime(aStart), TSqlValue.AsDateTime(aEnd));
+end;
+
+function TSqlWhere.BetweenTime(aStart, aEnd: TTime): ISqlWhere;
+begin
+  Result := Between(TSqlValue.AsTime(aStart), TSqlValue.AsTime(aEnd));
 end;
 
 function TSqlWhere.Column(aColumn: string): ISqlWhere;
@@ -162,6 +184,20 @@ begin
   end
   else
     AddCondition(fColumn + fComparisonOperator + aColumn);
+end;
+
+function TSqlWhere.ConcatArray(aArry: TArray<Variant>): string;
+var
+  nValue: Integer;
+begin
+  if Length(aArry) = 0 then
+    Exit;
+
+  for nValue := low(aArry) to high(aArry) do
+    if nValue = 0 then
+      Result := TSqlValue.ValueToSql(aArry[nValue])
+    else
+      Result := Result + ', ' + TSqlValue.ValueToSql(aArry[nValue]);
 end;
 
 function TSqlWhere.Containing(aValue: string): ISqlWhere;
@@ -267,7 +303,7 @@ begin
   fComparisonOperator := ' <> ';
 end;
 
-function TSqlWhere.Different(aValue: TValue): ISqlWhere;
+function TSqlWhere.Different(aValue: Variant): ISqlWhere;
 begin
   Result := Self;
 
@@ -287,7 +323,7 @@ begin
   fComparisonOperator := ' = ';
 end;
 
-function TSqlWhere.Equal(aValue: TValue): ISqlWhere;
+function TSqlWhere.Equal(aValue: Variant): ISqlWhere;
 begin
   Result := Self;
 
@@ -315,7 +351,7 @@ begin
   fComparisonOperator := ' > ';
 end;
 
-function TSqlWhere.Greater(aValue: TValue): ISqlWhere;
+function TSqlWhere.Greater(aValue: Variant): ISqlWhere;
 begin
   Result := Self;
 
@@ -335,7 +371,7 @@ begin
   fComparisonOperator := ' >= ';
 end;
 
-function TSqlWhere.GreaterOrEqual(aValue: TValue): ISqlWhere;
+function TSqlWhere.GreaterOrEqual(aValue: Variant): ISqlWhere;
 begin
   Result := Self;
 
@@ -380,7 +416,7 @@ begin
   fComparisonOperator := ' < ';
 end;
 
-function TSqlWhere.Less(aValue: TValue): ISqlWhere;
+function TSqlWhere.Less(aValue: Variant): ISqlWhere;
 begin
   Result := Self;
 
@@ -400,7 +436,7 @@ begin
   fComparisonOperator := ' <= ';
 end;
 
-function TSqlWhere.LessOrEqual(aValue: TValue): ISqlWhere;
+function TSqlWhere.LessOrEqual(aValue: Variant): ISqlWhere;
 begin
   Result := Self;
 
@@ -448,7 +484,7 @@ begin
     AddCondition(fColumn + ' LIKE ' + TSqlValue.ValueToSql('%' + aValue + '%'));
 end;
 
-function TSqlWhere.NotBetween(aStart, aEnd: TValue): ISqlWhere;
+function TSqlWhere.NotBetween(aStart, aEnd: Variant): ISqlWhere;
 begin
   Result := Self;
 
@@ -456,6 +492,21 @@ begin
     Exit;
 
   AddCondition(fColumn + ' NOT BETWEEN ' + TSqlValue.ValueToSql(aStart) + ' AND ' + TSqlValue.ValueToSql(aEnd));
+end;
+
+function TSqlWhere.NotBetweenDate(aStart, aEnd: TDate): ISqlWhere;
+begin
+  Result := NotBetween(TSqlValue.AsDate(aStart), TSqlValue.AsDate(aEnd));
+end;
+
+function TSqlWhere.NotBetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
+begin
+  Result := NotBetween(TSqlValue.AsDateTime(aStart), TSqlValue.AsDateTime(aEnd));
+end;
+
+function TSqlWhere.NotBetweenTime(aStart, aEnd: TTime): ISqlWhere;
+begin
+  Result := NotBetween(TSqlValue.AsTime(aStart), TSqlValue.AsTime(aEnd));
 end;
 
 function TSqlWhere.NotExists(aSelect: ISqlSelect): ISqlWhere;
@@ -466,14 +517,14 @@ begin
   AddCondition('NOT EXISTS (' + aSelect.ToString + ')');
 end;
 
-function TSqlWhere.NotIn(aValues: string): ISqlWhere;
+function TSqlWhere.NotIn(aValues: TArray<Variant>): ISqlWhere;
 begin
   Result := Self;
 
   if fColumn.IsEmpty then
     Exit;
 
-  AddCondition(fColumn + ' NOT IN (' + aValues + ')');
+  AddCondition(fColumn + ' NOT IN (' + ConcatArray(aValues) + ')');
 end;
 
 function TSqlWhere.NotLike(aValue: string): ISqlWhere;

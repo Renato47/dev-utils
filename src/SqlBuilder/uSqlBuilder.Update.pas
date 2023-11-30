@@ -3,7 +3,7 @@ unit uSqlBuilder.Update;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Rtti, uSqlBuilder.Interfaces;
+  System.SysUtils, System.Classes, uSqlBuilder.Interfaces;
 
 type
   TSqlUpdate = class(TInterfacedObject, ISqlUpdate)
@@ -17,7 +17,7 @@ type
 
     function Table(aTarget: string): ISqlUpdate;
 
-    function Value(aColumn: string; aValue: TValue): ISqlUpdate;
+    function Value(aColumn: string; aValue: Variant): ISqlUpdate;
     function ValueExpression(aColumn, aExpression: string): ISqlUpdate;
 
     function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlUpdate; overload;
@@ -72,7 +72,7 @@ begin
     Result := Result + ' WHERE ' + conditions;
 end;
 
-function TSqlUpdate.Value(aColumn: string; aValue: TValue): ISqlUpdate;
+function TSqlUpdate.Value(aColumn: string; aValue: Variant): ISqlUpdate;
 begin
   Result := Self;
   columnsValues.Append(aColumn + ' = ' + TSqlValue.ValueToSql(aValue));

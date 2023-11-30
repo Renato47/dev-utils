@@ -3,7 +3,7 @@ unit uSqlBuilder.Insert;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Rtti, uSqlBuilder.Interfaces;
+  System.SysUtils, System.Classes, uSqlBuilder.Interfaces;
 
 type
   TSqlInsert = class(TInterfacedObject, ISqlInsert)
@@ -17,7 +17,7 @@ type
 
     function Into(aTarget: string): ISqlInsert;
 
-    function Value(aColumn: string; aValue: TValue): ISqlInsert;
+    function Value(aColumn: string; aValue: Variant): ISqlInsert;
     function ValueExpression(aColumn, aExpression: string): ISqlInsert;
 
     function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlInsert; overload;
@@ -71,7 +71,7 @@ begin
   Result := 'INSERT INTO ' + target + ' (' + columns.DelimitedText + ') VALUES (' + values.DelimitedText + ')';
 end;
 
-function TSqlInsert.Value(aColumn: string; aValue: TValue): ISqlInsert;
+function TSqlInsert.Value(aColumn: string; aValue: Variant): ISqlInsert;
 begin
   Result := Self;
 

@@ -50,7 +50,37 @@ begin
     .&Or(SQL.Where
       .Column('PRICE').NotBetween(5, 10)
       .&Or('DESCRIPTION').Containing('BLUE'))
-    .Column('STATUS').&In('1, 2, 3')
+    .Column('STATUS').&In([1, 2, 3])
+    .ToString;
+  CompareSql(sSqlCompare, sSqlBuilder);
+
+  sSqlCompare := 'ID IS NULL OR (CREATED_AT BETWEEN ' + FormatDateTime('dd.mm.yyyy', Now - 1).QuotedString + ' AND ' + FormatDateTime('dd.mm.yyyy', Now).QuotedString +
+    ' AND UPDATED_AT BETWEEN ' + FormatDateTime('hh:mm:ss', Now - 1).QuotedString + ' AND ' + FormatDateTime('hh:mm:ss', Now).QuotedString + ' AND DELETED_AT BETWEEN ' +
+    FormatDateTime('dd.mm.yyyy hh:mm:ss', Now - 1).QuotedString + ' AND ' + FormatDateTime('dd.mm.yyyy hh:mm:ss', Now).QuotedString +
+    ' OR DESCRIPTION CONTAINING ''BLUE'') AND STATUS IN (1, 2, 3)';
+  sSqlBuilder := SQL.Where
+    .Column('ID').IsNull
+    .&Or(SQL.Where
+      .Column('CREATED_AT').BetweenDate(Now - 1, Now)
+      .Column('UPDATED_AT').BetweenTime(Now - 1, Now)
+      .Column('DELETED_AT').BetweenDateTime(Now - 1, Now)
+      .&Or('DESCRIPTION').Containing('BLUE'))
+    .Column('STATUS').&In([1, 2, 3])
+    .ToString;
+  CompareSql(sSqlCompare, sSqlBuilder);
+
+  sSqlCompare := 'ID IS NULL OR (CREATED_AT NOT BETWEEN ' + FormatDateTime('dd.mm.yyyy', Now - 1).QuotedString + ' AND ' + FormatDateTime('dd.mm.yyyy', Now).QuotedString +
+    ' AND UPDATED_AT NOT BETWEEN ' + FormatDateTime('hh:mm:ss', Now - 1).QuotedString + ' AND ' + FormatDateTime('hh:mm:ss', Now).QuotedString + ' AND DELETED_AT NOT BETWEEN ' +
+    FormatDateTime('dd.mm.yyyy hh:mm:ss', Now - 1).QuotedString + ' AND ' + FormatDateTime('dd.mm.yyyy hh:mm:ss', Now).QuotedString +
+    ' OR DESCRIPTION CONTAINING ''BLUE'') AND STATUS IN (1, 2, 3)';
+  sSqlBuilder := SQL.Where
+    .Column('ID').IsNull
+    .&Or(SQL.Where
+      .Column('CREATED_AT').NotBetweenDate(Now - 1, Now)
+      .Column('UPDATED_AT').NotBetweenTime(Now - 1, Now)
+      .Column('DELETED_AT').NotBetweenDateTime(Now - 1, Now)
+      .&Or('DESCRIPTION').Containing('BLUE'))
+    .Column('STATUS').&In([1, 2, 3])
     .ToString;
   CompareSql(sSqlCompare, sSqlBuilder);
 
@@ -66,7 +96,7 @@ begin
   sSqlBuilder := SQL.Where
     .Column('ID').IsNotNull
     .NotExists(SQL.Select.Column('ID').From('CATEGORY'))
-    .Column('STATUS').NotIn('''A'', ''B'', ''C''')
+    .Column('STATUS').NotIn(['A', 'B', 'C'])
     .ToString;
   CompareSql(sSqlCompare, sSqlBuilder);
 

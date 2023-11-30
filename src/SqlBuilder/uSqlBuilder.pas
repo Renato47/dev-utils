@@ -3,13 +3,13 @@ unit uSqlBuilder;
 interface
 
 uses
-  System.Classes, System.Rtti, uSqlBuilder.Interfaces;
+  System.Classes, uSqlBuilder.Interfaces;
 
 type
   SQL = class
     class function Select: ISqlSelect;
     class function Insert: ISqlInsert;
-    class function Update: ISqlUpdate;
+    class function Update(aTableName: string): ISqlUpdate;
     class function UpdateOrInsert: ISqlUpdateOrInsert;
     class function Delete: ISqlDelete;
 
@@ -28,7 +28,7 @@ type
     class function AsTime(aValue: TDate): string;
     class function AsDateTime(aValue: TDate): string;
 
-    class function ValueToSql(Value: TValue): string;
+    class function ValueToSql(Value: Variant): string;
   end;
 
 implementation
@@ -63,9 +63,10 @@ begin
   Result := TSqlSelect.Create;
 end;
 
-class function SQL.Update: ISqlUpdate;
+class function SQL.Update(aTableName: string): ISqlUpdate;
 begin
   Result := TSqlUpdate.Create;
+  Result.Table(aTableName);
 end;
 
 class function SQL.UpdateOrInsert: ISqlUpdateOrInsert;
@@ -120,25 +121,53 @@ begin
     Result := FormatDateTime('hh:mm:ss', aValue);
 end;
 
-class function TSqlValue.ValueToSql(Value: TValue): string;
-begin
+{ class function TSqlValue.ValueToSql(Value: TValue): string;
+  begin
   Result := Value.ToString;
+
+  if LowerCase(Result) = 'null' then
+  Exit('NULL');
+
+  case Value.Kind of
+  tkUString, tkWChar, tkLString, tkWString, tkString, tkChar:
+  Result := QuotedStr(Result);
+
+  tkInteger, tkEnumeration, tkInt64:
+  ;
+
+  tkFloat:
+  Result := Result.Replace(',', '.');
+
+  tkUnknown, tkSet, tkClass, tkMethod, tkVariant, tkArray, tkRecord, tkInterface, tkDynArray, tkClassRef, tkPointer, tkProcedure:
+  raise Exception.Create('Invalid value [Kind]:' + ord(Value.Kind).ToString);
+  end;
+  end; }
+
+class function TSqlValue.ValueToSql(Value: Variant): string;
+begin
+  Result := Value;
 
   if LowerCase(Result) = 'null' then
     Exit('NULL');
 
-  case Value.Kind of
-    tkUString, tkWChar, tkLString, tkWString, tkString, tkChar:
-      Result := QuotedStr(Result);
-
-    tkInteger, tkEnumeration, tkInt64:
+  case VarType(Value) of
+    varEmpty, varNull:
       ;
 
-    tkFloat:
+    varSmallint, varInteger, varShortInt, varByte, varWord, varLongWord, varInt64:
+      ;
+
+    varSingle, varDouble, varCurrency:
       Result := Result.Replace(',', '.');
 
-    tkUnknown, tkSet, tkClass, tkMethod, tkVariant, tkArray, tkRecord, tkInterface, tkDynArray, tkClassRef, tkPointer, tkProcedure:
-      raise Exception.Create('Invalid value [Kind]:' + ord(Value.Kind).ToString);
+    varOleStr, varStrArg, varString, varUString:
+      Result := Result.QuotedString;
+
+    varDate: //care with quoted here.
+      ;
+
+    else
+      raise Exception.Create('Invalid value [VarType]:' + System.Ord(VarType(Value)).ToString);
   end;
 end;
 

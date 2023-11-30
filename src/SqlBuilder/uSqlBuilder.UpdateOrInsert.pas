@@ -3,7 +3,7 @@ unit uSqlBuilder.UpdateOrInsert;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Rtti, uSqlBuilder.Interfaces;
+  System.SysUtils, System.Classes, uSqlBuilder.Interfaces;
 
 type
   TSqlUpdateOrInsert = class(TInterfacedObject, ISqlUpdateOrInsert)
@@ -18,7 +18,7 @@ type
 
     function Into(aTarget: string): ISqlUpdateOrInsert;
 
-    function Value(aColumn: string; aValue: TValue): ISqlUpdateOrInsert;
+    function Value(aColumn: string; aValue: Variant): ISqlUpdateOrInsert;
     function ValueExpression(aColumn, aExpression: string): ISqlUpdateOrInsert;
 
     function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlUpdateOrInsert; overload;
@@ -80,7 +80,7 @@ begin
   Result := 'UPDATE OR INSERT INTO ' + target + ' (' + columns.DelimitedText + ') VALUES (' + values.DelimitedText + ')' + columnsMatch;
 end;
 
-function TSqlUpdateOrInsert.Value(aColumn: string; aValue: TValue): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.Value(aColumn: string; aValue: Variant): ISqlUpdateOrInsert;
 begin
   Result := Self;
 

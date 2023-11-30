@@ -3,7 +3,7 @@ unit uSqlBuilder.ExecProcedure;
 interface
 
 uses
-  System.SysUtils, System.Rtti, uSqlBuilder.Interfaces;
+  System.SysUtils, uSqlBuilder.Interfaces;
 
 type
   TSqlExecProcedure = class(TInterfacedObject, ISqlExecProcedure)
@@ -15,7 +15,7 @@ type
   public
     function &Procedure(aName: string): ISqlExecProcedure;
 
-    function Value(aValue: TValue): ISqlExecProcedure;
+    function Value(aValue: Variant): ISqlExecProcedure;
     function ValueExpression(aExpression: string): ISqlExecProcedure;
 
     function ValueNull(aValue: string; aNullValue: string = ''): ISqlExecProcedure; overload;
@@ -103,7 +103,7 @@ begin
     Result := Result + ' (' + fInputList + ')';
 end;
 
-function TSqlExecProcedure.Value(aValue: TValue): ISqlExecProcedure;
+function TSqlExecProcedure.Value(aValue: Variant): ISqlExecProcedure;
 begin
   Result := Self;
   AddInput(TSqlValue.ValueToSql(aValue));

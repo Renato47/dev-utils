@@ -2,9 +2,6 @@ unit uSqlBuilder.Interfaces;
 
 interface
 
-uses
-  System.Rtti;
-
 type
   ISqlSelect = interface;
 
@@ -12,9 +9,9 @@ type
     function TestExpression(aExpression: string): ISqlCase;
 
     function WhenThenColumn(aCondition, aColumn: string): ISqlCase;
-    function WhenThen(aCondition: string; aResult: TValue): ISqlCase;
+    function WhenThen(aCondition: string; aResult: Variant): ISqlCase;
     function ElseColumn(aColumn: string): ISqlCase;
-    function &Else(aResult: TValue): ISqlCase;
+    function &Else(aResult: Variant): ISqlCase;
 
     function &As(aAlias: string): ISqlCase;
 
@@ -24,7 +21,7 @@ type
   ISqlProcedure = interface
     function &Procedure(aName: string): ISqlProcedure;
 
-    function Value(aValue: TValue): ISqlProcedure;
+    function Value(aValue: Variant): ISqlProcedure;
     function ValueExpression(aExpression: string): ISqlProcedure;
 
     function ValueNull(aValue: string; aNullValue: string = ''): ISqlProcedure; overload;
@@ -46,7 +43,7 @@ type
   ISqlExecProcedure = interface
     function &Procedure(aName: string): ISqlExecProcedure;
 
-    function Value(aValue: TValue): ISqlExecProcedure;
+    function Value(aValue: Variant): ISqlExecProcedure;
     function ValueExpression(aExpression: string): ISqlExecProcedure;
 
     function ValueNull(aValue: string; aNullValue: string = ''): ISqlExecProcedure; overload;
@@ -76,19 +73,19 @@ type
 
     //Comparison operators [=, <>, <, <=, >, >=, ...]
     function Equal: ISqlWhere; overload;
-    function Equal(aValue: TValue): ISqlWhere; overload;
+    function Equal(aValue: Variant): ISqlWhere; overload;
     function Different: ISqlWhere; overload;
-    function Different(aValue: TValue): ISqlWhere; overload;
+    function Different(aValue: Variant): ISqlWhere; overload;
 
     function Less: ISqlWhere; overload;
-    function Less(aValue: TValue): ISqlWhere; overload;
+    function Less(aValue: Variant): ISqlWhere; overload;
     function LessOrEqual: ISqlWhere; overload;
-    function LessOrEqual(aValue: TValue): ISqlWhere; overload;
+    function LessOrEqual(aValue: Variant): ISqlWhere; overload;
 
     function Greater: ISqlWhere; overload;
-    function Greater(aValue: TValue): ISqlWhere; overload;
+    function Greater(aValue: Variant): ISqlWhere; overload;
     function GreaterOrEqual: ISqlWhere; overload;
-    function GreaterOrEqual(aValue: TValue): ISqlWhere; overload;
+    function GreaterOrEqual(aValue: Variant): ISqlWhere; overload;
 
     //Comparison predicates [LIKE, STARTING WITH, CONTAINING, SIMILAR TO, BETWEEN, IS [NOT] NULL, IS [NOT] DISTINCT FROM]
     function Like(aValue: string): ISqlWhere;
@@ -101,13 +98,19 @@ type
     function IsNull: ISqlWhere;
     function IsNotNull: ISqlWhere;
 
-    function Between(aStart, aEnd: TValue): ISqlWhere;
-    function NotBetween(aStart, aEnd: TValue): ISqlWhere;
+    function Between(aStart, aEnd: Variant): ISqlWhere;
+    function BetweenDate(aStart, aEnd: TDate): ISqlWhere;
+    function BetweenTime(aStart, aEnd: TTime): ISqlWhere;
+    function BetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
+    function NotBetween(aStart, aEnd: Variant): ISqlWhere;
+    function NotBetweenDate(aStart, aEnd: TDate): ISqlWhere;
+    function NotBetweenTime(aStart, aEnd: TTime): ISqlWhere;
+    function NotBetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
 
     //Existential predicates [IN, EXISTS, SINGULAR, ALL, ANY, SOME]
-    function &In(aValues: string): ISqlWhere; overload;
+    function &In(aValues: TArray<Variant>): ISqlWhere; overload;
     function &In(aSelect: ISqlSelect): ISqlWhere; overload;
-    function NotIn(aValues: string): ISqlWhere;
+    function NotIn(aValues: TArray<Variant>): ISqlWhere;
 
     function Exists(aSelect: ISqlSelect): ISqlWhere;
     function NotExists(aSelect: ISqlSelect): ISqlWhere;
@@ -162,7 +165,7 @@ type
   ISqlInsert = interface
     function Into(aTarget: string): ISqlInsert;
 
-    function Value(aColumn: string; aValue: TValue): ISqlInsert;
+    function Value(aColumn: string; aValue: Variant): ISqlInsert;
     function ValueExpression(aColumn, aExpression: string): ISqlInsert;
 
     function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlInsert; overload;
@@ -179,7 +182,7 @@ type
   ISqlUpdateOrInsert = interface
     function Into(aTarget: string): ISqlUpdateOrInsert;
 
-    function Value(aColumn: string; aValue: TValue): ISqlUpdateOrInsert;
+    function Value(aColumn: string; aValue: Variant): ISqlUpdateOrInsert;
     function ValueExpression(aColumn, aExpression: string): ISqlUpdateOrInsert;
 
     function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlUpdateOrInsert; overload;
@@ -198,7 +201,7 @@ type
   ISqlUpdate = interface
     function Table(aTarget: string): ISqlUpdate;
 
-    function Value(aColumn: string; aValue: TValue): ISqlUpdate;
+    function Value(aColumn: string; aValue: Variant): ISqlUpdate;
     function ValueExpression(aColumn, aExpression: string): ISqlUpdate;
 
     function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlUpdate; overload;

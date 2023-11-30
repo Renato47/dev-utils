@@ -3,7 +3,7 @@ unit uSqlBuilder.SqlCase;
 interface
 
 uses
-  System.Classes, System.Rtti, uSqlBuilder.Interfaces;
+  System.Classes, uSqlBuilder.Interfaces;
 
 type
   TSqlCase = class(TInterfacedObject, ISqlCase)
@@ -18,9 +18,9 @@ type
     function TestExpression(aExpression: string): ISqlCase;
 
     function WhenThenColumn(aCondition, aColumn: string): ISqlCase;
-    function WhenThen(aCondition: string; aResult: TValue): ISqlCase;
+    function WhenThen(aCondition: string; aResult: Variant): ISqlCase;
     function ElseColumn(aColumn: string): ISqlCase;
-    function &Else(aResult: TValue): ISqlCase;
+    function &Else(aResult: Variant): ISqlCase;
 
     function &As(aAlias: string): ISqlCase;
 
@@ -44,7 +44,7 @@ begin
   inherited;
 end;
 
-function TSqlCase.&Else(aResult: TValue): ISqlCase;
+function TSqlCase.&Else(aResult: Variant): ISqlCase;
 begin
   Result := Self;
   whenThenList.Append(' ELSE ' + TSqlValue.ValueToSql(aResult));
@@ -76,7 +76,7 @@ begin
     Result := Result + ' AS ' + alias;
 end;
 
-function TSqlCase.WhenThen(aCondition: string; aResult: TValue): ISqlCase;
+function TSqlCase.WhenThen(aCondition: string; aResult: Variant): ISqlCase;
 begin
   Result := Self;
   whenThenList.Append(' WHEN ' + aCondition + ' THEN ' + TSqlValue.ValueToSql(aResult));
