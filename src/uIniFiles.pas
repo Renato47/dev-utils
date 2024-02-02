@@ -16,7 +16,7 @@ var
   nIdent: Integer;
 begin
   if Length(aIdentification) <> Length(aValue) then
-    raise Exception.Create('Error in WriteIni: Identificaion langth differs Value length');
+    raise Exception.Create('Error in WriteIni: Identificaion length differs Value length');
 
   if ExtractFilePath(aFilePath).Trim.IsEmpty then
     aFilePath := ExtractFilePath(ParamStr(0)) + aFilePath;
