@@ -6,7 +6,7 @@ uses
   System.Classes;
 
 function CompressFilesRar(aFileList: TStringList; aDestinationFileName: string; aSplitRarMB: Integer = 0): Boolean;
-function DecompressRar(aRarFilePath, aDestinationPath: string): Boolean;
+function DecompressRar(aRarFilePath: string; aDestinationPath: string = ''): Boolean;
 
 implementation
 
@@ -69,7 +69,7 @@ begin
     Result := FileExists(aDestinationFileName);
 end;
 
-function DecompressRar(aRarFilePath, aDestinationPath: string): Boolean;
+function DecompressRar(aRarFilePath: string; aDestinationPath: string = ''): Boolean;
 var
   sWinRarExe, sCmdLine: string;
 begin
@@ -86,6 +86,9 @@ begin
 
   if not FileExists(aRarFilePath) then
     raise Exception.Create('Arquivo rar não localizado!');
+
+  if aDestinationPath.IsEmpty then
+    aDestinationPath := ExtractFilePath(aRarFilePath);
 
   sCmdLine := '"' + sWinRarExe + '" x -ibck "' + aRarFilePath + '" "' + aDestinationPath + '"';
 
