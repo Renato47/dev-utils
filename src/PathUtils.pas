@@ -6,6 +6,7 @@ uses
   System.Classes;
 
 function PathAdd(aPaths: array of string): string;
+function GetPreviousDirectory(aPath: string): string;
 function ListSubDirectories(aPath: string): TStringList;
 
 implementation
@@ -33,6 +34,21 @@ begin
     else
       Result := Result + PathDelim + aPaths[nPath];
   end;
+end;
+
+function GetPreviousDirectory(aPath: string): string;
+var
+  lastIdx: Integer;
+begin
+  Result := aPath;
+
+  if aPath.EndsWith('\') then
+    aPath := aPath.Remove(Length(aPath) - 1);
+
+  lastIdx := aPath.LastIndexOf('\');
+
+  if lastIdx > 1 then
+    Result := aPath.Remove(lastIdx + 1);
 end;
 
 function ListSubDirectories(aPath: string): TStringList;
