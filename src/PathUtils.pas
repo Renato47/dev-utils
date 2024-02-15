@@ -2,12 +2,16 @@ unit PathUtils;
 
 interface
 
+uses
+  System.Classes;
+
 function PathAdd(aPaths: array of string): string;
+function ListSubDirectories(aPath: string): TStringList;
 
 implementation
 
 uses
-  System.SysUtils;
+  System.SysUtils, System.IOUtils, System.Types;
 
 function PathAdd(aPaths: array of string): string;
 var
@@ -29,6 +33,22 @@ begin
     else
       Result := Result + PathDelim + aPaths[nPath];
   end;
+end;
+
+function ListSubDirectories(aPath: string): TStringList;
+var
+  ListArq: TStringDynArray;
+  nCount: Integer;
+begin
+  Result := TStringList.Create;
+
+  if not System.SysUtils.DirectoryExists(ExtractFilePath(aPath)) then
+    Exit;
+
+  ListArq := System.IOUtils.TDirectory.GetDirectories(aPath);
+
+  for nCount := 0 to high(ListArq) do
+    Result.Add(ListArq[nCount]);
 end;
 
 end.
