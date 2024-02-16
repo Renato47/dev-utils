@@ -5,7 +5,10 @@ program devTests;
 
 uses
   System.SysUtils,
-  FileInfo in '..\FileInfo.pas';
+  FileInfo in '..\FileInfo.pas',
+  PathUtils in '..\PathUtils.pas',
+  RarUtils in '..\RarUtils.pas',
+  uIniFiles in '..\uIniFiles.pas';
 
 begin
   System.ReportMemoryLeaksOnShutdown := True;

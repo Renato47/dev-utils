@@ -8,11 +8,12 @@ uses
 function PathAdd(aPaths: array of string): string;
 function GetPreviousDirectory(aPath: string): string;
 function ListSubDirectories(aPath: string): TStringList;
+function SelectPath(aTitle: string): string;
 
 implementation
 
 uses
-  System.SysUtils, System.IOUtils, System.Types;
+  System.SysUtils, System.IOUtils, System.Types, {$WARN UNIT_PLATFORM OFF} Vcl.FileCtrl {$WARN UNIT_PLATFORM ON};
 
 function PathAdd(aPaths: array of string): string;
 var
@@ -65,6 +66,11 @@ begin
 
   for nCount := 0 to high(ListArq) do
     Result.Add(ListArq[nCount]);
+end;
+
+function SelectPath(aTitle: string): string;
+begin
+  SelectDirectory(aTitle, '', Result, [sdNewUI, sdNewFolder]);
 end;
 
 end.
