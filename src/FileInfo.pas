@@ -34,17 +34,23 @@ uses
 
 function GetFileInfo(aFileName: string): TFileInfo;
 var
-  size, dummy: Cardinal;
+  size, dummy, error: Cardinal;
   buffer, lpBuffer: Pointer;
   lang: string;
 begin
   size := GetFileVersionInfoSize(PChar(aFileName), dummy);
 
-  if GetLastError = 1813 then //when file dont have version info
-    Exit;
+  if size = 0 then begin
+    error := GetLastError;
 
-  if size = 0 then
+    if error = 1813 then //when file dont have version info
+      Exit;
+
+    if error = 1812 then //when file type (diferent exe/dll) dont have version info
+      Exit;
+
     RaiseLastOSError;
+  end;
 
   GetMem(buffer, size);
 
