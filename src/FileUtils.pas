@@ -3,7 +3,7 @@ unit FileUtils;
 interface
 
 uses
-  System.Classes;
+  System.Classes, Winapi.Windows;
 
 function ShowFile(aFilePath: string): Boolean;
 
@@ -11,7 +11,7 @@ function CopyFileHandle(aOrigem, aDestino: string): Boolean;
 
 function DownloadFile(SourceFile, DestFile: string): Boolean;
 
-function ExecuteFileAndWait(aFilePath: string; aParams: string = ''): Boolean;
+function ExecuteFileAndWait(aFilePath: string; aParams: string = ''; aShowWindow: Word = SW_SHOW): Boolean;
 function ExecuteFile(aFilePath: string; aParams: string = ''): Boolean;
 
 function ListFiles(aPath, aFileFilter: string; bIsExtractFileName: Boolean = True): TStringList;
@@ -20,7 +20,7 @@ function SelectFile(aFilter: string = ''; aDefaultPath: string = ''): string;
 implementation
 
 uses
-  Winapi.Windows, Winapi.ShellAPI, Winapi.UrlMon, System.SysUtils, System.IOUtils, System.Types, Vcl.Dialogs;
+  Winapi.ShellAPI, Winapi.UrlMon, System.SysUtils, System.IOUtils, System.Types, Vcl.Dialogs;
 
 function ShowFile(aFilePath: string): Boolean;
 begin
@@ -53,7 +53,7 @@ begin
   end;
 end;
 
-function ExecuteFileAndWait(aFilePath: string; aParams: string = ''): Boolean;
+function ExecuteFileAndWait(aFilePath: string; aParams: string = ''; aShowWindow: Word = SW_SHOW): Boolean;
 var
   sCmdLine: string;
   siInfo: TStartupInfo;
@@ -65,7 +65,7 @@ begin
 
   siInfo.cb := SizeOf(siInfo);
   siInfo.dwFlags := STARTF_USESHOWWINDOW;
-  siInfo.wShowWindow := SW_SHOW;
+  siInfo.wShowWindow := aShowWindow;
 
   Result := CreateProcess(nil, PChar(sCmdLine), nil, nil, False, CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS, nil, nil, siInfo, piProcessInfo);
 
