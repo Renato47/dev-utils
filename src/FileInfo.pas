@@ -40,6 +40,9 @@ var
 begin
   size := GetFileVersionInfoSize(PChar(aFileName), dummy);
 
+  if GetLastError = 1813 then //when file dont have version info
+    Exit;
+
   if size = 0 then
     RaiseLastOSError;
 

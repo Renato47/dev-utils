@@ -14,7 +14,7 @@ begin
   System.ReportMemoryLeaksOnShutdown := True;
 
   try
-    Writeln(GetFileInfo('fbclient.dll').FileVersion);
+    Writeln(GetFileInfo('C:\Users\RENATO\Desktop\libxml2.dll').FileVersion);
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
