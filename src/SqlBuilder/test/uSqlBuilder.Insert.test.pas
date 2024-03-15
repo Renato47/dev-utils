@@ -33,6 +33,17 @@ begin
     .ToString;
   CompareSql(sSqlCompare, sSqlBuilder);
 
+  sSqlCompare := 'INSERT INTO CATEGORY (ID,DESCRIPTION,CREATED_AT,UPDATED_AT,NEXT_EXECUTION) VALUES (1,''FOOD'',NULL,NULL,NULL)';
+  sSqlBuilder := SQL.Insert
+    .Into('CATEGORY')
+    .Value('ID', 1)
+    .Value('DESCRIPTION', 'FOOD')
+    .ValueDate('CREATED_AT', 0)
+    .ValueTime('UPDATED_AT', 0)
+    .ValueDateTime('NEXT_EXECUTION', 0)
+    .ToString;
+  CompareSql(sSqlCompare, sSqlBuilder);
+
   sSqlCompare := 'INSERT INTO CATEGORY (ID,DESCRIPTION,CREATED_AT) VALUES (1,''FOOD'',CURRENT_DATETIME)';
   sSqlBuilder := SQL.Insert
     .Into('CATEGORY')

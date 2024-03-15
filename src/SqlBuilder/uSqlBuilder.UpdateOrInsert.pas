@@ -90,12 +90,18 @@ end;
 
 function TSqlUpdateOrInsert.ValueDate(aColumn: string; aDate: TDate): ISqlUpdateOrInsert;
 begin
-  Result := Value(aColumn, FormatDateTime('dd.mm.yyyy', aDate));
+  if aDate = 0 then
+    Result := ValueExpression(aColumn, 'NULL')
+  else
+    Result := Value(aColumn, FormatDateTime('dd.mm.yyyy', aDate));
 end;
 
 function TSqlUpdateOrInsert.ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlUpdateOrInsert;
 begin
-  Result := Value(aColumn, FormatDateTime('dd.mm.yyyy hh:mm:ss', aDateTime));
+  if aDateTime = 0 then
+    Result := ValueExpression(aColumn, 'NULL')
+  else
+    Result := Value(aColumn, FormatDateTime('dd.mm.yyyy hh:mm:ss', aDateTime));
 end;
 
 function TSqlUpdateOrInsert.ValueExpression(aColumn, aExpression: string): ISqlUpdateOrInsert;
@@ -132,7 +138,10 @@ end;
 
 function TSqlUpdateOrInsert.ValueTime(aColumn: string; aTime: TTime): ISqlUpdateOrInsert;
 begin
-  Result := Value(aColumn, FormatDateTime('hh:mm:ss', aTime));
+  if aTime = 0 then
+    Result := ValueExpression(aColumn, 'NULL')
+  else
+    Result := Value(aColumn, FormatDateTime('hh:mm:ss', aTime));
 end;
 
 end.

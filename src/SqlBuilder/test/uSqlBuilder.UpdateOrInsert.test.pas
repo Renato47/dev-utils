@@ -47,6 +47,18 @@ begin
     .ToString;
   CompareSql(sSqlCompare, sSqlBuilder);
 
+  sSqlCompare := 'UPDATE OR INSERT INTO CATEGORY (ID,DESCRIPTION,CREATED_AT,UPDATED_AT,SINCRO_AT) VALUES (1,''PIZZA'',NULL,NULL,NULL) MATCHING (ID)';
+  sSqlBuilder := SQL.UpdateOrInsert
+    .Into('CATEGORY')
+    .Value('ID', 1)
+    .Value('DESCRIPTION', 'PIZZA')
+    .ValueDate('CREATED_AT', 0)
+    .ValueTime('UPDATED_AT', 0)
+    .ValueDateTime('SINCRO_AT', 0)
+    .Matching('ID')
+    .ToString;
+  CompareSql(sSqlCompare, sSqlBuilder);
+
   CompareSql(BoolToStr(True), BoolToStr(SQL.UpdateOrInsert.IsEmpty));
   CompareSql(BoolToStr(False), BoolToStr(SQL.UpdateOrInsert.Value('ID', 1).IsEmpty));
 end;

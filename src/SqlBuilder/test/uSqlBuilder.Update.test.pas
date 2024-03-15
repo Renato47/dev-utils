@@ -46,6 +46,15 @@ begin
     .ToString;
   CompareSql(sSqlCompare, sSqlBuilder);
 
+  sSqlCompare := 'UPDATE PRODUCT SET CREATED_AT = NULL,UPDATED_AT = NULL,LAST_BOUGHT = NULL WHERE ID = 1';
+  sSqlBuilder := SQL.Update('PRODUCT')
+    .ValueDate('CREATED_AT', 0)
+    .ValueTime('UPDATED_AT', 0)
+    .ValueDateTime('LAST_BOUGHT', 0)
+    .Where('ID = 1')
+    .ToString;
+  CompareSql(sSqlCompare, sSqlBuilder);
+
   CompareSql(BoolToStr(True), BoolToStr(SQL.Update('PRODUCTS').IsEmpty));
   CompareSql(BoolToStr(False), BoolToStr(SQL.Update('PRODUCTS').Value('ID', 1).IsEmpty));
 end;
