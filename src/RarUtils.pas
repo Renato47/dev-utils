@@ -45,7 +45,7 @@ begin
     sWinRarExe := 'C:\Program Files (x86)\WinRAR\WinRAR.exe';
 
   if not FileExists(sWinRarExe) then
-    sWinRarExe := ExtractFilePath(ParamStr(0)) + 'winrar\RAR.exe';
+    sWinRarExe := ExtractFilePath(ParamStr(0)) + 'winrar\WinRAR.exe';
 
   if not FileExists(sWinRarExe) then
     raise Exception.Create('Erro instalação winrar não encontrado');
@@ -79,7 +79,7 @@ begin
     sWinRarExe := 'C:\Program Files (x86)\WinRAR\WinRAR.exe';
 
   if not FileExists(sWinRarExe) then
-    sWinRarExe := ExtractFilePath(ParamStr(0)) + 'winrar\RAR.exe';
+    sWinRarExe := ExtractFilePath(ParamStr(0)) + 'winrar\WinRAR.exe';
 
   if not FileExists(sWinRarExe) then
     raise Exception.Create('Erro instalação winrar não encontrado');
