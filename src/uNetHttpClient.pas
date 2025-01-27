@@ -393,7 +393,7 @@ function THttpResponse.Data: string;
 begin
   Result := '';
 
-  if fResponse.HeaderValue['Content-type'] = 'application/json' then
+  if fResponse.HeaderValue['Content-type'].Contains('application/json') then
     Result := fResponse.ContentAsString;
 end;
 
