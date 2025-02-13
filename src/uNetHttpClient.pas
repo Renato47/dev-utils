@@ -259,7 +259,7 @@ function THTTPRequest.Get(aURL: string): IHttpResponse;
 begin
   JoinHeaders;
 
-  Result := THttpResponse.Create(fRequest.Get(aURL), GenerateRequestInfo('GET', aURL, ''));
+  Result := THttpResponse.Create(fRequest.Get(aURL, nil, fHeaders), GenerateRequestInfo('GET', aURL, ''));
 
   ClearHeaders;
 end;
