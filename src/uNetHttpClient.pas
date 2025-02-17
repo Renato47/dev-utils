@@ -197,7 +197,13 @@ function THTTPRequest.Delete(aURL: string): IHttpResponse;
 begin
   JoinHeaders;
 
-  Result := THttpResponse.Create(fRequest.Delete(aURL, nil, fHeaders), GenerateRequestInfo('DELETE', aURL, ''));
+  try
+    Result := THttpResponse.Create(
+      fRequest.Delete(aURL, nil, fHeaders),
+      GenerateRequestInfo('DELETE', aURL, ''));
+  except
+    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+  end;
 
   ClearHeaders;
 end;
@@ -236,14 +242,18 @@ begin
 
     for rField in oFormData.Fields do begin
       if rField.FieldType = 'file' then
-        Result := Result + sLineBreak + 'Content-Disposition: form-data; name="' + rField.Key + '"; filename="' + ExtractFileName(rField.Value) + '"'
+        Result := Result + sLineBreak +
+          'Content-Disposition: form-data; name="' + rField.Key + '"; filename="' + ExtractFileName(rField.Value) + '"'
         //+ sLineBreak + 'Content-Type: image/png'
           + sLineBreak + sLineBreak + '(data)'
       else
-        Result := Result + sLineBreak + 'Content-Disposition: form-data; name="' + rField.Key + '"'
-          + sLineBreak + sLineBreak + rField.Value;
+        Result := Result + sLineBreak
+          + 'Content-Disposition: form-data; name="' + rField.Key + '"' + sLineBreak
+          + sLineBreak
+          + rField.Value;
 
-      Result := Result + sLineBreak + '--' + oFormData.GetMultipartObj.MimeTypeHeader.Replace('multipart/form-data; boundary=', '');
+      Result := Result + sLineBreak
+        + '--' + oFormData.GetMultipartObj.MimeTypeHeader.Replace('multipart/form-data; boundary=', '');
     end;
   end
   else if not fRequest.ContentType.IsEmpty then
@@ -259,7 +269,13 @@ function THTTPRequest.Get(aURL: string): IHttpResponse;
 begin
   JoinHeaders;
 
-  Result := THttpResponse.Create(fRequest.Get(aURL, nil, fHeaders), GenerateRequestInfo('GET', aURL, ''));
+  try
+    Result := THttpResponse.Create(
+      fRequest.Get(aURL, nil, fHeaders),
+      GenerateRequestInfo('GET', aURL, ''));
+  except
+    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+  end;
 
   ClearHeaders;
 end;
@@ -279,7 +295,13 @@ begin
 
   sStreamSend := TStringStream.Create(aRawText, TEncoding.UTF8);
 
-  Result := THttpResponse.Create(fRequest.Patch(aURL, sStreamSend, nil, fHeaders), GenerateRequestInfo('PATCH', aURL, sStreamSend.DataString));
+  try
+    Result := THttpResponse.Create(
+      fRequest.Patch(aURL, sStreamSend, nil, fHeaders),
+      GenerateRequestInfo('PATCH', aURL, sStreamSend.DataString));
+  except
+    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+  end;
 
   sStreamSend.Free;
 
@@ -296,7 +318,13 @@ begin
 
   fRequest.ContentType := 'application/x-www-form-urlencoded';
 
-  Result := THttpResponse.Create(fRequest.Post(aURL, sStreamSend, nil, fHeaders), GenerateRequestInfo('POST', aURL, sStreamSend.DataString));
+  try
+    Result := THttpResponse.Create(
+      fRequest.Post(aURL, sStreamSend, nil, fHeaders),
+      GenerateRequestInfo('POST', aURL, sStreamSend.DataString));
+  except
+    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+  end;
 
   sStreamSend.Free;
 
@@ -313,7 +341,13 @@ begin
 
   fRequest.ContentType := 'application/x-www-form-urlencoded';
 
-  Result := THttpResponse.Create(fRequest.Put(aURL, sStreamSend, nil, fHeaders), GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
+  try
+    Result := THttpResponse.Create(
+      fRequest.Put(aURL, sStreamSend, nil, fHeaders),
+      GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
+  except
+    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+  end;
 
   sStreamSend.Free;
 
@@ -341,7 +375,13 @@ begin
 
   fRequest.ContentType := 'application/x-www-form-urlencoded';
 
-  Result := THttpResponse.Create(fRequest.Put(aURL, sStreamSend, nil, fHeaders), GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
+  try
+    Result := THttpResponse.Create(
+      fRequest.Put(aURL, sStreamSend, nil, fHeaders),
+      GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
+  except
+    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+  end;
 
   sStreamSend.Free;
 
@@ -358,7 +398,13 @@ begin
 
   sStreamSend := TStringStream.Create(aRawText, TEncoding.UTF8);
 
-  Result := THttpResponse.Create(fRequest.Post(aURL, sStreamSend, nil, fHeaders), GenerateRequestInfo('POST', aURL, sStreamSend.DataString));
+  try
+    Result := THttpResponse.Create(
+      fRequest.Post(aURL, sStreamSend, nil, fHeaders),
+      GenerateRequestInfo('POST', aURL, sStreamSend.DataString));
+  except
+    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+  end;
 
   sStreamSend.Free;
 
@@ -375,7 +421,13 @@ begin
 
   sStreamSend := TStringStream.Create(aRawText, TEncoding.UTF8);
 
-  Result := THttpResponse.Create(fRequest.Put(aURL, sStreamSend, nil, fHeaders), GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
+  try
+    Result := THttpResponse.Create(
+      fRequest.Put(aURL, sStreamSend, nil, fHeaders),
+      GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
+  except
+    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+  end;
 
   sStreamSend.Free;
 
@@ -391,6 +443,9 @@ end;
 
 function THttpResponse.Data: string;
 begin
+  if fResponse = nil then
+    Exit('');
+
   Result := '';
 
   if fResponse.HeaderValue['Content-type'].Contains('application/json') then
@@ -404,6 +459,9 @@ end;
 
 procedure THttpResponse.SaveFile(AFilePath: string);
 begin
+  if fResponse = nil then
+    Exit;
+
   if fResponse.ContentStream = nil then
     Exit;
 
@@ -412,6 +470,9 @@ end;
 
 function THttpResponse.StatusCode: Integer;
 begin
+  if fResponse = nil then
+    Exit(0);
+
   Result := fResponse.StatusCode;
 end;
 
@@ -424,10 +485,15 @@ function THTTPRequest.Post(aURL: string; aFormData: IFormData): IHttpResponse;
 begin
   JoinHeaders;
 
-  //remover para usar header do formdata
-  fRequest.ContentType := '';
+  fRequest.ContentType := ''; //limpar ContentType para usar header do formdata
 
-  Result := THttpResponse.Create(fRequest.Post(aURL, aFormData.GetMultipartObj, nil, fHeaders), GenerateRequestInfo('POST', aURL, '', aFormData));
+  try
+    Result := THttpResponse.Create(
+      fRequest.Post(aURL, aFormData.GetMultipartObj, nil, fHeaders),
+      GenerateRequestInfo('POST', aURL, '', aFormData));
+  except
+    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+  end;
 
   ClearHeaders;
 end;
