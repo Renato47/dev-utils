@@ -34,8 +34,9 @@ type
 implementation
 
 uses
-  System.SysUtils, System.Variants, uSqlBuilder.Select, uSqlBuilder.Update, uSqlBuilder.Insert, uSqlBuilder.Delete, uSqlBuilder.SqlCase, uSqlBuilder.UpdateOrInsert, uSqlBuilder.Where,
-  uSqlBuilder.CreateProcedure, uSqlBuilder.SqlProcedure, uSqlBuilder.ExecProcedure;
+  System.SysUtils, System.Variants, uSqlBuilder.Select, uSqlBuilder.Update, uSqlBuilder.Insert, uSqlBuilder.Delete,
+  uSqlBuilder.UpdateOrInsert, uSqlBuilder.SqlProcedure, uSqlBuilder.CreateProcedure, uSqlBuilder.SqlCase,
+  uSqlBuilder.Where, uSqlBuilder.ExecProcedure;
 
 class function SQL.&Case: ISqlCase;
 begin
@@ -123,25 +124,25 @@ end;
 
 { class function TSqlValue.ValueToSql(Value: TValue): string;
   begin
-  Result := Value.ToString;
+ Result := Value.ToString;
 
-  if LowerCase(Result) = 'null' then
-  Exit('NULL');
+ if LowerCase(Result) = 'null' then
+ Exit('NULL');
 
-  case Value.Kind of
-  tkUString, tkWChar, tkLString, tkWString, tkString, tkChar:
-  Result := QuotedStr(Result);
+ case Value.Kind of
+ tkUString, tkWChar, tkLString, tkWString, tkString, tkChar:
+ Result := QuotedStr(Result);
 
-  tkInteger, tkEnumeration, tkInt64:
-  ;
+ tkInteger, tkEnumeration, tkInt64:
+ ;
 
-  tkFloat:
-  Result := Result.Replace(',', '.');
+ tkFloat:
+ Result := Result.Replace(',', '.');
 
-  tkUnknown, tkSet, tkClass, tkMethod, tkVariant, tkArray, tkRecord, tkInterface, tkDynArray, tkClassRef, tkPointer, tkProcedure:
-  raise Exception.Create('Invalid value [Kind]:' + ord(Value.Kind).ToString);
-  end;
-  end; }
+ tkUnknown, tkSet, tkClass, tkMethod, tkVariant, tkArray, tkRecord, tkInterface, tkDynArray, tkClassRef, tkPointer, tkProcedure:
+ raise Exception.Create('Invalid value [Kind]:' + ord(Value.Kind).ToString);
+ end;
+ end; }
 
 class function TSqlValue.ValueToSql(Value: Variant): string;
 begin

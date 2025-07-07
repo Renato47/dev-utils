@@ -77,7 +77,9 @@ end;
 
 function TSqlUpdateOrInsert.ToString: string;
 begin
-  Result := 'UPDATE OR INSERT INTO ' + target + ' (' + columns.DelimitedText + ') VALUES (' + values.DelimitedText + ')' + columnsMatch;
+  Result := 'UPDATE OR INSERT INTO ' + target
+    + ' (' + columns.DelimitedText + ') VALUES (' + values.DelimitedText + ')'
+    + columnsMatch;
 end;
 
 function TSqlUpdateOrInsert.Value(aColumn: string; aValue: Variant): ISqlUpdateOrInsert;

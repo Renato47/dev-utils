@@ -108,9 +108,11 @@ type
     function NotBetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
 
     //Existential predicates [IN, EXISTS, SINGULAR, ALL, ANY, SOME]
-    function &In(aValues: TArray<Variant>): ISqlWhere; overload;
+    function &In(aValues: TArray<string>): ISqlWhere; overload;
+    function &In(aValues: TArray<Integer>): ISqlWhere; overload;
     function &In(aSelect: ISqlSelect): ISqlWhere; overload;
-    function NotIn(aValues: TArray<Variant>): ISqlWhere;
+    function NotIn(aValues: TArray<string>): ISqlWhere; overload;
+    function NotIn(aValues: TArray<Integer>): ISqlWhere; overload;
 
     function Exists(aSelect: ISqlSelect): ISqlWhere;
     function NotExists(aSelect: ISqlSelect): ISqlWhere;

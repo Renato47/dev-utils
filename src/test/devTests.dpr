@@ -14,7 +14,7 @@ begin
   System.ReportMemoryLeaksOnShutdown := True;
 
   try
-    Writeln(GetFileInfo('C:\Users\RENATO\Desktop\notas.txt').FileVersion);
+    Writeln('App tests');
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);

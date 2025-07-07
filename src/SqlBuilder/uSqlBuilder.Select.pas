@@ -76,7 +76,8 @@ begin
   if columns.Count = 0 then
     Exit;
 
-  columns.Strings[Pred(columns.Count)] := 'CAST(' + columns.Strings[Pred(columns.Count)] + ' AS ' + aAsType + ') AS ' + aAlias;
+  columns.Strings[Pred(columns.Count)] :=
+    'CAST(' + columns.Strings[Pred(columns.Count)] + ' AS ' + aAsType + ') AS ' + aAlias;
 end;
 
 function TSqlSelect.Column(aCase: ISqlCase): ISqlSelect;

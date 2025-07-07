@@ -15,7 +15,8 @@ type
 
     procedure AddCondition(aCriteria: string);
     procedure AddParenthesesCondition(aCriteria: string);
-    function ConcatArray(aArry: TArray<Variant>): string;
+    function ConcatArray(aArry: TArray<string>): string; overload;
+    function ConcatArray(aArry: TArray<Integer>): string; overload;
   public
     constructor Create;
     destructor Destroy; override;
@@ -65,9 +66,11 @@ type
     function NotBetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
 
     //Existential predicates [IN, EXISTS, SINGULAR, ALL, ANY, SOME]
-    function &In(aValues: TArray<Variant>): ISqlWhere; overload;
+    function &In(aValues: TArray<string>): ISqlWhere; overload;
+    function &In(aValues: TArray<Integer>): ISqlWhere; overload;
     function &In(aSelect: ISqlSelect): ISqlWhere; overload;
-    function NotIn(aValues: TArray<Variant>): ISqlWhere;
+    function NotIn(aValues: TArray<string>): ISqlWhere; overload;
+    function NotIn(aValues: TArray<Integer>): ISqlWhere; overload;
 
     function Exists(aSelect: ISqlSelect): ISqlWhere;
     function NotExists(aSelect: ISqlSelect): ISqlWhere;
@@ -100,7 +103,17 @@ begin
   fLogicalOperator := ' OR ';
 end;
 
-function TSqlWhere.&In(aValues: TArray<Variant>): ISqlWhere;
+function TSqlWhere.&In(aValues: TArray<string>): ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  AddCondition(fColumn + ' IN (' + ConcatArray(aValues) + ')');
+end;
+
+function TSqlWhere.&In(aValues: TArray<Integer>): ISqlWhere;
 begin
   Result := Self;
 
@@ -186,7 +199,21 @@ begin
     AddCondition(fColumn + fComparisonOperator + aColumn);
 end;
 
-function TSqlWhere.ConcatArray(aArry: TArray<Variant>): string;
+function TSqlWhere.ConcatArray(aArry: TArray<string>): string;
+var
+  nValue: Integer;
+begin
+  if Length(aArry) = 0 then
+    Exit;
+
+  for nValue := low(aArry) to high(aArry) do
+    if nValue = 0 then
+      Result := TSqlValue.ValueToSql(aArry[nValue])
+    else
+      Result := Result + ', ' + TSqlValue.ValueToSql(aArry[nValue]);
+end;
+
+function TSqlWhere.ConcatArray(aArry: TArray<Integer>): string;
 var
   nValue: Integer;
 begin
@@ -517,7 +544,17 @@ begin
   AddCondition('NOT EXISTS (' + aSelect.ToString + ')');
 end;
 
-function TSqlWhere.NotIn(aValues: TArray<Variant>): ISqlWhere;
+function TSqlWhere.NotIn(aValues: TArray<string>): ISqlWhere;
+begin
+  Result := Self;
+
+  if fColumn.IsEmpty then
+    Exit;
+
+  AddCondition(fColumn + ' NOT IN (' + ConcatArray(aValues) + ')');
+end;
+
+function TSqlWhere.NotIn(aValues: TArray<Integer>): ISqlWhere;
 begin
   Result := Self;
 
