@@ -15,6 +15,8 @@ type
     function prop(&property: string): IJsonUtils;
     function item(index: Integer = 0): IJsonUtils;
 
+    function length: Integer;
+
     function getArray(&property: string): TJSONArray;
     function getArrayJs(&property: string): string;
 
@@ -42,6 +44,8 @@ type
 
     function prop(&property: string): IJsonUtils;
     function item(index: Integer = 0): IJsonUtils;
+
+    function length: Integer;
 
     function getArray(&property: string): TJSONArray;
     function getArrayJs(&property: string): string;
@@ -236,6 +240,17 @@ begin
     Exit(nil);
 
   Result := TJsonUtils.parse((parsedJson as TJSONArray).Items[index].ToJSON);
+end;
+
+function TJsonUtils.length: Integer;
+begin
+  if parsedJson = nil then
+    Exit(-1);
+
+  if not(parsedJson is TJSONArray) then
+    Exit(-1);
+
+  Result := (parsedJson as TJSONArray).Count;
 end;
 
 class function TJsonUtils.ObjToJSONstring(obj: TObject): string;

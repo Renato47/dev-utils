@@ -24,6 +24,7 @@ begin
   jsTeste.getItem(1);
   jsTeste.getItemJs(1);
   jsTeste.getItemStr(1);
+  jsTeste.length;
 
   jsTeste.prop('campo-inexistente');
 end;
@@ -43,6 +44,7 @@ begin
   jsTeste.getItem(1);
   jsTeste.getItemJs(1);
   jsTeste.getItemStr(1);
+  jsTeste.length;
 
   jsTeste.prop('campo-inexistente');
 end;
@@ -62,6 +64,7 @@ begin
   jsTeste.getItem(1);
   jsTeste.getItemJs(1);
   jsTeste.getItemStr(1);
+  jsTeste.length;
 
   jsTeste.prop('campo-inexistente');
 end;
@@ -79,6 +82,7 @@ begin
   jsTeste.asBool('campo-inexistente');
   jsTeste.getArray('campo-inexistente');
   jsTeste.getArrayJs('campo-inexistente');
+  jsTeste.length;
 
   arrayValue := jsTeste.getItem(1).Value;
   jsTeste.getItemJs(1);
@@ -142,10 +146,12 @@ begin
   jsTeste.getItem(1);
   jsTeste.getItemJs(1);
   jsTeste.getItemStr(1);
+  jsTeste.length;
 
   jsTeste.prop('campo-inexistente');
   jsTeste.prop('campo2').asStr('campo3');
   jsTeste.prop('campo4').item(1).asStr('campo6');
+  jsTeste.prop('campo4').length;
 end;
 
 procedure TestarJsonUtils;
