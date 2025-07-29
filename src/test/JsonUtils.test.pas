@@ -27,6 +27,9 @@ begin
   jsTeste.length;
 
   jsTeste.prop('campo-inexistente');
+
+  jsTeste.toJson;
+  jsTeste.toStr;
 end;
 
 procedure testWithEmptyJsonObject;
@@ -47,6 +50,9 @@ begin
   jsTeste.length;
 
   jsTeste.prop('campo-inexistente');
+
+  jsTeste.toJson;
+  jsTeste.toStr;
 end;
 
 procedure testWithEmptyJsonArray;
@@ -67,6 +73,9 @@ begin
   jsTeste.length;
 
   jsTeste.prop('campo-inexistente');
+
+  jsTeste.toJson;
+  jsTeste.toStr;
 end;
 
 procedure testWithJsonArray;
@@ -74,7 +83,7 @@ var
   jsTeste: IJsonUtils;
   arrayValue: string;
 begin
-  jsTeste := TJsonUtils.parse('[ "valor1" , "valor2" ]');
+  jsTeste := TJsonUtils.parse('[ "valor1" , "valor2", 14 ]');
 
   jsTeste.asStr('campo-inexistente');
   jsTeste.asInt('campo-inexistente');
@@ -85,10 +94,14 @@ begin
   jsTeste.length;
 
   arrayValue := jsTeste.getItem(1).Value;
+  arrayValue := jsTeste.getItem(2).Value;
   jsTeste.getItemJs(1);
   jsTeste.getItemStr(1);
 
   jsTeste.prop('campo-inexistente');
+
+  jsTeste.toJson;
+  jsTeste.toStr;
 end;
 
 procedure testWithObjectAndVarietsValues;
@@ -152,6 +165,9 @@ begin
   jsTeste.prop('campo2').asStr('campo3');
   jsTeste.prop('campo4').item(1).asStr('campo6');
   jsTeste.prop('campo4').length;
+
+  jsTeste.toJson;
+  jsTeste.toStr;
 end;
 
 procedure TestarJsonUtils;

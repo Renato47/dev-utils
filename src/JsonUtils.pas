@@ -23,6 +23,9 @@ type
     function getItem(index: Integer = 0): TJSONValue;
     function getItemJs(index: Integer = 0): string;
     function getItemStr(index: Integer = 0): string;
+
+    function toJson: string;
+    function toStr: string;
   end;
 
   TJsonUtils = class(TInterfacedObject, IJsonUtils)
@@ -53,6 +56,9 @@ type
     function getItem(index: Integer = 0): TJSONValue;
     function getItemJs(index: Integer = 0): string;
     function getItemStr(index: Integer = 0): string;
+
+    function toJson: string;
+    function toStr: string;
   end;
 
 implementation
@@ -139,7 +145,7 @@ begin
     Exit(inexistentPropValue);
 
   if (value is TJSONArray) or (value is TJSONObject) then
-    Exit(value.ToJSON);
+    Exit(value.toJson);
 
   Result := value.value;
 
@@ -187,7 +193,7 @@ begin
   if jsArray = nil then
     Exit('');
 
-  Result := jsArray.ToJSON;
+  Result := jsArray.toJson;
 end;
 
 function TJsonUtils.getItem(index: Integer = 0): TJSONValue;
@@ -213,7 +219,7 @@ begin
   if jsValue = nil then
     Exit('');
 
-  Result := jsValue.ToJSON;
+  Result := jsValue.toJson;
 end;
 
 function TJsonUtils.getItemStr(index: Integer): string;
@@ -239,7 +245,7 @@ begin
   if (parsedJson as TJSONArray).Count < (index + 1) then
     Exit(nil);
 
-  Result := TJsonUtils.parse((parsedJson as TJSONArray).Items[index].ToJSON);
+  Result := TJsonUtils.parse((parsedJson as TJSONArray).Items[index].toJson);
 end;
 
 function TJsonUtils.length: Integer;
@@ -280,7 +286,23 @@ begin
   if value = nil then
     Exit(nil);
 
-  Result := TJsonUtils.parse(value.ToJSON);
+  Result := TJsonUtils.parse(value.toJson);
+end;
+
+function TJsonUtils.toJson: string;
+begin
+  if not Assigned(parsedJson) then
+    Exit('');
+
+  Result := parsedJson.toJson;
+end;
+
+function TJsonUtils.toStr: string;
+begin
+  if not Assigned(parsedJson) then
+    Exit('');
+
+  Result := parsedJson.toString;
 end;
 
 end.
