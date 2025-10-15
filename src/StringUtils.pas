@@ -2,39 +2,22 @@ unit StringUtils;
 
 interface
 
-function RemoveLeft(str: string; maxLength: Integer): string;
-function RemoveRight(str: string; maxLength: Integer): string;
-
-function padAndRemoveLeft(str: string; width: Integer; PaddingChar: Char = ' '): string;
-function padAndRemoveRight(str: string; width: Integer; PaddingChar: Char = ' '): string;
+function LeftAndPadLeft(str: string; width: Integer; PaddingChar: Char = ' '): string;
+function RightAndPadRight(str: string; width: Integer; PaddingChar: Char = ' '): string;
 
 implementation
 
 uses
-  System.SysUtils;
+  System.SysUtils, System.StrUtils;
 
-function RemoveLeft(str: string; maxLength: Integer): string;
+function LeftAndPadLeft(str: string; width: Integer; PaddingChar: Char = ' '): string;
 begin
-  if length(str) <= maxLength then
-    Exit(str);
-
-  Result := str;
-  System.Delete(Result, 1, length(str) - maxLength);
+  Result := LeftStr(str, width).PadLeft(width, PaddingChar);
 end;
 
-function RemoveRight(str: string; maxLength: Integer): string;
+function RightAndPadRight(str: string; width: Integer; PaddingChar: Char = ' '): string;
 begin
-  Result := str.Remove(maxLength);
-end;
-
-function padAndRemoveLeft(str: string; width: Integer; PaddingChar: Char = ' '): string;
-begin
-  Result := RemoveLeft(str, width).PadLeft(width, PaddingChar);
-end;
-
-function padAndRemoveRight(str: string; width: Integer; PaddingChar: Char = ' '): string;
-begin
-  Result := RemoveRight(str, width).PadRight(width, PaddingChar);
+  Result := RightStr(str, width).PadRight(width, PaddingChar);
 end;
 
 end.
