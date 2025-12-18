@@ -3,7 +3,10 @@ unit StringUtils;
 interface
 
 function LeftAndPadLeft(str: string; width: Integer; PaddingChar: Char = ' '): string;
+function LeftAndPadRight(str: string; width: Integer; PaddingChar: Char = ' '): string;
+
 function RightAndPadRight(str: string; width: Integer; PaddingChar: Char = ' '): string;
+function RightAndPadLeft(str: string; width: Integer; PaddingChar: Char = ' '): string;
 
 implementation
 
@@ -15,9 +18,19 @@ begin
   Result := LeftStr(str, width).PadLeft(width, PaddingChar);
 end;
 
+function LeftAndPadRight(str: string; width: Integer; PaddingChar: Char = ' '): string;
+begin
+  Result := LeftStr(str, width).PadRight(width, PaddingChar);
+end;
+
 function RightAndPadRight(str: string; width: Integer; PaddingChar: Char = ' '): string;
 begin
   Result := RightStr(str, width).PadRight(width, PaddingChar);
+end;
+
+function RightAndPadLeft(str: string; width: Integer; PaddingChar: Char = ' '): string;
+begin
+  Result := RightStr(str, width).PadLeft(width, PaddingChar);
 end;
 
 end.
