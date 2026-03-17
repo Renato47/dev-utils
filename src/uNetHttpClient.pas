@@ -202,7 +202,8 @@ begin
       fRequest.Delete(aURL, nil, fHeaders),
       GenerateRequestInfo('DELETE', aURL, ''));
   except
-    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+    on err: Exception do
+      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
   end;
 
   ClearHeaders;
@@ -274,7 +275,8 @@ begin
       fRequest.Get(aURL, nil, fHeaders),
       GenerateRequestInfo('GET', aURL, ''));
   except
-    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+    on err: Exception do
+      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
   end;
 
   ClearHeaders;
@@ -300,7 +302,8 @@ begin
       fRequest.Patch(aURL, sStreamSend, nil, fHeaders),
       GenerateRequestInfo('PATCH', aURL, sStreamSend.DataString));
   except
-    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+    on err: Exception do
+      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
   end;
 
   sStreamSend.Free;
@@ -323,7 +326,8 @@ begin
       fRequest.Post(aURL, sStreamSend, nil, fHeaders),
       GenerateRequestInfo('POST', aURL, sStreamSend.DataString));
   except
-    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+    on err: Exception do
+      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
   end;
 
   sStreamSend.Free;
@@ -346,7 +350,8 @@ begin
       fRequest.Put(aURL, sStreamSend, nil, fHeaders),
       GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
   except
-    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+    on err: Exception do
+      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
   end;
 
   sStreamSend.Free;
@@ -380,7 +385,8 @@ begin
       fRequest.Put(aURL, sStreamSend, nil, fHeaders),
       GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
   except
-    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+    on err: Exception do
+      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
   end;
 
   sStreamSend.Free;
@@ -403,7 +409,8 @@ begin
       fRequest.Post(aURL, sStreamSend, nil, fHeaders),
       GenerateRequestInfo('POST', aURL, sStreamSend.DataString));
   except
-    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+    on err: Exception do
+      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
   end;
 
   sStreamSend.Free;
@@ -426,7 +433,8 @@ begin
       fRequest.Put(aURL, sStreamSend, nil, fHeaders),
       GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
   except
-    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+    on err: Exception do
+      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
   end;
 
   sStreamSend.Free;
@@ -492,7 +500,8 @@ begin
       fRequest.Post(aURL, aFormData.GetMultipartObj, nil, fHeaders),
       GenerateRequestInfo('POST', aURL, '', aFormData));
   except
-    Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']');
+    on err: Exception do
+      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
   end;
 
   ClearHeaders;
