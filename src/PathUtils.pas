@@ -5,17 +5,18 @@ interface
 uses
   System.Classes;
 
-function PathAdd(aPaths: array of string): string;
-function GetPreviousDirectory(aPath: string): string;
-function ListSubDirectories(aPath: string): TStringList;
-function SelectPath(aTitle: string): string;
+function pathAdd(aPaths: array of string): string;
+function getPreviousDirectory(aPath: string): string;
+function listSubDirectories(aPath: string): TStringList;
+function selectPath(aTitle: string): string;
+function getLastDirectoryFromPath(path: string): string;
 
 implementation
 
 uses
   System.SysUtils, System.IOUtils, System.Types, {$WARN UNIT_PLATFORM OFF} Vcl.FileCtrl {$WARN UNIT_PLATFORM ON};
 
-function PathAdd(aPaths: array of string): string;
+function pathAdd(aPaths: array of string): string;
 var
   nPath: Integer;
 begin
@@ -37,7 +38,7 @@ begin
   end;
 end;
 
-function GetPreviousDirectory(aPath: string): string;
+function getPreviousDirectory(aPath: string): string;
 var
   lastIdx: Integer;
 begin
@@ -52,7 +53,7 @@ begin
     Result := aPath.Remove(lastIdx + 1);
 end;
 
-function ListSubDirectories(aPath: string): TStringList;
+function listSubDirectories(aPath: string): TStringList;
 var
   ListArq: TStringDynArray;
   nCount: Integer;
@@ -68,9 +69,26 @@ begin
     Result.Add(ListArq[nCount]);
 end;
 
-function SelectPath(aTitle: string): string;
+function selectPath(aTitle: string): string;
 begin
   SelectDirectory(aTitle, '', Result, [sdNewUI, sdNewFolder]);
+end;
+
+function getLastDirectoryFromPath(path: string): string;
+begin
+  if path.Trim.IsEmpty then
+    Exit('');
+
+  if path.LastIndexOf('\') = 0 then
+    Exit(path);
+
+  if not ExtractFileExt(path).IsEmpty then
+    path := ExtractFilePath(path);
+
+  if path.EndsWith('\') then
+    Delete(path, path.Length, 1);
+
+  Result := path.SubString(path.LastDelimiter(PathDelim + DriveDelim) + 1);
 end;
 
 end.
