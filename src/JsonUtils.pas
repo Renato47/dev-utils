@@ -13,6 +13,7 @@ type
     function asBool(&property: string; inexistentPropValue: Boolean = False): Boolean;
 
     function prop(&property: string): IJsonUtils;
+    function remove_prop(&property: string): IJsonUtils;
     function item(index: Integer = 0): IJsonUtils;
 
     function length: Integer;
@@ -46,6 +47,7 @@ type
     function asBool(&property: string; inexistentPropValue: Boolean = False): Boolean;
 
     function prop(&property: string): IJsonUtils;
+    function remove_prop(&property: string): IJsonUtils;
     function item(index: Integer = 0): IJsonUtils;
 
     function length: Integer;
@@ -287,6 +289,19 @@ begin
     Exit(nil);
 
   Result := TJsonUtils.parse(value.toJson);
+end;
+
+function TJsonUtils.remove_prop(&property: string): IJsonUtils;
+begin
+  if not Assigned(parsedJson) or &property.IsEmpty then
+    Exit(nil);
+
+  if not(parsedJson is TJSONObject) then
+    Exit(nil);
+
+  (parsedJson as TJSONObject).RemovePair(&property);
+
+  Result := Self;
 end;
 
 function TJsonUtils.toJson: string;

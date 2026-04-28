@@ -170,6 +170,20 @@ begin
   jsTeste.toStr;
 end;
 
+procedure testRemoveJsonProp;
+var
+  jsTeste: IJsonUtils;
+begin
+  jsTeste := TJsonUtils.parse('{"campo1": "valor1","campo2": "valor2","campo3": ["valor3","valor4"]}');
+
+  jsTeste.remove_prop('campo2');
+  jsTeste.remove_prop('campo-inexistente');
+  jsTeste.remove_prop('campo3');
+
+  jsTeste.toJson;
+  jsTeste.toStr;
+end;
+
 procedure TestarJsonUtils;
 begin
   testWithEmptyStr;
@@ -177,6 +191,7 @@ begin
   testWithEmptyJsonArray;
   testWithJsonArray;
   testWithObjectAndVarietsValues;
+  testRemoveJsonProp;
 end;
 
 end.
