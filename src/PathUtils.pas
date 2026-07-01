@@ -5,90 +5,108 @@ interface
 uses
   System.Classes;
 
-function pathAdd(aPaths: array of string): string;
-function getPreviousDirectory(aPath: string): string;
-function listSubDirectories(aPath: string): TStringList;
-function selectPath(aTitle: string): string;
+function pathAdd(paths: array of string): string;
+function getPreviousDirectory(path: string): string;
+function listSubDirectories(path: string): TStringList;
+function selectPath(title: string): string;
 function getLastDirectoryFromPath(path: string): string;
 
 implementation
 
 uses
-  System.SysUtils, System.IOUtils, System.Types, {$WARN UNIT_PLATFORM OFF} Vcl.FileCtrl {$WARN UNIT_PLATFORM ON};
+  System.SysUtils, System.IOUtils, System.Types, Vcl.Dialogs;
 
-function pathAdd(aPaths: array of string): string;
+function pathAdd(paths: array of string): string;
 var
-  nPath: Integer;
+  nPath: integer;
 begin
-  Result := '';
+  result := '';
 
-  if Length(aPaths) = 0 then
-    Exit;
+  if length(paths) = 0 then
+    exit;
 
-  for nPath := 0 to Pred(Length(aPaths)) do begin
+  for nPath := 0 to pred(length(paths)) do begin
     if nPath = 0 then begin
-      Result := aPaths[nPath];
-      Continue;
+      result := paths[nPath];
+      continue;
     end;
 
-    if Result.EndsWith(PathDelim) then
-      Result := Result + aPaths[nPath]
+    if result.endsWith(pathDelim) then
+      result := result + paths[nPath]
     else
-      Result := Result + PathDelim + aPaths[nPath];
+      result := result + pathDelim + paths[nPath];
   end;
 end;
 
-function getPreviousDirectory(aPath: string): string;
+function getPreviousDirectory(path: string): string;
 var
-  lastIdx: Integer;
+  lastIdx: integer;
 begin
-  Result := aPath;
+  result := path;
 
-  if aPath.EndsWith('\') then
-    aPath := aPath.Remove(Length(aPath) - 1);
+  if path.endsWith('\') then
+    path := path.remove(length(path) - 1);
 
-  lastIdx := aPath.LastIndexOf('\');
+  lastIdx := path.lastIndexOf('\');
 
   if lastIdx > 1 then
-    Result := aPath.Remove(lastIdx + 1);
+    result := path.remove(lastIdx + 1);
 end;
 
-function listSubDirectories(aPath: string): TStringList;
+function listSubDirectories(path: string): TStringList;
 var
-  ListArq: TStringDynArray;
-  nCount: Integer;
+  listArq: TStringDynArray;
+  nCount: integer;
 begin
-  Result := TStringList.Create;
+  result := TStringList.Create;
 
-  if not System.SysUtils.DirectoryExists(ExtractFilePath(aPath)) then
-    Exit;
+  if not System.SysUtils.directoryExists(extractFilePath(path)) then
+    exit;
 
-  ListArq := System.IOUtils.TDirectory.GetDirectories(aPath);
+  listArq := System.IOUtils.TDirectory.getDirectories(path);
 
-  for nCount := 0 to high(ListArq) do
-    Result.Add(ListArq[nCount]);
+  for nCount := 0 to high(listArq) do
+    result.add(listArq[nCount]);
 end;
 
-function selectPath(aTitle: string): string;
+{$WARN SYMBOL_PLATFORM OFF}
+
+function selectPath(title: string): string;
+var
+  dialog: TFileOpenDialog;
 begin
-  SelectDirectory(aTitle, '', Result, [sdNewUI, sdNewFolder]);
+  dialog := TFileOpenDialog.Create(nil);
+
+  try
+    dialog.title := title;
+    dialog.options := dialog.options + [fdoPickFolders];
+
+    if dialog.Execute then
+      result := dialog.fileName
+    else
+      result := '';
+  finally
+    dialog.free;
+  end;
 end;
+
+{$WARN SYMBOL_PLATFORM ON}
 
 function getLastDirectoryFromPath(path: string): string;
 begin
-  if path.Trim.IsEmpty then
-    Exit('');
+  if path.trim.isEmpty then
+    exit('');
 
-  if path.LastIndexOf('\') = 0 then
-    Exit(path);
+  if path.lastIndexOf('\') = 0 then
+    exit(path);
 
-  if not ExtractFileExt(path).IsEmpty then
-    path := ExtractFilePath(path);
+  if not extractFileExt(path).isEmpty then
+    path := extractFilePath(path);
 
-  if path.EndsWith('\') then
-    Delete(path, path.Length, 1);
+  if path.endsWith('\') then
+    delete(path, path.length, 1);
 
-  Result := path.SubString(path.LastDelimiter(PathDelim + DriveDelim) + 1);
+  result := path.subString(path.lastDelimiter(pathDelim + driveDelim) + 1);
 end;
 
 end.
