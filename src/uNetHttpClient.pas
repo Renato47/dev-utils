@@ -9,37 +9,37 @@ uses
 
 type
   TKeyValuePair = record
-    Key: string;
-    Value: string;
+    key: string;
+    value: string;
   end;
 
-  IFormUrlFields = interface
-    function Add(aKey, aValue: string): IFormUrlFields;
-    function GetContent: string;
+  IQueryParams = interface
+    function add(key, value: string): IQueryParams;
+    function getContent: string;
   end;
 
-  TFormUrlFields = class(TInterfacedObject, IFormUrlFields)
+  TQueryParams = class(TInterfacedObject, IQueryParams)
   private
     fKeyValuePairs: TArray<TKeyValuePair>;
   public
-    class function New: IFormUrlFields;
+    class function New: IQueryParams;
 
-    function Add(aKey, aValue: string): IFormUrlFields;
-    function GetContent: string;
+    function add(key, value: string): IQueryParams;
+    function getContent: string;
   end;
 
   TField = record
-    Key: string;
-    Value: string;
-    FieldType: string;
+    key: string;
+    value: string;
+    fieldType: string;
   end;
 
   IFormData = interface
-    function GetMultipartObj: TMultipartFormData;
-    function Fields: TArray<TField>;
+    function getMultipartObj: TMultipartFormData;
+    function fields: TArray<TField>;
 
-    function AddField(const AField, aValue: string): IFormData;
-    function AddFile(const AFieldName, AFilePath: string): IFormData;
+    function addField(const fieldName, value: string): IFormData;
+    function addFile(const fieldName, filePath: string): IFormData;
   end;
 
   TFormData = class(TInterfacedObject, IFormData)
@@ -51,42 +51,21 @@ type
     destructor Destroy; override;
     class function New: IFormData;
 
-    function GetMultipartObj: TMultipartFormData;
-    function Fields: TArray<TField>;
+    function getMultipartObj: TMultipartFormData;
+    function fields: TArray<TField>;
 
-    function AddField(const AField, aValue: string): IFormData;
-    function AddFile(const AFieldName, AFilePath: string): IFormData;
+    function addField(const fieldName, value: string): IFormData;
+    function addFile(const fieldName, filePath: string): IFormData;
   end;
 
   IHttpResponse = interface
-    function RequestInfo: string;
+    function requestInfo: string;
 
-    function StatusCode: Integer;
-    function Data: string;
+    function statusCode: integer;
+    function data: string;
 
-    function Success: Boolean;
-    procedure SaveFile(AFilePath: string);
-  end;
-
-  IHttpClient = interface
-    function AddHeader(aKey, aValue: string): IHttpClient;
-    function AddCommonHeader(aKey, aValue: string): IHttpClient;
-
-    function BasicAuthentication(aUsername, aPassword: string): IHttpClient;
-
-    function Delete(aURL: string): IHttpResponse;
-
-    function Get(aURL: string): IHttpResponse;
-
-    function Post(aURL, aRawText: string): IHttpResponse; overload;
-    function Post(aURL: string; aFormUrlFields: IFormUrlFields): IHttpResponse; overload;
-    function Post(aURL: string; aFormData: IFormData): IHttpResponse; overload;
-
-    function Put(aURL, aRawText: string): IHttpResponse; overload;
-    function Put(aURL, aKey, aValue: string): IHttpResponse; overload;
-    function Put(aURL: string; aKeyValuePairs: TArray<TKeyValuePair>): IHttpResponse; overload;
-
-    function Patch(aURL, aRawText: string): IHttpResponse;
+    function success: boolean;
+    procedure saveFile(filePath: string);
   end;
 
   THttpResponse = class(TInterfacedObject, IHttpResponse)
@@ -95,52 +74,74 @@ type
 
     fResponse: System.Net.HttpClient.IHttpResponse;
   public
-    constructor Create(aResponse: System.Net.HttpClient.IHttpResponse; aInfo: string);
+    constructor Create(response: System.Net.HttpClient.IHttpResponse; info: string);
 
-    function RequestInfo: string;
+    function requestInfo: string;
 
-    function StatusCode: Integer;
-    function Data: string;
+    function statusCode: integer;
+    function data: string;
 
-    function Success: Boolean;
-    procedure SaveFile(AFilePath: string);
+    function success: boolean;
+    procedure saveFile(filePath: string);
   end;
 
-  THTTPRequest = class(TInterfacedObject, IHttpClient)
+  IHttpClient = interface
+    function addHeader(key, value: string): IHttpClient;
+    function addCommonHeader(key, value: string): IHttpClient;
+
+    function basicAuthentication(username, password: string): IHttpClient;
+
+    function delete(url: string): IHttpResponse;
+
+    function get(url: string): IHttpResponse;
+
+    function post(url, rawText: string): IHttpResponse; overload;
+    function post(url: string; queryParams: IQueryParams): IHttpResponse; overload;
+    function post(url: string; formData: IFormData): IHttpResponse; overload;
+
+    function put(url, rawText: string): IHttpResponse; overload;
+    function put(url, key, value: string): IHttpResponse; overload;
+    function put(url: string; keyValuePairs: TArray<TKeyValuePair>): IHttpResponse; overload;
+
+    function patch(url, rawText: string): IHttpResponse;
+  end;
+
+  THttpRequest = class(TInterfacedObject, IHttpClient)
   private
     fRequest: THttpClient;
 
     fCommonHeaders: System.Net.URLClient.TNameValueArray;
     fHeaders: System.Net.URLClient.TNameValueArray;
 
-    procedure JoinHeaders;
-    procedure ClearHeaders;
+    procedure joinHeaders;
+    procedure clearHeaders;
 
-    function GenerateRequestInfo(aMethod, aURL, aContentAsString: string; oFormData: IFormData = nil): string;
+    function generateRequestInfo(method, url, contentAsString: string; queryParams: IQueryParams;
+      formData: IFormData = nil): string;
   public
     constructor Create;
     destructor Destroy; override;
 
     class function New: IHttpClient;
 
-    function AddHeader(aKey, aValue: string): IHttpClient;
-    function AddCommonHeader(aKey, aValue: string): IHttpClient;
+    function addHeader(key, value: string): IHttpClient;
+    function addCommonHeader(key, value: string): IHttpClient;
 
-    function BasicAuthentication(aUsername, aPassword: string): IHttpClient;
+    function basicAuthentication(username, password: string): IHttpClient;
 
-    function Delete(aURL: string): IHttpResponse;
+    function delete(url: string): IHttpResponse;
 
-    function Get(aURL: string): IHttpResponse;
+    function get(url: string): IHttpResponse;
 
-    function Post(aURL, aRawText: string): IHttpResponse; overload;
-    function Post(aURL: string; aFormUrlFields: IFormUrlFields): IHttpResponse; overload;
-    function Post(aURL: string; aFormData: IFormData): IHttpResponse; overload;
+    function post(url, rawText: string): IHttpResponse; overload;
+    function post(url: string; queryParams: IQueryParams): IHttpResponse; overload;
+    function post(url: string; formData: IFormData): IHttpResponse; overload;
 
-    function Put(aURL, aRawText: string): IHttpResponse; overload;
-    function Put(aURL, aKey, aValue: string): IHttpResponse; overload;
-    function Put(aURL: string; aKeyValuePairs: TArray<TKeyValuePair>): IHttpResponse; overload;
+    function put(url, rawText: string): IHttpResponse; overload;
+    function put(url, key, value: string): IHttpResponse; overload;
+    function put(url: string; keyValuePairs: TArray<TKeyValuePair>): IHttpResponse; overload;
 
-    function Patch(aURL, aRawText: string): IHttpResponse;
+    function patch(url, rawText: string): IHttpResponse;
   end;
 
 implementation
@@ -148,44 +149,44 @@ implementation
 uses
   System.SysUtils, System.Classes, System.NetEncoding, System.TypInfo;
 
-function THTTPRequest.AddCommonHeader(aKey, aValue: string): IHttpClient;
+function THttpRequest.addCommonHeader(key, value: string): IHttpClient;
 begin
-  Result := Self;
+  result := self;
 
-  SetLength(fCommonHeaders, Length(fCommonHeaders) + 1);
-  fCommonHeaders[high(fCommonHeaders)] := TNameValuePair.Create(aKey, aValue);
+  setLength(fCommonHeaders, length(fCommonHeaders) + 1);
+  fCommonHeaders[high(fCommonHeaders)] := TNameValuePair.Create(key, value);
 end;
 
-function THTTPRequest.AddHeader(aKey, aValue: string): IHttpClient;
+function THttpRequest.addHeader(key, value: string): IHttpClient;
 begin
-  Result := Self;
+  result := self;
 
-  SetLength(fHeaders, Length(fHeaders) + 1);
-  fHeaders[high(fHeaders)] := TNameValuePair.Create(aKey, aValue);
+  setLength(fHeaders, length(fHeaders) + 1);
+  fHeaders[high(fHeaders)] := TNameValuePair.Create(key, value);
 end;
 
-function THTTPRequest.BasicAuthentication(aUsername, aPassword: string): IHttpClient;
+function THttpRequest.basicAuthentication(username, password: string): IHttpClient;
 begin
-  Result := Self.AddHeader('Authorization', 'Basic ' + TNetEncoding.Base64.Encode(aUsername + ':' + aPassword));
+  result := self.addHeader('Authorization', 'Basic ' + TNetEncoding.Base64.encode(username + ':' + password));
 end;
 
-procedure THTTPRequest.ClearHeaders;
+procedure THttpRequest.clearHeaders;
 begin
-  SetLength(fHeaders, 0);
+  setLength(fHeaders, 0);
 end;
 
-procedure THTTPRequest.JoinHeaders;
+procedure THttpRequest.joinHeaders;
 var
-  nCommon, iCount: Integer;
+  nCommon, iCount: integer;
 begin
-  iCount := Length(fHeaders);
-  SetLength(fHeaders, iCount + Length(fCommonHeaders));
+  iCount := length(fHeaders);
+  setLength(fHeaders, iCount + length(fCommonHeaders));
 
   for nCommon := 0 to high(fCommonHeaders) do
     fHeaders[iCount + nCommon] := fCommonHeaders[nCommon];
 end;
 
-constructor THTTPRequest.Create;
+constructor THttpRequest.Create;
 begin
   fRequest := THttpClient.Create;
 
@@ -193,187 +194,192 @@ begin
   fRequest.AcceptEncoding := 'utf-8';
 end;
 
-function THTTPRequest.Delete(aURL: string): IHttpResponse;
+function THttpRequest.delete(url: string): IHttpResponse;
 begin
-  JoinHeaders;
+  joinHeaders;
 
   try
-    Result := THttpResponse.Create(
-      fRequest.Delete(aURL, nil, fHeaders),
-      GenerateRequestInfo('DELETE', aURL, ''));
+    result := THttpResponse.Create(
+      fRequest.delete(url, nil, fHeaders),
+      generateRequestInfo('DELETE', url, '', nil));
   except
     on err: Exception do
-      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
+      result := THttpResponse.Create(nil, 'Erro ao acessar [' + url + ']' + sLineBreak + err.message);
   end;
 
-  ClearHeaders;
+  clearHeaders;
 end;
 
-destructor THTTPRequest.Destroy;
+destructor THttpRequest.Destroy;
 begin
-  fRequest.Free;
+  fRequest.free;
 
   inherited;
 end;
 
-function THTTPRequest.GenerateRequestInfo(aMethod, aURL, aContentAsString: string; oFormData: IFormData = nil): string;
+function THttpRequest.generateRequestInfo(method, url, contentAsString: string; queryParams: IQueryParams;
+  formData: IFormData = nil): string;
 var
   rURI: TURI;
   pair: TNameValuePair;
   rField: TField;
 begin
-  rURI := TURI.Create(aURL);
+  rURI := TURI.Create(url);
 
-  Result := aMethod + ' ' + rURI.Path + ' HTTP/1.1'
-    + sLineBreak + 'Host: ' + rURI.Host;
+  result := method + ' ' + rURI.Path + ' HTTP/1.1'
+    + sLineBreak + 'Host: ' + rURI.host;
 
-  if rURI.Port <> 80 then
-    Result := Result + ':' + rURI.Port.ToString;
+  if rURI.port <> 80 then
+    result := result + ':' + rURI.port.toString;
 
   for pair in fHeaders do
-    Result := Result + sLineBreak + pair.Name + ': ' + pair.Value;
+    result := result + sLineBreak + pair.name + ': ' + pair.value;
 
-  Result := Result + sLineBreak + 'Content-Type: ';
+  result := result + sLineBreak + 'Content-Type: ';
 
-  if oFormData <> nil then begin
-    Result := Result + oFormData.GetMultipartObj.MimeTypeHeader + sLineBreak + sLineBreak;
+  if queryParams <> nil then begin
+    result := result + sLineBreak +
+      'Query Params: ' + queryParams.getContent;
+  end
+  else if formData <> nil then begin
+    result := result + formData.getMultipartObj.MimeTypeHeader + sLineBreak + sLineBreak;
 
-    if Length(oFormData.Fields) > 0 then
-      Result := Result + '--' + oFormData.GetMultipartObj.MimeTypeHeader.Replace('multipart/form-data; boundary=', '');
+    if length(formData.fields) > 0 then
+      result := result + '--' + formData.getMultipartObj.MimeTypeHeader.replace('multipart/form-data; boundary=', '');
 
-    for rField in oFormData.Fields do begin
-      if rField.FieldType = 'file' then
-        Result := Result + sLineBreak +
-          'Content-Disposition: form-data; name="' + rField.Key + '"; filename="' + ExtractFileName(rField.Value) + '"'
+    for rField in formData.fields do begin
+      if rField.fieldType = 'file' then
+        result := result + sLineBreak +
+          'Content-Disposition: form-data; name="' + rField.key + '"; filename="' + extractFileName(rField.value) + '"'
         //+ sLineBreak + 'Content-Type: image/png'
           + sLineBreak + sLineBreak + '(data)'
       else
-        Result := Result + sLineBreak
-          + 'Content-Disposition: form-data; name="' + rField.Key + '"' + sLineBreak
+        result := result + sLineBreak
+          + 'Content-Disposition: form-data; name="' + rField.key + '"' + sLineBreak
           + sLineBreak
-          + rField.Value;
+          + rField.value;
 
-      Result := Result + sLineBreak
-        + '--' + oFormData.GetMultipartObj.MimeTypeHeader.Replace('multipart/form-data; boundary=', '');
+      result := result + sLineBreak
+        + '--' + formData.getMultipartObj.MimeTypeHeader.replace('multipart/form-data; boundary=', '');
     end;
   end
-  else if not fRequest.ContentType.IsEmpty then
-    Result := Result + fRequest.ContentType
+  else if not fRequest.ContentType.isEmpty then
+    result := result + fRequest.ContentType
   else
-    Result := Result + 'none';
+    result := result + 'none';
 
-  if not aContentAsString.IsEmpty then
-    Result := Result + sLineBreak + sLineBreak + '(uncoded)' + sLineBreak + aContentAsString;
+  if not contentAsString.isEmpty then
+    result := result + sLineBreak + sLineBreak + '(uncoded)' + sLineBreak + contentAsString;
 end;
 
-function THTTPRequest.Get(aURL: string): IHttpResponse;
+function THttpRequest.get(url: string): IHttpResponse;
 begin
-  JoinHeaders;
+  joinHeaders;
 
   try
-    Result := THttpResponse.Create(
-      fRequest.Get(aURL, nil, fHeaders),
-      GenerateRequestInfo('GET', aURL, ''));
+    result := THttpResponse.Create(
+      fRequest.get(url, nil, fHeaders),
+      generateRequestInfo('GET', url, '', nil));
   except
     on err: Exception do
-      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
+      result := THttpResponse.Create(nil, 'Erro ao acessar [' + url + ']' + sLineBreak + err.message);
   end;
 
-  ClearHeaders;
+  clearHeaders;
 end;
 
-class function THTTPRequest.New: IHttpClient;
+class function THttpRequest.New: IHttpClient;
 begin
-  Result := THTTPRequest.Create;
+  result := THttpRequest.Create;
 end;
 
-function THTTPRequest.Patch(aURL, aRawText: string): IHttpResponse;
+function THttpRequest.patch(url, rawText: string): IHttpResponse;
 var
   sStreamSend: TStringStream;
 begin
   fRequest.ContentType := 'application/json';
 
-  JoinHeaders;
+  joinHeaders;
 
-  sStreamSend := TStringStream.Create(aRawText, TEncoding.UTF8);
+  sStreamSend := TStringStream.Create(rawText, TEncoding.UTF8);
 
   try
-    Result := THttpResponse.Create(
-      fRequest.Patch(aURL, sStreamSend, nil, fHeaders),
-      GenerateRequestInfo('PATCH', aURL, sStreamSend.DataString));
+    result := THttpResponse.Create(
+      fRequest.patch(url, sStreamSend, nil, fHeaders),
+      generateRequestInfo('PATCH', url, sStreamSend.dataString, nil));
   except
     on err: Exception do
-      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
+      result := THttpResponse.Create(nil, 'Erro ao acessar [' + url + ']' + sLineBreak + err.message);
   end;
 
-  sStreamSend.Free;
+  sStreamSend.free;
 
-  ClearHeaders;
+  clearHeaders;
 end;
 
-function THTTPRequest.Post(aURL: string; aFormUrlFields: IFormUrlFields): IHttpResponse;
+function THttpRequest.post(url: string; queryParams: IQueryParams): IHttpResponse;
 var
   sStreamSend: TStringStream;
 begin
-  JoinHeaders;
+  joinHeaders;
 
-  sStreamSend := TStringStream.Create(aFormUrlFields.GetContent, TEncoding.UTF8);
+  sStreamSend := TStringStream.Create(queryParams.getContent, TEncoding.UTF8);
 
   fRequest.ContentType := 'application/x-www-form-urlencoded';
 
   try
-    Result := THttpResponse.Create(
-      fRequest.Post(aURL, sStreamSend, nil, fHeaders),
-      GenerateRequestInfo('POST', aURL, sStreamSend.DataString));
+    result := THttpResponse.Create(
+      fRequest.post(url, sStreamSend, nil, fHeaders),
+      generateRequestInfo('POST', url, sStreamSend.dataString, queryParams));
   except
     on err: Exception do
-      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
+      result := THttpResponse.Create(nil, 'Erro ao acessar [' + url + ']' + sLineBreak + err.message);
   end;
 
-  sStreamSend.Free;
+  sStreamSend.free;
 
-  ClearHeaders;
+  clearHeaders;
 end;
 
-function THTTPRequest.Put(aURL, aKey, aValue: string): IHttpResponse;
+function THttpRequest.put(url, key, value: string): IHttpResponse;
 var
   sStreamSend: TStringStream;
 begin
-  JoinHeaders;
+  joinHeaders;
 
-  sStreamSend := TStringStream.Create(aKey + '=' + aValue, TEncoding.UTF8);
+  sStreamSend := TStringStream.Create(key + '=' + value, TEncoding.UTF8);
 
   fRequest.ContentType := 'application/x-www-form-urlencoded';
 
   try
-    Result := THttpResponse.Create(
-      fRequest.Put(aURL, sStreamSend, nil, fHeaders),
-      GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
+    result := THttpResponse.Create(
+      fRequest.put(url, sStreamSend, nil, fHeaders),
+      generateRequestInfo('PUT', url, sStreamSend.dataString, nil));
   except
     on err: Exception do
-      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
+      result := THttpResponse.Create(nil, 'Erro ao acessar [' + url + ']' + sLineBreak + err.message);
   end;
 
-  sStreamSend.Free;
+  sStreamSend.free;
 
-  ClearHeaders;
+  clearHeaders;
 end;
 
-function THTTPRequest.Put(aURL: string; aKeyValuePairs: TArray<TKeyValuePair>): IHttpResponse;
+function THttpRequest.put(url: string; keyValuePairs: TArray<TKeyValuePair>): IHttpResponse;
 var
   sStreamSend: TStringStream;
   rPair: TKeyValuePair;
   sContent: string;
 begin
-  JoinHeaders;
+  joinHeaders;
 
   sContent := '';
 
-  for rPair in aKeyValuePairs do begin
-    if not sContent.IsEmpty then
+  for rPair in keyValuePairs do begin
+    if not sContent.isEmpty then
       sContent := sContent + '&';
 
-    sContent := sContent + rPair.Key + '=' + rPair.Value;
+    sContent := sContent + rPair.key + '=' + rPair.value;
   end;
 
   sStreamSend := TStringStream.Create(sContent, TEncoding.UTF8);
@@ -381,154 +387,154 @@ begin
   fRequest.ContentType := 'application/x-www-form-urlencoded';
 
   try
-    Result := THttpResponse.Create(
-      fRequest.Put(aURL, sStreamSend, nil, fHeaders),
-      GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
+    result := THttpResponse.Create(
+      fRequest.put(url, sStreamSend, nil, fHeaders),
+      generateRequestInfo('PUT', url, sStreamSend.dataString, nil));
   except
     on err: Exception do
-      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
+      result := THttpResponse.Create(nil, 'Erro ao acessar [' + url + ']' + sLineBreak + err.message);
   end;
 
-  sStreamSend.Free;
+  sStreamSend.free;
 
-  ClearHeaders;
+  clearHeaders;
 end;
 
-function THTTPRequest.Post(aURL, aRawText: string): IHttpResponse;
+function THttpRequest.post(url, rawText: string): IHttpResponse;
 var
   sStreamSend: TStringStream;
 begin
   fRequest.ContentType := 'application/json';
 
-  JoinHeaders;
+  joinHeaders;
 
-  sStreamSend := TStringStream.Create(aRawText, TEncoding.UTF8);
+  sStreamSend := TStringStream.Create(rawText, TEncoding.UTF8);
 
   try
-    Result := THttpResponse.Create(
-      fRequest.Post(aURL, sStreamSend, nil, fHeaders),
-      GenerateRequestInfo('POST', aURL, sStreamSend.DataString));
+    result := THttpResponse.Create(
+      fRequest.post(url, sStreamSend, nil, fHeaders),
+      generateRequestInfo('POST', url, sStreamSend.dataString, nil));
   except
     on err: Exception do
-      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
+      result := THttpResponse.Create(nil, 'Erro ao acessar [' + url + ']' + sLineBreak + err.message);
   end;
 
-  sStreamSend.Free;
+  sStreamSend.free;
 
-  ClearHeaders;
+  clearHeaders;
 end;
 
-function THTTPRequest.Put(aURL, aRawText: string): IHttpResponse;
+function THttpRequest.put(url, rawText: string): IHttpResponse;
 var
   sStreamSend: TStringStream;
 begin
   fRequest.ContentType := 'application/json';
 
-  JoinHeaders;
+  joinHeaders;
 
-  sStreamSend := TStringStream.Create(aRawText, TEncoding.UTF8);
+  sStreamSend := TStringStream.Create(rawText, TEncoding.UTF8);
 
   try
-    Result := THttpResponse.Create(
-      fRequest.Put(aURL, sStreamSend, nil, fHeaders),
-      GenerateRequestInfo('PUT', aURL, sStreamSend.DataString));
+    result := THttpResponse.Create(
+      fRequest.put(url, sStreamSend, nil, fHeaders),
+      generateRequestInfo('PUT', url, sStreamSend.dataString, nil));
   except
     on err: Exception do
-      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
+      result := THttpResponse.Create(nil, 'Erro ao acessar [' + url + ']' + sLineBreak + err.message);
   end;
 
-  sStreamSend.Free;
+  sStreamSend.free;
 
-  ClearHeaders;
+  clearHeaders;
 end;
 
-constructor THttpResponse.Create(aResponse: System.Net.HttpClient.IHttpResponse; aInfo: string);
+constructor THttpResponse.Create(response: System.Net.HttpClient.IHttpResponse; info: string);
 begin
-  fResponse := aResponse;
+  fResponse := response;
 
-  fRequestInfo := aInfo;
+  fRequestInfo := info;
 end;
 
-function THttpResponse.Data: string;
-begin
-  if fResponse = nil then
-    Exit('');
-
-  Result := '';
-
-  if fResponse.HeaderValue['Content-type'].Contains('application/json') then
-    Result := fResponse.ContentAsString;
-end;
-
-function THttpResponse.RequestInfo: string;
-begin
-  Result := fRequestInfo;
-end;
-
-procedure THttpResponse.SaveFile(AFilePath: string);
+function THttpResponse.data: string;
 begin
   if fResponse = nil then
-    Exit;
+    exit('');
+
+  result := '';
+
+  if fResponse.headerValue['Content-type'].contains('application/json') then
+    result := fResponse.contentAsString;
+end;
+
+function THttpResponse.requestInfo: string;
+begin
+  result := fRequestInfo;
+end;
+
+procedure THttpResponse.saveFile(filePath: string);
+begin
+  if fResponse = nil then
+    exit;
 
   if fResponse.ContentStream = nil then
-    Exit;
+    exit;
 
-  TMemoryStream(fResponse.ContentStream).SaveToFile(AFilePath);
+  TMemoryStream(fResponse.ContentStream).saveToFile(filePath);
 end;
 
-function THttpResponse.StatusCode: Integer;
+function THttpResponse.statusCode: integer;
 begin
   if fResponse = nil then
-    Exit(0);
+    exit(0);
 
-  Result := fResponse.StatusCode;
+  result := fResponse.statusCode;
 end;
 
-function THttpResponse.Success: Boolean;
+function THttpResponse.success: boolean;
 begin
-  Result := (StatusCode >= 200) and (StatusCode < 300);
+  result := (statusCode >= 200) and (statusCode < 300);
 end;
 
-function THTTPRequest.Post(aURL: string; aFormData: IFormData): IHttpResponse;
+function THttpRequest.post(url: string; formData: IFormData): IHttpResponse;
 begin
-  JoinHeaders;
+  joinHeaders;
 
   fRequest.ContentType := ''; //limpar ContentType para usar header do formdata
 
   try
-    Result := THttpResponse.Create(
-      fRequest.Post(aURL, aFormData.GetMultipartObj, nil, fHeaders),
-      GenerateRequestInfo('POST', aURL, '', aFormData));
+    result := THttpResponse.Create(
+      fRequest.post(url, formData.getMultipartObj, nil, fHeaders),
+      generateRequestInfo('POST', url, '', nil, formData));
   except
     on err: Exception do
-      Result := THttpResponse.Create(nil, 'Erro ao acessar [' + aURL + ']' + sLineBreak + err.Message);
+      result := THttpResponse.Create(nil, 'Erro ao acessar [' + url + ']' + sLineBreak + err.message);
   end;
 
-  ClearHeaders;
+  clearHeaders;
 end;
 
-function TFormData.AddField(const AField, aValue: string): IFormData;
+function TFormData.addField(const fieldName, value: string): IFormData;
 begin
-  Result := Self;
+  result := self;
 
-  fMultipart.AddField(AField, aValue);
+  fMultipart.addField(fieldName, value);
 
-  SetLength(fFields, Length(fFields) + 1);
-  Fields[high(fFields)].Key := AField;
-  Fields[high(fFields)].Value := aValue;
-  Fields[high(fFields)].FieldType := 'text';
+  setLength(fFields, length(fFields) + 1);
+  fields[high(fFields)].key := fieldName;
+  fields[high(fFields)].value := value;
+  fields[high(fFields)].fieldType := 'text';
 end;
 
-function TFormData.AddFile(const AFieldName, AFilePath: string): IFormData;
+function TFormData.addFile(const fieldName, filePath: string): IFormData;
 begin
-  Result := Self;
+  result := self;
 
-  fMultipart.AddFile(AFieldName, AFilePath);
+  fMultipart.addFile(fieldName, filePath);
 
-  SetLength(fFields, Length(fFields) + 1);
-  Fields[high(fFields)].Key := AFieldName;
-  Fields[high(fFields)].Value := AFilePath;
-  Fields[high(fFields)].FieldType := 'file';
+  setLength(fFields, length(fFields) + 1);
+  fields[high(fFields)].key := fieldName;
+  fields[high(fFields)].value := filePath;
+  fields[high(fFields)].fieldType := 'file';
 end;
 
 constructor TFormData.Create;
@@ -538,48 +544,53 @@ end;
 
 destructor TFormData.Destroy;
 begin
-  fMultipart.Free;
+  fMultipart.free;
 
   inherited;
 end;
 
-function TFormData.Fields: TArray<TField>;
+function TFormData.fields: TArray<TField>;
 begin
-  Result := fFields;
+  result := fFields;
 end;
 
-function TFormData.GetMultipartObj: TMultipartFormData;
+function TFormData.getMultipartObj: TMultipartFormData;
 begin
-  Result := fMultipart;
+  result := fMultipart;
 end;
 
 class function TFormData.New: IFormData;
 begin
-  Result := TFormData.Create;
+  result := TFormData.Create;
 end;
 
-function TFormUrlFields.Add(aKey, aValue: string): IFormUrlFields;
+function TQueryParams.add(key, value: string): IQueryParams;
 begin
-  Result := Self;
+  result := self;
+
+  setLength(fKeyValuePairs, length(fKeyValuePairs) + 1);
+
+  fKeyValuePairs[high(fKeyValuePairs)].key := key;
+  fKeyValuePairs[high(fKeyValuePairs)].value := value;
 end;
 
-function TFormUrlFields.GetContent: string;
+function TQueryParams.getContent: string;
 var
   rPair: TKeyValuePair;
 begin
-  Result := '';
+  result := '';
 
   for rPair in fKeyValuePairs do begin
-    if not Result.IsEmpty then
-      Result := Result + '&';
+    if not result.isEmpty then
+      result := result + '&';
 
-    Result := Result + rPair.Key + '=' + rPair.Value;
+    result := result + rPair.key + '=' + rPair.value;
   end;
 end;
 
-class function TFormUrlFields.New: IFormUrlFields;
+class function TQueryParams.New: IQueryParams;
 begin
-  Result := TFormUrlFields.Create;
+  result := TQueryParams.Create;
 end;
 
 end.
