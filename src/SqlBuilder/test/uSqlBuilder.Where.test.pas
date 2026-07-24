@@ -216,6 +216,12 @@ begin
     .toStr;
   compareSql(sqlCompare, sqlBuilder);
 
+  sqlCompare := 'ID_CATEGORY = (SELECT FIRST 1 ID FROM CATEGORY)';
+  sqlBuilder := SQL.where
+    .column('ID_CATEGORY').equal.column(SQL.select.first(1).column('ID').from('CATEGORY'))
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
+
   compareSql(boolToStr(true), boolToStr(SQL.where.isEmpty));
   compareSql(boolToStr(false), boolToStr(SQL.where.column('ID').equal(1).isEmpty));
 end;

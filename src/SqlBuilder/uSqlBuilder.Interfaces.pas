@@ -64,7 +64,8 @@ type
 
   ISqlWhere = interface
     //Column name
-    function column(column: string): ISqlWhere;
+    function column(column: string): ISqlWhere; overload;
+    function column(select: ISqlSelect): ISqlWhere; overload;
 
     //Logical Operators [NOT, AND, OR]
     function &or(column: string): ISqlWhere; overload;

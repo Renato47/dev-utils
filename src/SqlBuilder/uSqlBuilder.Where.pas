@@ -22,7 +22,8 @@ type
     destructor Destroy; override;
 
     //Column name
-    function column(column: string): ISqlWhere;
+    function column(column: string): ISqlWhere; overload;
+    function column(select: ISqlSelect): ISqlWhere; overload;
 
     //Logical Operators [NOT, AND, OR]
     function &or(column: string): ISqlWhere; overload;
@@ -211,6 +212,11 @@ begin
       result := TSqlValue.valueToSql(arry[nValue])
     else
       result := result + ', ' + TSqlValue.valueToSql(arry[nValue]);
+end;
+
+function TSqlWhere.column(select: ISqlSelect): ISqlWhere;
+begin
+  result := self.column('(' + select.toStr + ')');
 end;
 
 function TSqlWhere.concatArray(arry: TArray<integer>): string;
