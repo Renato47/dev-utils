@@ -8,27 +8,27 @@ uses
 type
   TSqlInsert = class(TInterfacedObject, ISqlInsert)
   private
-    target: string;
-    columns: TStringList;
-    values: TStringList;
+    fTarget: string;
+    fColumns: TStringList;
+    fValues: TStringList;
   public
     constructor Create;
     destructor Destroy; override;
 
-    function Into(aTarget: string): ISqlInsert;
+    function into(target: string): ISqlInsert;
 
-    function Value(aColumn: string; aValue: Variant): ISqlInsert;
-    function ValueExpression(aColumn, aExpression: string): ISqlInsert;
+    function value(column: string; value: variant): ISqlInsert;
+    function valueExpression(column, expression: string): ISqlInsert;
 
-    function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlInsert; overload;
-    function ValueNull(aColumn: string; aValue: Integer; aNullValue: Integer = 0): ISqlInsert; overload;
+    function valueNull(column, value: string; nullValue: string = ''): ISqlInsert; overload;
+    function valueNull(column: string; value: integer; nullValue: integer = 0): ISqlInsert; overload;
 
-    function ValueDate(aColumn: string; aDate: TDate): ISqlInsert;
-    function ValueTime(aColumn: string; aTime: TTime): ISqlInsert;
-    function ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlInsert;
+    function valueDate(column: string; value: TDate): ISqlInsert;
+    function valueTime(column: string; value: TTime): ISqlInsert;
+    function valueDateTime(column: string; value: TDateTime): ISqlInsert;
 
-    function ToString: string; override;
-    function IsEmpty: Boolean;
+    function toStr: string;
+    function isEmpty: boolean;
   end;
 
 implementation
@@ -38,101 +38,101 @@ uses
 
 constructor TSqlInsert.Create;
 begin
-  columns := TStringList.Create;
-  columns.QuoteChar := #0;
-  columns.StrictDelimiter := True;
+  fColumns := TStringList.Create;
+  fColumns.quoteChar := #0;
+  fColumns.strictDelimiter := true;
 
-  values := TStringList.Create;
-  values.QuoteChar := #0;
-  values.StrictDelimiter := True;
+  fValues := TStringList.Create;
+  fValues.quoteChar := #0;
+  fValues.strictDelimiter := true;
 end;
 
 destructor TSqlInsert.Destroy;
 begin
-  columns.Free;
-  values.Free;
+  fColumns.free;
+  fValues.free;
 
   inherited;
 end;
 
-function TSqlInsert.Into(aTarget: string): ISqlInsert;
+function TSqlInsert.into(target: string): ISqlInsert;
 begin
-  Result := Self;
-  target := aTarget;
+  result := self;
+  fTarget := target;
 end;
 
-function TSqlInsert.IsEmpty: Boolean;
+function TSqlInsert.isEmpty: boolean;
 begin
-  Result := values.Count = 0;
+  result := fValues.count = 0;
 end;
 
-function TSqlInsert.ToString: string;
+function TSqlInsert.toStr: string;
 begin
-  Result := 'INSERT INTO ' + target + ' (' + columns.DelimitedText + ') VALUES (' + values.DelimitedText + ')';
+  result := 'INSERT INTO ' + fTarget + ' (' + fColumns.delimitedText + ') VALUES (' + fValues.delimitedText + ')';
 end;
 
-function TSqlInsert.Value(aColumn: string; aValue: Variant): ISqlInsert;
+function TSqlInsert.value(column: string; value: variant): ISqlInsert;
 begin
-  Result := Self;
+  result := self;
 
-  columns.Append(aColumn);
-  values.Append(TSqlValue.ValueToSql(aValue));
+  fColumns.append(column);
+  fValues.append(TSqlValue.valueToSql(value));
 end;
 
-function TSqlInsert.ValueDate(aColumn: string; aDate: TDate): ISqlInsert;
+function TSqlInsert.valueDate(column: string; value: TDate): ISqlInsert;
 begin
-  if aDate = 0 then
-    Result := ValueExpression(aColumn, 'NULL')
+  if value = 0 then
+    result := valueExpression(column, 'NULL')
   else
-    Result := Value(aColumn, FormatDateTime('dd.mm.yyyy', aDate));
+    result := self.value(column, formatDateTime('dd.mm.yyyy', value));
 end;
 
-function TSqlInsert.ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlInsert;
+function TSqlInsert.valueDateTime(column: string; value: TDateTime): ISqlInsert;
 begin
-  if aDateTime = 0 then
-    Result := ValueExpression(aColumn, 'NULL')
+  if value = 0 then
+    result := valueExpression(column, 'NULL')
   else
-    Result := Value(aColumn, FormatDateTime('dd.mm.yyyy hh:mm:ss', aDateTime));
+    result := self.value(column, formatDateTime('dd.mm.yyyy hh:mm:ss', value));
 end;
 
-function TSqlInsert.ValueExpression(aColumn, aExpression: string): ISqlInsert;
+function TSqlInsert.valueExpression(column, expression: string): ISqlInsert;
 begin
-  Result := Self;
+  result := self;
 
-  columns.Append(aColumn);
-  values.Append(aExpression);
+  fColumns.append(column);
+  fValues.append(expression);
 end;
 
-function TSqlInsert.ValueNull(aColumn, aValue, aNullValue: string): ISqlInsert;
+function TSqlInsert.valueNull(column, value, nullValue: string): ISqlInsert;
 begin
-  Result := Self;
+  result := self;
 
-  columns.Append(aColumn);
+  fColumns.append(column);
 
-  if aValue = aNullValue then
-    values.Append('NULL')
+  if value = nullValue then
+    fValues.append('NULL')
   else
-    values.Append(TSqlValue.ValueToSql(aValue));
+    fValues.append(TSqlValue.valueToSql(value));
 end;
 
-function TSqlInsert.ValueNull(aColumn: string; aValue, aNullValue: Integer): ISqlInsert;
+function TSqlInsert.valueNull(column: string; value, nullValue: integer): ISqlInsert;
 begin
-  Result := Self;
+  result := self;
 
-  columns.Append(aColumn);
+  fColumns.append(column);
 
-  if aValue = aNullValue then
-    values.Append('NULL')
+  if value = nullValue then
+    fValues.append('NULL')
   else
-    values.Append(TSqlValue.ValueToSql(aValue));
+    fValues.append(TSqlValue.valueToSql(value));
 end;
 
-function TSqlInsert.ValueTime(aColumn: string; aTime: TTime): ISqlInsert;
+function TSqlInsert.valueTime(column: string; value: TTime): ISqlInsert;
 begin
-  if aTime = 0 then
-    Result := ValueExpression(aColumn, 'NULL')
+  if value = 0 then
+    result := valueExpression(column, 'NULL')
   else
-    Result := Value(aColumn, FormatDateTime('hh:mm:ss', aTime));
+    result := self.value(column, formatDateTime('hh:mm:ss', value));
 end;
 
 end.

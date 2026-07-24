@@ -8,30 +8,30 @@ uses
 type
   TSqlUpdateOrInsert = class(TInterfacedObject, ISqlUpdateOrInsert)
   private
-    target: string;
-    columns: TStringList;
-    values: TStringList;
-    columnsMatch: string;
+    fTarget: string;
+    fColumns: TStringList;
+    fValues: TStringList;
+    fColumnsMatch: string;
   public
     constructor Create;
     destructor Destroy; override;
 
-    function Into(aTarget: string): ISqlUpdateOrInsert;
+    function into(target: string): ISqlUpdateOrInsert;
 
-    function Value(aColumn: string; aValue: Variant): ISqlUpdateOrInsert;
-    function ValueExpression(aColumn, aExpression: string): ISqlUpdateOrInsert;
+    function value(column: string; value: variant): ISqlUpdateOrInsert;
+    function valueExpression(column, expression: string): ISqlUpdateOrInsert;
 
-    function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlUpdateOrInsert; overload;
-    function ValueNull(aColumn: string; aValue: Integer; aNullValue: Integer = 0): ISqlUpdateOrInsert; overload;
+    function valueNull(column, value: string; nullValue: string = ''): ISqlUpdateOrInsert; overload;
+    function valueNull(column: string; value: integer; nullValue: integer = 0): ISqlUpdateOrInsert; overload;
 
-    function ValueDate(aColumn: string; aDate: TDate): ISqlUpdateOrInsert;
-    function ValueTime(aColumn: string; aTime: TTime): ISqlUpdateOrInsert;
-    function ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlUpdateOrInsert;
+    function valueDate(column: string; value: TDate): ISqlUpdateOrInsert;
+    function valueTime(column: string; value: TTime): ISqlUpdateOrInsert;
+    function valueDateTime(column: string; value: TDateTime): ISqlUpdateOrInsert;
 
-    function Matching(aColumnList: string): ISqlUpdateOrInsert;
+    function matching(columnList: string): ISqlUpdateOrInsert;
 
-    function ToString: string; override;
-    function IsEmpty: Boolean;
+    function toStr: string;
+    function isEmpty: boolean;
   end;
 
 implementation
@@ -41,109 +41,109 @@ uses
 
 constructor TSqlUpdateOrInsert.Create;
 begin
-  columns := TStringList.Create;
-  columns.QuoteChar := #0;
-  columns.StrictDelimiter := True;
+  fColumns := TStringList.Create;
+  fColumns.quoteChar := #0;
+  fColumns.strictDelimiter := true;
 
-  values := TStringList.Create;
-  values.QuoteChar := #0;
-  values.StrictDelimiter := True;
+  fValues := TStringList.Create;
+  fValues.quoteChar := #0;
+  fValues.strictDelimiter := true;
 end;
 
 destructor TSqlUpdateOrInsert.Destroy;
 begin
-  columns.Free;
-  values.Free;
+  fColumns.free;
+  fValues.free;
 
   inherited;
 end;
 
-function TSqlUpdateOrInsert.Into(aTarget: string): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.into(target: string): ISqlUpdateOrInsert;
 begin
-  Result := Self;
-  target := aTarget;
+  result := self;
+  fTarget := target;
 end;
 
-function TSqlUpdateOrInsert.IsEmpty: Boolean;
+function TSqlUpdateOrInsert.isEmpty: boolean;
 begin
-  Result := values.Count = 0;
+  result := fValues.count = 0;
 end;
 
-function TSqlUpdateOrInsert.Matching(aColumnList: string): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.matching(columnList: string): ISqlUpdateOrInsert;
 begin
-  Result := Self;
-  columnsMatch := ' MATCHING (' + aColumnList + ')';
+  result := self;
+  fColumnsMatch := ' MATCHING (' + columnList + ')';
 end;
 
-function TSqlUpdateOrInsert.ToString: string;
+function TSqlUpdateOrInsert.toStr: string;
 begin
-  Result := 'UPDATE OR INSERT INTO ' + target
-    + ' (' + columns.DelimitedText + ') VALUES (' + values.DelimitedText + ')'
-    + columnsMatch;
+  result := 'UPDATE OR INSERT INTO ' + fTarget
+    + ' (' + fColumns.delimitedText + ') VALUES (' + fValues.delimitedText + ')'
+    + fColumnsMatch;
 end;
 
-function TSqlUpdateOrInsert.Value(aColumn: string; aValue: Variant): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.value(column: string; value: variant): ISqlUpdateOrInsert;
 begin
-  Result := Self;
+  result := self;
 
-  columns.Append(aColumn);
-  values.Append(TSqlValue.ValueToSql(aValue));
+  fColumns.append(column);
+  fValues.append(TSqlValue.valueToSql(value));
 end;
 
-function TSqlUpdateOrInsert.ValueDate(aColumn: string; aDate: TDate): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.valueDate(column: string; value: TDate): ISqlUpdateOrInsert;
 begin
-  if aDate = 0 then
-    Result := ValueExpression(aColumn, 'NULL')
+  if value = 0 then
+    result := valueExpression(column, 'NULL')
   else
-    Result := Value(aColumn, FormatDateTime('dd.mm.yyyy', aDate));
+    result := self.value(column, formatDateTime('dd.mm.yyyy', value));
 end;
 
-function TSqlUpdateOrInsert.ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.valueDateTime(column: string; value: TDateTime): ISqlUpdateOrInsert;
 begin
-  if aDateTime = 0 then
-    Result := ValueExpression(aColumn, 'NULL')
+  if value = 0 then
+    result := valueExpression(column, 'NULL')
   else
-    Result := Value(aColumn, FormatDateTime('dd.mm.yyyy hh:mm:ss', aDateTime));
+    result := self.value(column, formatDateTime('dd.mm.yyyy hh:mm:ss', value));
 end;
 
-function TSqlUpdateOrInsert.ValueExpression(aColumn, aExpression: string): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.valueExpression(column, expression: string): ISqlUpdateOrInsert;
 begin
-  Result := Self;
+  result := self;
 
-  columns.Append(aColumn);
-  values.Append(aExpression);
+  fColumns.append(column);
+  fValues.append(expression);
 end;
 
-function TSqlUpdateOrInsert.ValueNull(aColumn, aValue, aNullValue: string): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.valueNull(column, value, nullValue: string): ISqlUpdateOrInsert;
 begin
-  Result := Self;
+  result := self;
 
-  columns.Append(aColumn);
+  fColumns.append(column);
 
-  if aValue = aNullValue then
-    values.Append('NULL')
+  if value = nullValue then
+    fValues.append('NULL')
   else
-    values.Append(TSqlValue.ValueToSql(aValue));
+    fValues.append(TSqlValue.valueToSql(value));
 end;
 
-function TSqlUpdateOrInsert.ValueNull(aColumn: string; aValue, aNullValue: Integer): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.valueNull(column: string; value, nullValue: integer): ISqlUpdateOrInsert;
 begin
-  Result := Self;
+  result := self;
 
-  columns.Append(aColumn);
+  fColumns.append(column);
 
-  if aValue = aNullValue then
-    values.Append('NULL')
+  if value = nullValue then
+    fValues.append('NULL')
   else
-    values.Append(TSqlValue.ValueToSql(aValue));
+    fValues.append(TSqlValue.valueToSql(value));
 end;
 
-function TSqlUpdateOrInsert.ValueTime(aColumn: string; aTime: TTime): ISqlUpdateOrInsert;
+function TSqlUpdateOrInsert.valueTime(column: string; value: TTime): ISqlUpdateOrInsert;
 begin
-  if aTime = 0 then
-    Result := ValueExpression(aColumn, 'NULL')
+  if value = 0 then
+    result := valueExpression(column, 'NULL')
   else
-    Result := Value(aColumn, FormatDateTime('hh:mm:ss', aTime));
+    result := self.value(column, formatDateTime('hh:mm:ss', value));
 end;
 
 end.

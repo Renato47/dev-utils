@@ -7,151 +7,151 @@ uses
 
 type
   SQL = class
-    class function Select: ISqlSelect;
-    class function Insert: ISqlInsert;
-    class function Update(aTableName: string): ISqlUpdate;
-    class function UpdateOrInsert: ISqlUpdateOrInsert;
-    class function Delete: ISqlDelete;
+    class function select: ISqlSelect;
+    class function insert: ISqlInsert;
+    class function update(tableName: string): ISqlUpdate;
+    class function updateOrInsert: ISqlUpdateOrInsert;
+    class function delete: ISqlDelete;
 
-    class function ExecuteProc(aProcedureName: string): ISqlExecProcedure;
+    class function executeProc(procedureName: string): ISqlExecProcedure;
 
-    class function &CreateProcedure(aProcName: string): ISqlProcedureCreate;
+    class function &createProcedure(procName: string): ISqlProcedureCreate;
 
-    class function &Case: ISqlCase; overload;
-    class function &Case(aExpression: string): ISqlCase; overload;
-    class function &Procedure(aProcedureName: string): ISqlProcedure;
-    class function Where: ISqlWhere;
+    class function &case: ISqlCase; overload;
+    class function &case(expression: string): ISqlCase; overload;
+    class function &procedure(procedureName: string): ISqlProcedure;
+    class function where: ISqlWhere;
   end;
 
   TSqlValue = class
-    class function AsDate(aValue: TDate): string;
-    class function AsTime(aValue: TDate): string;
-    class function AsDateTime(aValue: TDate): string;
+    class function asDate(value: TDate): string;
+    class function asTime(value: TDate): string;
+    class function asDateTime(value: TDate): string;
 
-    class function ValueToSql(Value: Variant): string;
+    class function valueToSql(value: variant): string;
   end;
 
 implementation
 
 uses
-  System.SysUtils, System.Variants, uSqlBuilder.Select, uSqlBuilder.Update, uSqlBuilder.Insert, uSqlBuilder.Delete,
-  uSqlBuilder.UpdateOrInsert, uSqlBuilder.SqlProcedure, uSqlBuilder.CreateProcedure, uSqlBuilder.SqlCase,
-  uSqlBuilder.Where, uSqlBuilder.ExecProcedure;
+  System.SysUtils, System.Variants, uSqlBuilder.select, uSqlBuilder.update, uSqlBuilder.insert, uSqlBuilder.delete,
+  uSqlBuilder.updateOrInsert, uSqlBuilder.SqlProcedure, uSqlBuilder.CreateProcedure, uSqlBuilder.SqlCase,
+  uSqlBuilder.where, uSqlBuilder.ExecProcedure;
 
-class function SQL.&Case: ISqlCase;
+class function SQL.&case: ISqlCase;
 begin
-  Result := TSqlCase.Create;
+  result := TSqlCase.Create;
 end;
 
-class function SQL.Delete: ISqlDelete;
+class function SQL.delete: ISqlDelete;
 begin
-  Result := TSqlDelete.Create;
+  result := TSqlDelete.Create;
 end;
 
-class function SQL.ExecuteProc(aProcedureName: string): ISqlExecProcedure;
+class function SQL.executeProc(procedureName: string): ISqlExecProcedure;
 begin
-  Result := TSqlExecProcedure.Create;
-  Result.&Procedure(aProcedureName);
+  result := TSqlExecProcedure.Create;
+  result.&procedure(procedureName);
 end;
 
-class function SQL.Insert: ISqlInsert;
+class function SQL.insert: ISqlInsert;
 begin
-  Result := TSqlInsert.Create;
+  result := TSqlInsert.Create;
 end;
 
-class function SQL.Select: ISqlSelect;
+class function SQL.select: ISqlSelect;
 begin
-  Result := TSqlSelect.Create;
+  result := TSqlSelect.Create;
 end;
 
-class function SQL.Update(aTableName: string): ISqlUpdate;
+class function SQL.update(tableName: string): ISqlUpdate;
 begin
-  Result := TSqlUpdate.Create;
-  Result.Table(aTableName);
+  result := TSqlUpdate.Create;
+  result.table(tableName);
 end;
 
-class function SQL.UpdateOrInsert: ISqlUpdateOrInsert;
+class function SQL.updateOrInsert: ISqlUpdateOrInsert;
 begin
-  Result := TSqlUpdateOrInsert.Create;
+  result := TSqlUpdateOrInsert.Create;
 end;
 
-class function SQL.Where: ISqlWhere;
+class function SQL.where: ISqlWhere;
 begin
-  Result := TSqlWhere.Create;
+  result := TSqlWhere.Create;
 end;
 
-class function SQL.&CreateProcedure(aProcName: string): ISqlProcedureCreate;
+class function SQL.&createProcedure(procName: string): ISqlProcedureCreate;
 begin
-  Result := TSqlCreateProcedure.Create;
-  Result.Name(aProcName);
+  result := TSqlCreateProcedure.Create;
+  result.name(procName);
 end;
 
-class function SQL.&Procedure(aProcedureName: string): ISqlProcedure;
+class function SQL.&procedure(procedureName: string): ISqlProcedure;
 begin
-  Result := TSqlProcedure.Create;
-  Result.&Procedure(aProcedureName);
+  result := TSqlProcedure.Create;
+  result.&procedure(procedureName);
 end;
 
-class function SQL.&Case(aExpression: string): ISqlCase;
+class function SQL.&case(expression: string): ISqlCase;
 begin
-  Result := TSqlCase.Create;
-  Result.TestExpression(aExpression);
+  result := TSqlCase.Create;
+  result.testExpression(expression);
 end;
 
-class function TSqlValue.AsDate(aValue: TDate): string;
+class function TSqlValue.asDate(value: TDate): string;
 begin
-  Result := 'NULL';
+  result := 'NULL';
 
-  if aValue <> Unassigned then
-    Result := FormatDateTime('dd.mm.yyyy', aValue);
+  if value <> unassigned then
+    result := formatDateTime('dd.mm.yyyy', value);
 end;
 
-class function TSqlValue.AsDateTime(aValue: TDate): string;
+class function TSqlValue.asDateTime(value: TDate): string;
 begin
-  Result := 'NULL';
+  result := 'NULL';
 
-  if aValue <> Unassigned then
-    Result := FormatDateTime('dd.mm.yyyy hh:mm:ss', aValue);
+  if value <> unassigned then
+    result := formatDateTime('dd.mm.yyyy hh:mm:ss', value);
 end;
 
-class function TSqlValue.AsTime(aValue: TDate): string;
+class function TSqlValue.asTime(value: TDate): string;
 begin
-  Result := 'NULL';
+  result := 'NULL';
 
-  if aValue <> Unassigned then
-    Result := FormatDateTime('hh:mm:ss', aValue);
+  if value <> unassigned then
+    result := formatDateTime('hh:mm:ss', value);
 end;
 
-{ class function TSqlValue.ValueToSql(Value: TValue): string;
+{ class function TSqlValue.valueToSql(value: TValue): string;
   begin
- Result := Value.ToString;
+  result := value.toString;
 
- if LowerCase(Result) = 'null' then
- Exit('NULL');
+  if lowerCase(result) = 'null' then
+  exit('NULL');
 
- case Value.Kind of
- tkUString, tkWChar, tkLString, tkWString, tkString, tkChar:
- Result := QuotedStr(Result);
+  case value.kind of
+  tkUString, tkWChar, tkLString, tkWString, tkString, tkChar:
+  result := quotedStr(result);
 
- tkInteger, tkEnumeration, tkInt64:
- ;
+  tkInteger, tkEnumeration, tkInt64:
+  ;
 
- tkFloat:
- Result := Result.Replace(',', '.');
+  tkFloat:
+  result := result.replace(',', '.');
 
- tkUnknown, tkSet, tkClass, tkMethod, tkVariant, tkArray, tkRecord, tkInterface, tkDynArray, tkClassRef, tkPointer, tkProcedure:
- raise Exception.Create('Invalid value [Kind]:' + ord(Value.Kind).ToString);
- end;
- end; }
+  tkUnknown, tkSet, tkClass, tkMethod, tkVariant, tkArray, tkRecord, tkInterface, tkDynArray, tkClassRef, tkPointer, tkProcedure:
+  raise Exception.Create('Invalid value [kind]:' + ord(value.kind).toString);
+  end;
+  end; }
 
-class function TSqlValue.ValueToSql(Value: Variant): string;
+class function TSqlValue.valueToSql(value: variant): string;
 begin
-  Result := Value;
+  result := value;
 
-  if LowerCase(Result) = 'null' then
-    Exit('NULL');
+  if lowerCase(result) = 'null' then
+    exit('NULL');
 
-  case VarType(Value) of
+  case varType(value) of
     varEmpty, varNull:
       ;
 
@@ -159,16 +159,16 @@ begin
       ;
 
     varSingle, varDouble, varCurrency:
-      Result := Result.Replace(',', '.');
+      result := result.replace(',', '.');
 
     varOleStr, varStrArg, varString, varUString:
-      Result := Result.QuotedString;
+      result := result.quotedString;
 
     varDate: //care with quoted here.
       ;
 
     else
-      raise Exception.Create('Invalid value [VarType]:' + System.Ord(VarType(Value)).ToString);
+      raise Exception.Create('Invalid value [VarType]:' + System.Ord(varType(value)).toString);
   end;
 end;
 

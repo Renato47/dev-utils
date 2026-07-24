@@ -17,13 +17,13 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function Name(aName: string): ISqlProcedureCreate;
-    function Input(aName, aType: string): ISqlProcedureCreate;
-    function Return(aName, aType: string): ISqlProcedureCreate;
-    function Variable(aName, aType: string): ISqlProcedureCreate;
-    function Instruction(aSqlInstruction: string): ISqlProcedureCreate;
+    function name(name: string): ISqlProcedureCreate;
+    function input(name, type_: string): ISqlProcedureCreate;
+    function return(name, type_: string): ISqlProcedureCreate;
+    function variable(name, type_: string): ISqlProcedureCreate;
+    function instruction(sqlInstruction: string): ISqlProcedureCreate;
 
-    function ToString: string; override;
+    function toStr: string;
   end;
 
 implementation
@@ -31,12 +31,12 @@ implementation
 constructor TSqlCreateProcedure.Create;
 begin
   inputList := TStringList.Create;
-  inputList.QuoteChar := #0;
-  inputList.StrictDelimiter := True;
+  inputList.quoteChar := #0;
+  inputList.strictDelimiter := true;
 
   returnList := TStringList.Create;
-  returnList.QuoteChar := #0;
-  returnList.StrictDelimiter := True;
+  returnList.quoteChar := #0;
+  returnList.strictDelimiter := true;
 
   variableList := TStringList.Create;
   instructions := TStringList.Create;
@@ -44,76 +44,76 @@ end;
 
 destructor TSqlCreateProcedure.Destroy;
 begin
-  inputList.Free;
-  returnList.Free;
-  variableList.Free;
-  instructions.Free;
+  inputList.free;
+  returnList.free;
+  variableList.free;
+  instructions.free;
 
   inherited;
 end;
 
-function TSqlCreateProcedure.Input(aName, aType: string): ISqlProcedureCreate;
+function TSqlCreateProcedure.input(name, type_: string): ISqlProcedureCreate;
 begin
-  Result := Self;
-  inputList.Append(aName + ' ' + aType);
+  result := self;
+  inputList.append(name + ' ' + type_);
 end;
 
-function TSqlCreateProcedure.Instruction(aSqlInstruction: string): ISqlProcedureCreate;
+function TSqlCreateProcedure.instruction(sqlInstruction: string): ISqlProcedureCreate;
 begin
-  Result := Self;
-  instructions.Append(aSqlInstruction);
+  result := self;
+  instructions.append(sqlInstruction);
 end;
 
-function TSqlCreateProcedure.Name(aName: string): ISqlProcedureCreate;
+function TSqlCreateProcedure.name(name: string): ISqlProcedureCreate;
 begin
-  Result := Self;
-  fName := aName;
+  result := self;
+  fName := name;
 end;
 
-function TSqlCreateProcedure.Return(aName, aType: string): ISqlProcedureCreate;
+function TSqlCreateProcedure.return(name, type_: string): ISqlProcedureCreate;
 begin
-  Result := Self;
-  returnList.Append(aName + ' ' + aType);
+  result := self;
+  returnList.append(name + ' ' + type_);
 end;
 
-function TSqlCreateProcedure.ToString: string;
+function TSqlCreateProcedure.toStr: string;
 var
   slSql: TStringList;
 begin
   slSql := TStringList.Create;
 
-  slSql.Append('SET TERM ^ ;');
-  slSql.Append('');
-  slSql.Append('CREATE OR ALTER PROCEDURE ' + fName);
+  slSql.append('SET TERM ^ ;');
+  slSql.append('');
+  slSql.append('CREATE OR ALTER PROCEDURE ' + fName);
 
-  if inputList.Count <> 0 then begin
-    slSql.Append('(');
-    slSql.Append(inputList.DelimitedText);
-    slSql.Append(')');
+  if inputList.count <> 0 then begin
+    slSql.append('(');
+    slSql.append(inputList.delimitedText);
+    slSql.append(')');
   end;
 
-  if returnList.Count <> 0 then begin
-    slSql.Append('RETURNS (');
-    slSql.Append(returnList.DelimitedText);
-    slSql.Append(')');
+  if returnList.count <> 0 then begin
+    slSql.append('RETURNS (');
+    slSql.append(returnList.delimitedText);
+    slSql.append(')');
   end;
 
-  slSql.Append('AS');
-  slSql.Append(variableList.Text);
-  slSql.Append('BEGIN');
-  slSql.Append(instructions.Text);
-  slSql.Append('END^');
-  slSql.Append('');
-  slSql.Append('SET TERM ; ^');
+  slSql.append('AS');
+  slSql.append(variableList.text);
+  slSql.append('BEGIN');
+  slSql.append(instructions.text);
+  slSql.append('END^');
+  slSql.append('');
+  slSql.append('SET TERM ; ^');
 
-  Result := slSql.Text;
-  slSql.Free;
+  result := slSql.text;
+  slSql.free;
 end;
 
-function TSqlCreateProcedure.Variable(aName, aType: string): ISqlProcedureCreate;
+function TSqlCreateProcedure.variable(name, type_: string): ISqlProcedureCreate;
 begin
-  Result := Self;
-  variableList.Append('DECLARE VARIABLE ' + aName + ' ' + aType + ';');
+  result := self;
+  variableList.append('DECLARE VARIABLE ' + name + ' ' + type_ + ';');
 end;
 
 end.

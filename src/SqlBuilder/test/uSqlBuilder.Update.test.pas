@@ -1,62 +1,63 @@
-unit uSqlBuilder.Update.test;
+unit uSqlBuilder.update.test;
 
 interface
 
-procedure UpdateTest;
+procedure updateTest;
 
 implementation
 
 uses
   uSqlBuilder, uCompare, System.SysUtils;
 
-procedure UpdateTest;
+procedure updateTest;
 var
-  sSqlCompare, sSqlBuilder: string;
+  sqlCompare, sqlBuilder: string;
 begin
-  sSqlCompare := 'UPDATE PRODUCT SET NAME = ''PIZZA''';
-  sSqlBuilder := SQL.Update('PRODUCT')
-    .Value('NAME', 'PIZZA')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'UPDATE PRODUCT SET NAME = ''PIZZA''';
+  sqlBuilder := SQL.update('PRODUCT')
+    .value('NAME', 'PIZZA')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'UPDATE PRODUCT SET CREATED_AT = CURRENT_TIMESTAMP';
-  sSqlBuilder := SQL.Update('PRODUCT')
-    .ValueExpression('CREATED_AT', 'CURRENT_TIMESTAMP')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'UPDATE PRODUCT SET CREATED_AT = CURRENT_TIMESTAMP';
+  sqlBuilder := SQL.update('PRODUCT')
+    .valueExpression('CREATED_AT', 'CURRENT_TIMESTAMP')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'UPDATE PRODUCT SET NAME = ''PIZZA'',DESCRIPTION = NULL,CATEGORY = 8,SUB_CATEGORY = NULL WHERE ID = 5';
-  sSqlBuilder := SQL.Update('PRODUCT')
-    .ValueNull('NAME', 'PIZZA')
-    .ValueNull('DESCRIPTION', '')
-    .ValueNull('CATEGORY', 8)
-    .ValueNull('SUB_CATEGORY', 0)
-    .Where(SQL.Where
-      .Column('ID').Equal(5))
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'UPDATE PRODUCT SET NAME = ''PIZZA'',DESCRIPTION = NULL,CATEGORY = 8,SUB_CATEGORY = NULL WHERE ID = 5';
+  sqlBuilder := SQL.update('PRODUCT')
+    .valueNull('NAME', 'PIZZA')
+    .valueNull('DESCRIPTION', '')
+    .valueNull('CATEGORY', 8)
+    .valueNull('SUB_CATEGORY', 0)
+    .where(SQL.where
+      .column('ID').equal(5))
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'UPDATE PRODUCT SET CREATED_AT = ' + FormatDateTime('dd.mm.yyyy', Now).QuotedString + ',UPDATED_AT = ' + FormatDateTime('hh:mm:ss', Now).QuotedString +
-    ',LAST_BOUGHT = ' + FormatDateTime('dd.mm.yyyy hh:mm:ss', Now).QuotedString + ' WHERE ID = 1';
-  sSqlBuilder := SQL.Update('PRODUCT')
-    .ValueDate('CREATED_AT', Now)
-    .ValueTime('UPDATED_AT', Now)
-    .ValueDateTime('LAST_BOUGHT', Now)
-    .Where('ID = 1')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'UPDATE PRODUCT SET CREATED_AT = ' + formatDateTime('dd.mm.yyyy', now).quotedString + ',UPDATED_AT = '
+    + formatDateTime('hh:mm:ss', now).quotedString + ',LAST_BOUGHT = ' + formatDateTime('dd.mm.yyyy hh:mm:ss', now)
+    .quotedString + ' WHERE ID = 1';
+  sqlBuilder := SQL.update('PRODUCT')
+    .valueDate('CREATED_AT', now)
+    .valueTime('UPDATED_AT', now)
+    .valueDateTime('LAST_BOUGHT', now)
+    .where('ID = 1')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'UPDATE PRODUCT SET CREATED_AT = NULL,UPDATED_AT = NULL,LAST_BOUGHT = NULL WHERE ID = 1';
-  sSqlBuilder := SQL.Update('PRODUCT')
-    .ValueDate('CREATED_AT', 0)
-    .ValueTime('UPDATED_AT', 0)
-    .ValueDateTime('LAST_BOUGHT', 0)
-    .Where('ID = 1')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'UPDATE PRODUCT SET CREATED_AT = NULL,UPDATED_AT = NULL,LAST_BOUGHT = NULL WHERE ID = 1';
+  sqlBuilder := SQL.update('PRODUCT')
+    .valueDate('CREATED_AT', 0)
+    .valueTime('UPDATED_AT', 0)
+    .valueDateTime('LAST_BOUGHT', 0)
+    .where('ID = 1')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  CompareSql(BoolToStr(True), BoolToStr(SQL.Update('PRODUCTS').IsEmpty));
-  CompareSql(BoolToStr(False), BoolToStr(SQL.Update('PRODUCTS').Value('ID', 1).IsEmpty));
+  compareSql(boolToStr(true), boolToStr(SQL.update('PRODUCTS').isEmpty));
+  compareSql(boolToStr(false), boolToStr(SQL.update('PRODUCTS').value('ID', 1).isEmpty));
 end;
 
 end.

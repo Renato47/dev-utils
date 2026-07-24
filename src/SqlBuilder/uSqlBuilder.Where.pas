@@ -11,84 +11,84 @@ type
     fComparisonOperator: string;
     fColumn: string;
     fLogicalOperator: string;
-    conditionList: TStringList;
+    fConditionList: TStringList;
 
-    procedure AddCondition(aCriteria: string);
-    procedure AddParenthesesCondition(aCriteria: string);
-    function ConcatArray(aArry: TArray<string>): string; overload;
-    function ConcatArray(aArry: TArray<Integer>): string; overload;
+    procedure addCondition(criteria: string);
+    procedure addParenthesesCondition(criteria: string);
+    function concatArray(arry: TArray<string>): string; overload;
+    function concatArray(arry: TArray<integer>): string; overload;
   public
     constructor Create;
     destructor Destroy; override;
 
     //Column name
-    function Column(aColumn: string): ISqlWhere;
+    function column(column: string): ISqlWhere;
 
     //Logical Operators [NOT, AND, OR]
-    function &Or(aColumn: string): ISqlWhere; overload;
-    function &Or(aSqlWhere: ISqlWhere): ISqlWhere; overload;
-    function &And(aSqlWhere: ISqlWhere): ISqlWhere;
+    function &or(column: string): ISqlWhere; overload;
+    function &or(sqlWhere: ISqlWhere): ISqlWhere; overload;
+    function &and(sqlWhere: ISqlWhere): ISqlWhere;
 
     //Comparison operators [=, <>, <, <=, >, >=, ...]
-    function Equal: ISqlWhere; overload;
-    function Equal(aValue: Variant): ISqlWhere; overload;
-    function Different: ISqlWhere; overload;
-    function Different(aValue: Variant): ISqlWhere; overload;
+    function equal: ISqlWhere; overload;
+    function equal(value: variant): ISqlWhere; overload;
+    function different: ISqlWhere; overload;
+    function different(value: variant): ISqlWhere; overload;
 
-    function Less: ISqlWhere; overload;
-    function Less(aValue: Variant): ISqlWhere; overload;
-    function LessOrEqual: ISqlWhere; overload;
-    function LessOrEqual(aValue: Variant): ISqlWhere; overload;
+    function less: ISqlWhere; overload;
+    function less(value: variant): ISqlWhere; overload;
+    function lessOrEqual: ISqlWhere; overload;
+    function lessOrEqual(value: variant): ISqlWhere; overload;
 
-    function Greater: ISqlWhere; overload;
-    function Greater(aValue: Variant): ISqlWhere; overload;
-    function GreaterOrEqual: ISqlWhere; overload;
-    function GreaterOrEqual(aValue: Variant): ISqlWhere; overload;
+    function greater: ISqlWhere; overload;
+    function greater(value: variant): ISqlWhere; overload;
+    function greaterOrEqual: ISqlWhere; overload;
+    function greaterOrEqual(value: variant): ISqlWhere; overload;
 
     //Comparison predicates [LIKE, STARTING WITH, CONTAINING, SIMILAR TO, BETWEEN, IS [NOT] NULL, IS [NOT] DISTINCT FROM]
-    function Like(aValue: string): ISqlWhere;
-    function NotLike(aValue: string): ISqlWhere;
-    function LikeSplit(aValue: string): ISqlWhere;
+    function like(value: string): ISqlWhere;
+    function notLike(value: string): ISqlWhere;
+    function likeSplit(value: string): ISqlWhere;
 
-    function StartingWith(aValue: string): ISqlWhere;
-    function Containing(aValue: string): ISqlWhere;
+    function startingWith(value: string): ISqlWhere;
+    function containing(value: string): ISqlWhere;
 
-    function IsNull: ISqlWhere;
-    function IsNotNull: ISqlWhere;
+    function isNull: ISqlWhere;
+    function isNotNull: ISqlWhere;
 
-    function Between(aStart, aEnd: Variant): ISqlWhere;
-    function BetweenDate(aStart, aEnd: TDate): ISqlWhere;
-    function BetweenTime(aStart, aEnd: TTime): ISqlWhere;
-    function BetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
-    function NotBetween(aStart, aEnd: Variant): ISqlWhere;
-    function NotBetweenDate(aStart, aEnd: TDate): ISqlWhere;
-    function NotBetweenTime(aStart, aEnd: TTime): ISqlWhere;
-    function NotBetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
+    function between(start, end_: variant): ISqlWhere;
+    function betweenDate(start, end_: TDate): ISqlWhere;
+    function betweenTime(start, end_: TTime): ISqlWhere;
+    function betweenDateTime(start, end_: TDateTime): ISqlWhere;
+    function notBetween(start, end_: variant): ISqlWhere;
+    function notBetweenDate(start, end_: TDate): ISqlWhere;
+    function notBetweenTime(start, end_: TTime): ISqlWhere;
+    function notBetweenDateTime(start, end_: TDateTime): ISqlWhere;
 
     //Existential predicates [IN, EXISTS, SINGULAR, ALL, ANY, SOME]
-    function &In(aValues: TArray<string>): ISqlWhere; overload;
-    function &In(aValues: TArray<Integer>): ISqlWhere; overload;
-    function &In(aSelect: ISqlSelect): ISqlWhere; overload;
-    function NotIn(aValues: TArray<string>): ISqlWhere; overload;
-    function NotIn(aValues: TArray<Integer>): ISqlWhere; overload;
+    function &in(values: TArray<string>): ISqlWhere; overload;
+    function &in(values: TArray<integer>): ISqlWhere; overload;
+    function &in(select: ISqlSelect): ISqlWhere; overload;
+    function notIn(values: TArray<string>): ISqlWhere; overload;
+    function notIn(values: TArray<integer>): ISqlWhere; overload;
 
-    function Exists(aSelect: ISqlSelect): ISqlWhere;
-    function NotExists(aSelect: ISqlSelect): ISqlWhere;
-    function OrExists(aSelect: ISqlSelect): ISqlWhere;
-    function OrNotExists(aSelect: ISqlSelect): ISqlWhere;
+    function exists(select: ISqlSelect): ISqlWhere;
+    function notExists(select: ISqlSelect): ISqlWhere;
+    function orExists(select: ISqlSelect): ISqlWhere;
+    function orNotExists(select: ISqlSelect): ISqlWhere;
 
     //Date/time literal ['TODAY', 'NOW', '25.12.2016 15:30:35']
-    function Date(aDate: TDate): ISqlWhere;
-    function Time(aTime: TTime): ISqlWhere;
-    function DateTime(aDateTime: TDateTime): ISqlWhere;
+    function date(value: TDate): ISqlWhere;
+    function time(value: TTime): ISqlWhere;
+    function dateTime(value: TDateTime): ISqlWhere;
 
     //Context Variables
-    function CurrentDate: ISqlWhere;
-    function CurrentTime: ISqlWhere;
-    function CurrentTimestamp: ISqlWhere;
+    function currentDate: ISqlWhere;
+    function currentTime: ISqlWhere;
+    function currentTimestamp: ISqlWhere;
 
-    function ToString: string; override;
-    function IsEmpty: Boolean;
+    function toStr: string;
+    function isEmpty: boolean;
   end;
 
 implementation
@@ -96,537 +96,537 @@ implementation
 uses
   System.SysUtils, uSqlBuilder;
 
-function TSqlWhere.&Or(aColumn: string): ISqlWhere;
+function TSqlWhere.&or(column: string): ISqlWhere;
 begin
-  Result := Self;
-  fColumn := aColumn;
+  result := self;
+  fColumn := column;
   fLogicalOperator := ' OR ';
 end;
 
-function TSqlWhere.&In(aValues: TArray<string>): ISqlWhere;
+function TSqlWhere.&in(values: TArray<string>): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' IN (' + ConcatArray(aValues) + ')');
+  addCondition(fColumn + ' IN (' + concatArray(values) + ')');
 end;
 
-function TSqlWhere.&In(aValues: TArray<Integer>): ISqlWhere;
+function TSqlWhere.&in(values: TArray<integer>): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' IN (' + ConcatArray(aValues) + ')');
+  addCondition(fColumn + ' IN (' + concatArray(values) + ')');
 end;
 
-function TSqlWhere.&In(aSelect: ISqlSelect): ISqlWhere;
+function TSqlWhere.&in(select: ISqlSelect): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' IN (' + aSelect.ToString + ')');
+  addCondition(fColumn + ' IN (' + select.toStr + ')');
 end;
 
-procedure TSqlWhere.AddCondition(aCriteria: string);
+procedure TSqlWhere.addCondition(criteria: string);
 begin
-  if not conditionList.Text.IsEmpty then
-    conditionList.Append(fLogicalOperator);
+  if not fConditionList.text.isEmpty then
+    fConditionList.append(fLogicalOperator);
 
-  conditionList.Append(aCriteria);
+  fConditionList.append(criteria);
 
   fLogicalOperator := '';
   fColumn := '';
   fComparisonOperator := '';
 end;
 
-procedure TSqlWhere.AddParenthesesCondition(aCriteria: string);
+procedure TSqlWhere.addParenthesesCondition(criteria: string);
 begin
-  if not conditionList.Text.IsEmpty then
-    conditionList.Append(fLogicalOperator);
+  if not fConditionList.text.isEmpty then
+    fConditionList.append(fLogicalOperator);
 
-  conditionList.Append('(' + aCriteria + ')');
+  fConditionList.append('(' + criteria + ')');
 
   fLogicalOperator := '';
 end;
 
-function TSqlWhere.&And(aSqlWhere: ISqlWhere): ISqlWhere;
+function TSqlWhere.&and(sqlWhere: ISqlWhere): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
   fLogicalOperator := ' AND ';
-  AddParenthesesCondition(aSqlWhere.ToString);
+  addParenthesesCondition(sqlWhere.toStr);
 end;
 
-function TSqlWhere.Between(aStart, aEnd: Variant): ISqlWhere;
+function TSqlWhere.between(start, end_: variant): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' BETWEEN ' + TSqlValue.ValueToSql(aStart) + ' AND ' + TSqlValue.ValueToSql(aEnd));
+  addCondition(fColumn + ' BETWEEN ' + TSqlValue.valueToSql(start) + ' AND ' + TSqlValue.valueToSql(end_));
 end;
 
-function TSqlWhere.BetweenDate(aStart, aEnd: TDate): ISqlWhere;
+function TSqlWhere.betweenDate(start, end_: TDate): ISqlWhere;
 begin
-  Result := Between(TSqlValue.AsDate(aStart), TSqlValue.AsDate(aEnd));
+  result := between(TSqlValue.asDate(start), TSqlValue.asDate(end_));
 end;
 
-function TSqlWhere.BetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
+function TSqlWhere.betweenDateTime(start, end_: TDateTime): ISqlWhere;
 begin
-  Result := Between(TSqlValue.AsDateTime(aStart), TSqlValue.AsDateTime(aEnd));
+  result := between(TSqlValue.asDateTime(start), TSqlValue.asDateTime(end_));
 end;
 
-function TSqlWhere.BetweenTime(aStart, aEnd: TTime): ISqlWhere;
+function TSqlWhere.betweenTime(start, end_: TTime): ISqlWhere;
 begin
-  Result := Between(TSqlValue.AsTime(aStart), TSqlValue.AsTime(aEnd));
+  result := between(TSqlValue.asTime(start), TSqlValue.asTime(end_));
 end;
 
-function TSqlWhere.Column(aColumn: string): ISqlWhere;
+function TSqlWhere.column(column: string): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty or fComparisonOperator.IsEmpty then begin
-    fColumn := aColumn;
+  if fColumn.isEmpty or fComparisonOperator.isEmpty then begin
+    fColumn := column;
     fLogicalOperator := ' AND ';
   end
   else
-    AddCondition(fColumn + fComparisonOperator + aColumn);
+    addCondition(fColumn + fComparisonOperator + column);
 end;
 
-function TSqlWhere.ConcatArray(aArry: TArray<string>): string;
+function TSqlWhere.concatArray(arry: TArray<string>): string;
 var
-  nValue: Integer;
+  nValue: integer;
 begin
-  if Length(aArry) = 0 then
-    Exit;
+  if length(arry) = 0 then
+    exit;
 
-  for nValue := low(aArry) to high(aArry) do
+  for nValue := low(arry) to high(arry) do
     if nValue = 0 then
-      Result := TSqlValue.ValueToSql(aArry[nValue])
+      result := TSqlValue.valueToSql(arry[nValue])
     else
-      Result := Result + ', ' + TSqlValue.ValueToSql(aArry[nValue]);
+      result := result + ', ' + TSqlValue.valueToSql(arry[nValue]);
 end;
 
-function TSqlWhere.ConcatArray(aArry: TArray<Integer>): string;
+function TSqlWhere.concatArray(arry: TArray<integer>): string;
 var
-  nValue: Integer;
+  nValue: integer;
 begin
-  if Length(aArry) = 0 then
-    Exit;
+  if length(arry) = 0 then
+    exit;
 
-  for nValue := low(aArry) to high(aArry) do
+  for nValue := low(arry) to high(arry) do
     if nValue = 0 then
-      Result := TSqlValue.ValueToSql(aArry[nValue])
+      result := TSqlValue.valueToSql(arry[nValue])
     else
-      Result := Result + ', ' + TSqlValue.ValueToSql(aArry[nValue]);
+      result := result + ', ' + TSqlValue.valueToSql(arry[nValue]);
 end;
 
-function TSqlWhere.Containing(aValue: string): ISqlWhere;
+function TSqlWhere.containing(value: string): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' CONTAINING ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' CONTAINING ' + TSqlValue.valueToSql(value));
 end;
 
 constructor TSqlWhere.Create;
 begin
-  conditionList := TStringList.Create;
+  fConditionList := TStringList.Create;
 end;
 
-function TSqlWhere.CurrentDate: ISqlWhere;
+function TSqlWhere.currentDate: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  if fComparisonOperator.IsEmpty then
-    Exit;
+  if fComparisonOperator.isEmpty then
+    exit;
 
-  AddCondition(fColumn + fComparisonOperator + 'CURRENT_DATE');
+  addCondition(fColumn + fComparisonOperator + 'CURRENT_DATE');
 end;
 
-function TSqlWhere.CurrentTime: ISqlWhere;
+function TSqlWhere.currentTime: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  if fComparisonOperator.IsEmpty then
-    Exit;
+  if fComparisonOperator.isEmpty then
+    exit;
 
-  AddCondition(fColumn + fComparisonOperator + 'CURRENT_TIME');
+  addCondition(fColumn + fComparisonOperator + 'CURRENT_TIME');
 end;
 
-function TSqlWhere.CurrentTimestamp: ISqlWhere;
+function TSqlWhere.currentTimestamp: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  if fComparisonOperator.IsEmpty then
-    Exit;
+  if fComparisonOperator.isEmpty then
+    exit;
 
-  AddCondition(fColumn + fComparisonOperator + 'CURRENT_TIMESTAMP');
+  addCondition(fColumn + fComparisonOperator + 'CURRENT_TIMESTAMP');
 end;
 
-function TSqlWhere.Date(aDate: TDate): ISqlWhere;
+function TSqlWhere.date(value: TDate): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  if fComparisonOperator.IsEmpty then
-    Exit;
+  if fComparisonOperator.isEmpty then
+    exit;
 
-  if aDate <> 0 then
-    AddCondition(fColumn + fComparisonOperator + TSqlValue.ValueToSql(TSqlValue.AsDate(aDate)))
+  if value <> 0 then
+    addCondition(fColumn + fComparisonOperator + TSqlValue.valueToSql(TSqlValue.asDate(value)))
   else
-    AddCondition(fColumn + fComparisonOperator + 'NULL');
+    addCondition(fColumn + fComparisonOperator + 'NULL');
 end;
 
-function TSqlWhere.DateTime(aDateTime: TDateTime): ISqlWhere;
+function TSqlWhere.dateTime(value: TDateTime): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  if fComparisonOperator.IsEmpty then
-    Exit;
+  if fComparisonOperator.isEmpty then
+    exit;
 
-  if aDateTime <> 0 then
-    AddCondition(fColumn + fComparisonOperator + TSqlValue.ValueToSql(TSqlValue.AsDateTime(aDateTime)))
+  if value <> 0 then
+    addCondition(fColumn + fComparisonOperator + TSqlValue.valueToSql(TSqlValue.asDateTime(value)))
   else
-    AddCondition(fColumn + fComparisonOperator + 'NULL');
+    addCondition(fColumn + fComparisonOperator + 'NULL');
 end;
 
 destructor TSqlWhere.Destroy;
 begin
-  conditionList.Free;
+  fConditionList.free;
 
   inherited;
 end;
 
-function TSqlWhere.Different: ISqlWhere;
+function TSqlWhere.different: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
   fComparisonOperator := ' <> ';
 end;
 
-function TSqlWhere.Different(aValue: Variant): ISqlWhere;
+function TSqlWhere.different(value: variant): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' <> ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' <> ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlWhere.Equal: ISqlWhere;
+function TSqlWhere.equal: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
   fComparisonOperator := ' = ';
 end;
 
-function TSqlWhere.Equal(aValue: Variant): ISqlWhere;
+function TSqlWhere.equal(value: variant): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' = ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' = ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlWhere.Exists(aSelect: ISqlSelect): ISqlWhere;
+function TSqlWhere.exists(select: ISqlSelect): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
   fLogicalOperator := ' AND ';
-  AddCondition('EXISTS (' + aSelect.ToString + ')');
+  addCondition('EXISTS (' + select.toStr + ')');
 end;
 
-function TSqlWhere.Greater: ISqlWhere;
+function TSqlWhere.greater: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
   fComparisonOperator := ' > ';
 end;
 
-function TSqlWhere.Greater(aValue: Variant): ISqlWhere;
+function TSqlWhere.greater(value: variant): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' > ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' > ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlWhere.GreaterOrEqual: ISqlWhere;
+function TSqlWhere.greaterOrEqual: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
   fComparisonOperator := ' >= ';
 end;
 
-function TSqlWhere.GreaterOrEqual(aValue: Variant): ISqlWhere;
+function TSqlWhere.greaterOrEqual(value: variant): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' >= ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' >= ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlWhere.IsEmpty: Boolean;
+function TSqlWhere.isEmpty: boolean;
 begin
-  Result := conditionList.Count = 0;
+  result := fConditionList.count = 0;
 end;
 
-function TSqlWhere.IsNotNull: ISqlWhere;
+function TSqlWhere.isNotNull: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' IS NOT NULL');
+  addCondition(fColumn + ' IS NOT NULL');
 end;
 
-function TSqlWhere.IsNull: ISqlWhere;
+function TSqlWhere.isNull: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' IS NULL');
+  addCondition(fColumn + ' IS NULL');
 end;
 
-function TSqlWhere.Less: ISqlWhere;
+function TSqlWhere.less: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
   fComparisonOperator := ' < ';
 end;
 
-function TSqlWhere.Less(aValue: Variant): ISqlWhere;
+function TSqlWhere.less(value: variant): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' < ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' < ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlWhere.LessOrEqual: ISqlWhere;
+function TSqlWhere.lessOrEqual: ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
   fComparisonOperator := ' <= ';
 end;
 
-function TSqlWhere.LessOrEqual(aValue: Variant): ISqlWhere;
+function TSqlWhere.lessOrEqual(value: variant): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' <= ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' <= ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlWhere.Like(aValue: string): ISqlWhere;
+function TSqlWhere.like(value: string): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' LIKE ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' LIKE ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlWhere.LikeSplit(aValue: string): ISqlWhere;
+function TSqlWhere.likeSplit(value: string): ISqlWhere;
 var
   splittedString: TArray<string>;
-  nStr: Integer;
+  nStr: integer;
   sCondition: string;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  if aValue.Contains(' ') then begin
+  if value.Contains(' ') then begin
     sCondition := '';
 
-    splittedString := aValue.Split([' ']);
+    splittedString := value.split([' ']);
 
-    for nStr := 0 to Pred(Length(splittedString)) do
-      sCondition := sCondition + ' AND ' + fColumn + ' LIKE ' + TSqlValue.ValueToSql('%' + splittedString[nStr] + '%');
+    for nStr := 0 to pred(length(splittedString)) do
+      sCondition := sCondition + ' AND ' + fColumn + ' LIKE ' + TSqlValue.valueToSql('%' + splittedString[nStr] + '%');
 
-    sCondition := sCondition.Remove(0, 5);
+    sCondition := sCondition.remove(0, 5);
 
-    if not sCondition.IsEmpty then
-      AddParenthesesCondition(sCondition);
+    if not sCondition.isEmpty then
+      addParenthesesCondition(sCondition);
   end
   else
-    AddCondition(fColumn + ' LIKE ' + TSqlValue.ValueToSql('%' + aValue + '%'));
+    addCondition(fColumn + ' LIKE ' + TSqlValue.valueToSql('%' + value + '%'));
 end;
 
-function TSqlWhere.NotBetween(aStart, aEnd: Variant): ISqlWhere;
+function TSqlWhere.notBetween(start, end_: variant): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' NOT BETWEEN ' + TSqlValue.ValueToSql(aStart) + ' AND ' + TSqlValue.ValueToSql(aEnd));
+  addCondition(fColumn + ' NOT BETWEEN ' + TSqlValue.valueToSql(start) + ' AND ' + TSqlValue.valueToSql(end_));
 end;
 
-function TSqlWhere.NotBetweenDate(aStart, aEnd: TDate): ISqlWhere;
+function TSqlWhere.notBetweenDate(start, end_: TDate): ISqlWhere;
 begin
-  Result := NotBetween(TSqlValue.AsDate(aStart), TSqlValue.AsDate(aEnd));
+  result := notBetween(TSqlValue.asDate(start), TSqlValue.asDate(end_));
 end;
 
-function TSqlWhere.NotBetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
+function TSqlWhere.notBetweenDateTime(start, end_: TDateTime): ISqlWhere;
 begin
-  Result := NotBetween(TSqlValue.AsDateTime(aStart), TSqlValue.AsDateTime(aEnd));
+  result := notBetween(TSqlValue.asDateTime(start), TSqlValue.asDateTime(end_));
 end;
 
-function TSqlWhere.NotBetweenTime(aStart, aEnd: TTime): ISqlWhere;
+function TSqlWhere.notBetweenTime(start, end_: TTime): ISqlWhere;
 begin
-  Result := NotBetween(TSqlValue.AsTime(aStart), TSqlValue.AsTime(aEnd));
+  result := notBetween(TSqlValue.asTime(start), TSqlValue.asTime(end_));
 end;
 
-function TSqlWhere.NotExists(aSelect: ISqlSelect): ISqlWhere;
+function TSqlWhere.notExists(select: ISqlSelect): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
   fLogicalOperator := ' AND ';
-  AddCondition('NOT EXISTS (' + aSelect.ToString + ')');
+  addCondition('NOT EXISTS (' + select.toStr + ')');
 end;
 
-function TSqlWhere.NotIn(aValues: TArray<string>): ISqlWhere;
+function TSqlWhere.notIn(values: TArray<string>): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' NOT IN (' + ConcatArray(aValues) + ')');
+  addCondition(fColumn + ' NOT IN (' + concatArray(values) + ')');
 end;
 
-function TSqlWhere.NotIn(aValues: TArray<Integer>): ISqlWhere;
+function TSqlWhere.notIn(values: TArray<integer>): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' NOT IN (' + ConcatArray(aValues) + ')');
+  addCondition(fColumn + ' NOT IN (' + concatArray(values) + ')');
 end;
 
-function TSqlWhere.NotLike(aValue: string): ISqlWhere;
+function TSqlWhere.notLike(value: string): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' NOT LIKE ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' NOT LIKE ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlWhere.&Or(aSqlWhere: ISqlWhere): ISqlWhere;
+function TSqlWhere.&or(sqlWhere: ISqlWhere): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
   fLogicalOperator := ' OR ';
-  AddCondition('(' + aSqlWhere.ToString + ')');
+  addCondition('(' + sqlWhere.toStr + ')');
 end;
 
-function TSqlWhere.OrExists(aSelect: ISqlSelect): ISqlWhere;
+function TSqlWhere.orExists(select: ISqlSelect): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
   fLogicalOperator := ' OR ';
-  AddCondition('EXISTS (' + aSelect.ToString + ')');
+  addCondition('EXISTS (' + select.toStr + ')');
 end;
 
-function TSqlWhere.OrNotExists(aSelect: ISqlSelect): ISqlWhere;
+function TSqlWhere.orNotExists(select: ISqlSelect): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
   fLogicalOperator := ' OR ';
-  AddCondition('NOT EXISTS (' + aSelect.ToString + ')');
+  addCondition('NOT EXISTS (' + select.toStr + ')');
 end;
 
-function TSqlWhere.StartingWith(aValue: string): ISqlWhere;
+function TSqlWhere.startingWith(value: string): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  AddCondition(fColumn + ' STARTING WITH ' + TSqlValue.ValueToSql(aValue));
+  addCondition(fColumn + ' STARTING WITH ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlWhere.Time(aTime: TTime): ISqlWhere;
+function TSqlWhere.time(value: TTime): ISqlWhere;
 begin
-  Result := Self;
+  result := self;
 
-  if fColumn.IsEmpty then
-    Exit;
+  if fColumn.isEmpty then
+    exit;
 
-  if fComparisonOperator.IsEmpty then
-    Exit;
+  if fComparisonOperator.isEmpty then
+    exit;
 
-  if aTime <> 0 then
-    AddCondition(fColumn + fComparisonOperator + TSqlValue.ValueToSql(TSqlValue.AsTime(aTime)))
+  if value <> 0 then
+    addCondition(fColumn + fComparisonOperator + TSqlValue.valueToSql(TSqlValue.asTime(value)))
   else
-    AddCondition(fColumn + fComparisonOperator + 'NULL');
+    addCondition(fColumn + fComparisonOperator + 'NULL');
 end;
 
-function TSqlWhere.ToString: string;
+function TSqlWhere.toStr: string;
 begin
-  Result := conditionList.Text.Replace(sLineBreak, '');
+  result := fConditionList.text.replace(sLineBreak, '');
 end;
 
 end.

@@ -2,80 +2,81 @@ unit uSqlBuilder.ExecProcedure.test;
 
 interface
 
-procedure ExecProcedureTest;
+procedure execProcedureTest;
 
 implementation
 
 uses
   uSqlBuilder, uCompare, System.SysUtils;
 
-procedure ExecProcedureTest;
+procedure execProcedureTest;
 var
-  sSqlCompare, sSqlBuilder: string;
+  sqlCompare, sqlBuilder: string;
 begin
-  sSqlCompare := 'EXECUTE PROCEDURE UPDATE_FEES';
-  sSqlBuilder := SQL.ExecuteProc('UPDATE_FEES').ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'EXECUTE PROCEDURE UPDATE_FEES';
+  sqlBuilder := SQL.executeProc('UPDATE_FEES').toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, CURRENT_DATE)';
-  sSqlBuilder := SQL.ExecuteProc('RECEIVE_DELIVERY')
-    .Value(10)
-    .CurrentDate
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, CURRENT_DATE)';
+  sqlBuilder := SQL.executeProc('RECEIVE_DELIVERY')
+    .value(10)
+    .currentDate
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, CURRENT_TIME)';
-  sSqlBuilder := SQL.ExecuteProc('RECEIVE_DELIVERY')
-    .Value(10)
-    .CurrentTime
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, CURRENT_TIME)';
+  sqlBuilder := SQL.executeProc('RECEIVE_DELIVERY')
+    .value(10)
+    .currentTime
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, CURRENT_TIMESTAMP)';
-  sSqlBuilder := SQL.ExecuteProc('RECEIVE_DELIVERY')
-    .Value(10)
-    .CurrentTimestamp
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, CURRENT_TIMESTAMP)';
+  sqlBuilder := SQL.executeProc('RECEIVE_DELIVERY')
+    .value(10)
+    .currentTimestamp
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, ' + FormatDateTime('dd.mm.yyyy', Now).QuotedString + ')';
-  sSqlBuilder := SQL.ExecuteProc('RECEIVE_DELIVERY')
-    .Value(10)
-    .Date(Now)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, ' + formatDateTime('dd.mm.yyyy', now).quotedString + ')';
+  sqlBuilder := SQL.executeProc('RECEIVE_DELIVERY')
+    .value(10)
+    .date(now)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, ' + FormatDateTime('dd.mm.yyyy hh:mm:ss', Now).QuotedString + ')';
-  sSqlBuilder := SQL.ExecuteProc('RECEIVE_DELIVERY')
-    .Value(10)
-    .DateTime(Now)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, ' + formatDateTime('dd.mm.yyyy hh:mm:ss', now)
+    .quotedString + ')';
+  sqlBuilder := SQL.executeProc('RECEIVE_DELIVERY')
+    .value(10)
+    .dateTime(now)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, ' + FormatDateTime('hh:mm:ss', Now).QuotedString + ')';
-  sSqlBuilder := SQL.ExecuteProc('RECEIVE_DELIVERY')
-    .Value(10)
-    .Time(Now)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (10, ' + formatDateTime('hh:mm:ss', now).quotedString + ')';
+  sqlBuilder := SQL.executeProc('RECEIVE_DELIVERY')
+    .value(10)
+    .time(now)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
   //Null values
-  sSqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (NULL, ''AB'', NULL, 10, NULL)';
-  sSqlBuilder := SQL.ExecuteProc('RECEIVE_DELIVERY')
-    .Null
-    .ValueNull('AB')
-    .ValueNull('')
-    .ValueNull(10)
-    .ValueNull(0)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'EXECUTE PROCEDURE RECEIVE_DELIVERY (NULL, ''AB'', NULL, 10, NULL)';
+  sqlBuilder := SQL.executeProc('RECEIVE_DELIVERY')
+    .null
+    .valueNull('AB')
+    .valueNull('')
+    .valueNull(10)
+    .valueNull(0)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'EXECUTE PROCEDURE SET_ID ((SELECT ID FROM CATEGORY), 5)';
-  sSqlBuilder := SQL.ExecuteProc('SET_ID')
-    .ValueExpression('(SELECT ID FROM CATEGORY)')
-    .Value(5)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'EXECUTE PROCEDURE SET_ID ((SELECT ID FROM CATEGORY), 5)';
+  sqlBuilder := SQL.executeProc('SET_ID')
+    .valueExpression('(SELECT ID FROM CATEGORY)')
+    .value(5)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

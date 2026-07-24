@@ -2,56 +2,56 @@ unit uSqlBuilder.SqlValue.test;
 
 interface
 
-procedure SqlValueTest;
+procedure sqlValueTest;
 
 implementation
 
 uses
   uSqlBuilder, uCompare, System.SysUtils;
 
-procedure SqlValueTest;
+procedure sqlValueTest;
 var
-  sSqlCompare, sSqlBuilder: string;
+  sqlCompare, sqlBuilder: string;
 begin
-  sSqlCompare := '10';
-  sSqlBuilder := TSqlValue.ValueToSql(10);
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := '10';
+  sqlBuilder := TSqlValue.valueToSql(10);
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := '5.987';
-  sSqlBuilder := TSqlValue.ValueToSql(5.987);
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := '5.987';
+  sqlBuilder := TSqlValue.valueToSql(5.987);
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'DESCRIPTION TEST'.QuotedString;
-  sSqlBuilder := TSqlValue.ValueToSql('DESCRIPTION TEST');
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'DESCRIPTION TEST'.quotedString;
+  sqlBuilder := TSqlValue.valueToSql('DESCRIPTION TEST');
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'NULL';
-  sSqlBuilder := TSqlValue.ValueToSql('Null');
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'NULL';
+  sqlBuilder := TSqlValue.valueToSql('Null');
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'NULL';
-  sSqlBuilder := TSqlValue.AsDate(0);
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'NULL';
+  sqlBuilder := TSqlValue.asDate(0);
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := FormatDateTime('dd.mm.yyyy', Now);
-  sSqlBuilder := TSqlValue.AsDate(Now);
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := formatDateTime('dd.mm.yyyy', now);
+  sqlBuilder := TSqlValue.asDate(now);
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'NULL';
-  sSqlBuilder := TSqlValue.AsTime(0);
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'NULL';
+  sqlBuilder := TSqlValue.asTime(0);
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := FormatDateTime('hh:mm:ss', Now);
-  sSqlBuilder := TSqlValue.AsTime(Now);
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := formatDateTime('hh:mm:ss', now);
+  sqlBuilder := TSqlValue.asTime(now);
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'NULL';
-  sSqlBuilder := TSqlValue.AsDateTime(0);
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'NULL';
+  sqlBuilder := TSqlValue.asDateTime(0);
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := FormatDateTime('dd.mm.yyyy hh:mm:ss', Now);
-  sSqlBuilder := TSqlValue.AsDateTime(Now);
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := formatDateTime('dd.mm.yyyy hh:mm:ss', now);
+  sqlBuilder := TSqlValue.asDateTime(now);
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

@@ -2,34 +2,35 @@ unit uSqlBuilder.SqlCase.test;
 
 interface
 
-procedure SqlCaseTest;
+procedure sqlCaseTest;
 
 implementation
 
 uses
   uSqlBuilder, uCompare;
 
-procedure SqlCaseTest;
+procedure sqlCaseTest;
 var
-  sSqlCompare, sSqlBuilder: string;
+  sqlCompare, sqlBuilder: string;
 begin
-  sSqlCompare := 'CASE MODULE WHEN 1 THEN ''INSERT'' WHEN 2 THEN ''UPDATE'' ELSE ''UNKNOWN'' END';
-  sSqlBuilder := SQL.&Case
-    .TestExpression('MODULE')
-    .WhenThen('1', 'INSERT')
-    .WhenThen('2', 'UPDATE')
-    .&Else('UNKNOWN')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'CASE MODULE WHEN 1 THEN ''INSERT'' WHEN 2 THEN ''UPDATE'' ELSE ''UNKNOWN'' END';
+  sqlBuilder := SQL.&case
+    .testExpression('MODULE')
+    .whenThen('1', 'INSERT')
+    .whenThen('2', 'UPDATE')
+    .&else('UNKNOWN')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'CASE WHEN DESCRIPTION IS NOT NULL THEN DESCRIPTION WHEN NAME IS NOT NULL THEN NAME ELSE ID END AS FIELD';
-  sSqlBuilder := SQL.&Case
-    .WhenThenColumn('DESCRIPTION IS NOT NULL', 'DESCRIPTION')
-    .WhenThenColumn('NAME IS NOT NULL', 'NAME')
-    .ElseColumn('ID')
-    .&As('FIELD')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare :=
+    'CASE WHEN DESCRIPTION IS NOT NULL THEN DESCRIPTION WHEN NAME IS NOT NULL THEN NAME ELSE ID END AS FIELD';
+  sqlBuilder := SQL.&case
+    .whenThenColumn('DESCRIPTION IS NOT NULL', 'DESCRIPTION')
+    .whenThenColumn('NAME IS NOT NULL', 'NAME')
+    .elseColumn('ID')
+    .&as('FIELD')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

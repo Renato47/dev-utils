@@ -31,46 +31,46 @@ uses
 
 begin
   try
-    Writeln('Teste SqlBuilder');
-    Writeln('');
+    writeln('Teste SqlBuilder');
+    writeln('');
 
-    Writeln('Testing select');
-    SelectTest;
+    writeln('Testing select');
+    selectTest;
 
-    Writeln('Testing delete');
-    DeleteTest;
+    writeln('Testing delete');
+    deleteTest;
 
-    Writeln('Testing execute procedure');
-    ExecProcedureTest;
+    writeln('Testing execute procedure');
+    execProcedureTest;
 
-    Writeln('Testing isnert');
-    InsertTest;
+    writeln('Testing isnert');
+    insertTest;
 
-    Writeln('Testing sql values');
-    SqlValueTest;
+    writeln('Testing sql values');
+    sqlValueTest;
 
-    Writeln('Testing case');
-    SqlCaseTest;
+    writeln('Testing case');
+    sqlCaseTest;
 
-    Writeln('Testing sql procedure');
-    SqlProcedureTest;
+    writeln('Testing sql procedure');
+    sqlProcedureTest;
 
-    Writeln('Testing update');
-    UpdateTest;
+    writeln('Testing update');
+    updateTest;
 
-    Writeln('Testing update or insert');
-    UpdateOrInsertTest;
+    writeln('Testing update or insert');
+    updateOrInsertTest;
 
-    Writeln('Testing where');
-    WhereTest;
+    writeln('Testing where');
+    whereTest;
 
-    Writeln('===========================================');
-    Writeln('Teste completed.');
-    Readln;
+    writeln('===========================================');
+    writeln('Teste completed.');
+    readln;
   except
-    on E: Exception do begin
-      Writeln(E.ClassName, ': ', E.Message);
-      Readln;
+    on e: exception do begin
+      writeln(e.className, ': ', e.message);
+      readln;
     end;
   end;
 

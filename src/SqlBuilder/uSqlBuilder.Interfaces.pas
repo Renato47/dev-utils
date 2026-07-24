@@ -6,237 +6,237 @@ type
   ISqlSelect = interface;
 
   ISqlCase = interface
-    function TestExpression(aExpression: string): ISqlCase;
+    function testExpression(expression: string): ISqlCase;
 
-    function WhenThenColumn(aCondition, aColumn: string): ISqlCase;
-    function WhenThen(aCondition: string; aResult: Variant): ISqlCase;
-    function ElseColumn(aColumn: string): ISqlCase;
-    function &Else(aResult: Variant): ISqlCase;
+    function whenThenColumn(condition, column: string): ISqlCase;
+    function whenThen(condition: string; value: variant): ISqlCase;
+    function elseColumn(column: string): ISqlCase;
+    function &else(value: variant): ISqlCase;
 
-    function &As(aAlias: string): ISqlCase;
+    function &as(alias: string): ISqlCase;
 
-    function ToString: string;
+    function toStr: string;
   end;
 
   ISqlProcedure = interface
-    function &Procedure(aName: string): ISqlProcedure;
+    function &procedure(name: string): ISqlProcedure;
 
-    function Value(aValue: Variant): ISqlProcedure;
-    function ValueExpression(aExpression: string): ISqlProcedure;
+    function value(value: variant): ISqlProcedure;
+    function valueExpression(expression: string): ISqlProcedure;
 
-    function ValueNull(aValue: string; aNullValue: string = ''): ISqlProcedure; overload;
-    function ValueNull(aValue: Integer; aNullValue: Integer = 0): ISqlProcedure; overload;
+    function valueNull(value: string; nullValue: string = ''): ISqlProcedure; overload;
+    function valueNull(value: integer; nullValue: integer = 0): ISqlProcedure; overload;
 
-    function Null: ISqlProcedure;
+    function null: ISqlProcedure;
 
-    function Date(aDate: TDate): ISqlProcedure;
-    function Time(aTime: TTime): ISqlProcedure;
-    function DateTime(aDateTime: TDateTime): ISqlProcedure;
+    function date(value: TDate): ISqlProcedure;
+    function time(value: TTime): ISqlProcedure;
+    function dateTime(value: TDateTime): ISqlProcedure;
 
-    function CurrentDate: ISqlProcedure;
-    function CurrentTime: ISqlProcedure;
-    function CurrentTimestamp: ISqlProcedure;
+    function currentDate: ISqlProcedure;
+    function currentTime: ISqlProcedure;
+    function currentTimestamp: ISqlProcedure;
 
-    function ToString: string;
+    function toStr: string;
   end;
 
   ISqlExecProcedure = interface
-    function &Procedure(aName: string): ISqlExecProcedure;
+    function &procedure(name: string): ISqlExecProcedure;
 
-    function Value(aValue: Variant): ISqlExecProcedure;
-    function ValueExpression(aExpression: string): ISqlExecProcedure;
+    function value(value: variant): ISqlExecProcedure;
+    function valueExpression(expression: string): ISqlExecProcedure;
 
-    function ValueNull(aValue: string; aNullValue: string = ''): ISqlExecProcedure; overload;
-    function ValueNull(aValue: Integer; aNullValue: Integer = 0): ISqlExecProcedure; overload;
+    function valueNull(value: string; nullValue: string = ''): ISqlExecProcedure; overload;
+    function valueNull(value: integer; nullValue: integer = 0): ISqlExecProcedure; overload;
 
-    function Null: ISqlExecProcedure;
+    function null: ISqlExecProcedure;
 
-    function Date(aDate: TDate): ISqlExecProcedure;
-    function Time(aTime: TTime): ISqlExecProcedure;
-    function DateTime(aDateTime: TDateTime): ISqlExecProcedure;
+    function date(value: TDate): ISqlExecProcedure;
+    function time(value: TTime): ISqlExecProcedure;
+    function dateTime(value: TDateTime): ISqlExecProcedure;
 
-    function CurrentDate: ISqlExecProcedure;
-    function CurrentTime: ISqlExecProcedure;
-    function CurrentTimestamp: ISqlExecProcedure;
+    function currentDate: ISqlExecProcedure;
+    function currentTime: ISqlExecProcedure;
+    function currentTimestamp: ISqlExecProcedure;
 
-    function ToString: string;
+    function toStr: string;
   end;
 
   ISqlWhere = interface
     //Column name
-    function Column(aColumn: string): ISqlWhere;
+    function column(column: string): ISqlWhere;
 
     //Logical Operators [NOT, AND, OR]
-    function &Or(aColumn: string): ISqlWhere; overload;
-    function &Or(aSqlWhere: ISqlWhere): ISqlWhere; overload;
-    function &And(aSqlWhere: ISqlWhere): ISqlWhere;
+    function &or(column: string): ISqlWhere; overload;
+    function &or(sqlWhere: ISqlWhere): ISqlWhere; overload;
+    function &and(sqlWhere: ISqlWhere): ISqlWhere;
 
     //Comparison operators [=, <>, <, <=, >, >=, ...]
-    function Equal: ISqlWhere; overload;
-    function Equal(aValue: Variant): ISqlWhere; overload;
-    function Different: ISqlWhere; overload;
-    function Different(aValue: Variant): ISqlWhere; overload;
+    function equal: ISqlWhere; overload;
+    function equal(value: variant): ISqlWhere; overload;
+    function different: ISqlWhere; overload;
+    function different(value: variant): ISqlWhere; overload;
 
-    function Less: ISqlWhere; overload;
-    function Less(aValue: Variant): ISqlWhere; overload;
-    function LessOrEqual: ISqlWhere; overload;
-    function LessOrEqual(aValue: Variant): ISqlWhere; overload;
+    function less: ISqlWhere; overload;
+    function less(value: variant): ISqlWhere; overload;
+    function lessOrEqual: ISqlWhere; overload;
+    function lessOrEqual(value: variant): ISqlWhere; overload;
 
-    function Greater: ISqlWhere; overload;
-    function Greater(aValue: Variant): ISqlWhere; overload;
-    function GreaterOrEqual: ISqlWhere; overload;
-    function GreaterOrEqual(aValue: Variant): ISqlWhere; overload;
+    function greater: ISqlWhere; overload;
+    function greater(value: variant): ISqlWhere; overload;
+    function greaterOrEqual: ISqlWhere; overload;
+    function greaterOrEqual(value: variant): ISqlWhere; overload;
 
     //Comparison predicates [LIKE, STARTING WITH, CONTAINING, SIMILAR TO, BETWEEN, IS [NOT] NULL, IS [NOT] DISTINCT FROM]
-    function Like(aValue: string): ISqlWhere;
-    function NotLike(aValue: string): ISqlWhere;
-    function LikeSplit(aValue: string): ISqlWhere;
+    function like(value: string): ISqlWhere;
+    function notLike(value: string): ISqlWhere;
+    function likeSplit(value: string): ISqlWhere;
 
-    function StartingWith(aValue: string): ISqlWhere;
-    function Containing(aValue: string): ISqlWhere;
+    function startingWith(value: string): ISqlWhere;
+    function containing(value: string): ISqlWhere;
 
-    function IsNull: ISqlWhere;
-    function IsNotNull: ISqlWhere;
+    function isNull: ISqlWhere;
+    function isNotNull: ISqlWhere;
 
-    function Between(aStart, aEnd: Variant): ISqlWhere;
-    function BetweenDate(aStart, aEnd: TDate): ISqlWhere;
-    function BetweenTime(aStart, aEnd: TTime): ISqlWhere;
-    function BetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
-    function NotBetween(aStart, aEnd: Variant): ISqlWhere;
-    function NotBetweenDate(aStart, aEnd: TDate): ISqlWhere;
-    function NotBetweenTime(aStart, aEnd: TTime): ISqlWhere;
-    function NotBetweenDateTime(aStart, aEnd: TDateTime): ISqlWhere;
+    function between(start, end_: variant): ISqlWhere;
+    function betweenDate(start, end_: TDate): ISqlWhere;
+    function betweenTime(start, end_: TTime): ISqlWhere;
+    function betweenDateTime(start, end_: TDateTime): ISqlWhere;
+    function notBetween(start, end_: variant): ISqlWhere;
+    function notBetweenDate(start, end_: TDate): ISqlWhere;
+    function notBetweenTime(start, end_: TTime): ISqlWhere;
+    function notBetweenDateTime(start, end_: TDateTime): ISqlWhere;
 
     //Existential predicates [IN, EXISTS, SINGULAR, ALL, ANY, SOME]
-    function &In(aValues: TArray<string>): ISqlWhere; overload;
-    function &In(aValues: TArray<Integer>): ISqlWhere; overload;
-    function &In(aSelect: ISqlSelect): ISqlWhere; overload;
-    function NotIn(aValues: TArray<string>): ISqlWhere; overload;
-    function NotIn(aValues: TArray<Integer>): ISqlWhere; overload;
+    function &in(values: TArray<string>): ISqlWhere; overload;
+    function &in(values: TArray<integer>): ISqlWhere; overload;
+    function &in(select: ISqlSelect): ISqlWhere; overload;
+    function notIn(values: TArray<string>): ISqlWhere; overload;
+    function notIn(values: TArray<integer>): ISqlWhere; overload;
 
-    function Exists(aSelect: ISqlSelect): ISqlWhere;
-    function NotExists(aSelect: ISqlSelect): ISqlWhere;
-    function OrExists(aSelect: ISqlSelect): ISqlWhere;
-    function OrNotExists(aSelect: ISqlSelect): ISqlWhere;
+    function exists(select: ISqlSelect): ISqlWhere;
+    function notExists(select: ISqlSelect): ISqlWhere;
+    function orExists(select: ISqlSelect): ISqlWhere;
+    function orNotExists(select: ISqlSelect): ISqlWhere;
 
     //Date/time literal ['TODAY', 'NOW', '25.12.2016 15:30:35']
-    function Date(aDate: TDate): ISqlWhere;
-    function Time(aTime: TTime): ISqlWhere;
-    function DateTime(aDateTime: TDateTime): ISqlWhere;
+    function date(value: TDate): ISqlWhere;
+    function time(value: TTime): ISqlWhere;
+    function dateTime(value: TDateTime): ISqlWhere;
 
     //Context Variables
-    function CurrentDate: ISqlWhere;
-    function CurrentTime: ISqlWhere;
-    function CurrentTimestamp: ISqlWhere;
+    function currentDate: ISqlWhere;
+    function currentTime: ISqlWhere;
+    function currentTimestamp: ISqlWhere;
 
-    function ToString: string;
-    function IsEmpty: Boolean;
+    function toStr: string;
+    function isEmpty: boolean;
   end;
 
   ISqlSelect = interface
-    function AllColumns: ISqlSelect;
-    function Column(aName: string): ISqlSelect; overload;
-    function Column(aCase: ISqlCase): ISqlSelect; overload;
+    function allColumns: ISqlSelect;
+    function column(name: string): ISqlSelect; overload;
+    function column(case_: ISqlCase): ISqlSelect; overload;
 
-    function Cast(aAsType, aAlias: string): ISqlSelect;
+    function cast(asType, alias: string): ISqlSelect;
 
-    function From(aSource: string): ISqlSelect; overload;
-    function From(aSelect: ISqlSelect; aAlias: string): ISqlSelect; overload;
-    function From(aSqlProcedure: ISqlProcedure; aAlias: string = ''): ISqlSelect; overload;
+    function from(source: string): ISqlSelect; overload;
+    function from(select: ISqlSelect; alias: string): ISqlSelect; overload;
+    function from(sqlProcedure: ISqlProcedure; alias: string = ''): ISqlSelect; overload;
 
-    function InnerJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
-    function InnerJoin(aSource, aConditions: string): ISqlSelect; overload;
-    function LeftJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
-    function LeftJoin(aSource, aConditions: string): ISqlSelect; overload;
-    function RightJoin(aSelect: ISqlSelect; aAlias, aConditions: string): ISqlSelect; overload;
-    function RightJoin(aSource, aConditions: string): ISqlSelect; overload;
+    function innerJoin(select: ISqlSelect; alias, conditions: string): ISqlSelect; overload;
+    function innerJoin(source, conditions: string): ISqlSelect; overload;
+    function leftJoin(select: ISqlSelect; alias, conditions: string): ISqlSelect; overload;
+    function leftJoin(source, conditions: string): ISqlSelect; overload;
+    function rightJoin(select: ISqlSelect; alias, conditions: string): ISqlSelect; overload;
+    function rightJoin(source, conditions: string): ISqlSelect; overload;
 
-    function Where(aConditions: string): ISqlSelect; overload;
-    function Where(aSqlWhere: ISqlWhere): ISqlSelect; overload;
-    function GroupBy(aGroupList: string): ISqlSelect;
-    function Having(aAggregateCondition: string): ISqlSelect;
-    function OrderBy(aOrderList: string): ISqlSelect;
+    function where(conditions: string): ISqlSelect; overload;
+    function where(sqlWhere: ISqlWhere): ISqlSelect; overload;
+    function groupBy(groupList: string): ISqlSelect;
+    function having(aggregateCondition: string): ISqlSelect;
+    function orderBy(orderList: string): ISqlSelect;
 
-    function First(aCount: Integer): ISqlSelect;
-    function Skip(aCount: Integer): ISqlSelect;
-    function Distinct: ISqlSelect;
+    function first(count: integer): ISqlSelect;
+    function skip(count: integer): ISqlSelect;
+    function distinct: ISqlSelect;
 
-    function ToString: string;
+    function toStr: string;
   end;
 
   ISqlInsert = interface
-    function Into(aTarget: string): ISqlInsert;
+    function into(target: string): ISqlInsert;
 
-    function Value(aColumn: string; aValue: Variant): ISqlInsert;
-    function ValueExpression(aColumn, aExpression: string): ISqlInsert;
+    function value(column: string; value: variant): ISqlInsert;
+    function valueExpression(column, expression: string): ISqlInsert;
 
-    function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlInsert; overload;
-    function ValueNull(aColumn: string; aValue: Integer; aNullValue: Integer = 0): ISqlInsert; overload;
+    function valueNull(column, value: string; nullValue: string = ''): ISqlInsert; overload;
+    function valueNull(column: string; value: integer; nullValue: integer = 0): ISqlInsert; overload;
 
-    function ValueDate(aColumn: string; aDate: TDate): ISqlInsert;
-    function ValueTime(aColumn: string; aTime: TTime): ISqlInsert;
-    function ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlInsert;
+    function valueDate(column: string; value: TDate): ISqlInsert;
+    function valueTime(column: string; value: TTime): ISqlInsert;
+    function valueDateTime(column: string; value: TDateTime): ISqlInsert;
 
-    function ToString: string;
-    function IsEmpty: Boolean;
+    function toStr: string;
+    function isEmpty: boolean;
   end;
 
   ISqlUpdateOrInsert = interface
-    function Into(aTarget: string): ISqlUpdateOrInsert;
+    function into(target: string): ISqlUpdateOrInsert;
 
-    function Value(aColumn: string; aValue: Variant): ISqlUpdateOrInsert;
-    function ValueExpression(aColumn, aExpression: string): ISqlUpdateOrInsert;
+    function value(column: string; value: variant): ISqlUpdateOrInsert;
+    function valueExpression(column, expression: string): ISqlUpdateOrInsert;
 
-    function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlUpdateOrInsert; overload;
-    function ValueNull(aColumn: string; aValue: Integer; aNullValue: Integer = 0): ISqlUpdateOrInsert; overload;
+    function valueNull(column, value: string; nullValue: string = ''): ISqlUpdateOrInsert; overload;
+    function valueNull(column: string; value: integer; nullValue: integer = 0): ISqlUpdateOrInsert; overload;
 
-    function ValueDate(aColumn: string; aDate: TDate): ISqlUpdateOrInsert;
-    function ValueTime(aColumn: string; aTime: TTime): ISqlUpdateOrInsert;
-    function ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlUpdateOrInsert;
+    function valueDate(column: string; value: TDate): ISqlUpdateOrInsert;
+    function valueTime(column: string; value: TTime): ISqlUpdateOrInsert;
+    function valueDateTime(column: string; value: TDateTime): ISqlUpdateOrInsert;
 
-    function Matching(aColumnList: string): ISqlUpdateOrInsert;
+    function matching(columnList: string): ISqlUpdateOrInsert;
 
-    function ToString: string;
-    function IsEmpty: Boolean;
+    function toStr: string;
+    function isEmpty: boolean;
   end;
 
   ISqlUpdate = interface
-    function Table(aTarget: string): ISqlUpdate;
+    function table(target: string): ISqlUpdate;
 
-    function Value(aColumn: string; aValue: Variant): ISqlUpdate;
-    function ValueExpression(aColumn, aExpression: string): ISqlUpdate;
+    function value(column: string; value: variant): ISqlUpdate;
+    function valueExpression(column, expression: string): ISqlUpdate;
 
-    function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlUpdate; overload;
-    function ValueNull(aColumn: string; aValue: Integer; aNullValue: Integer = 0): ISqlUpdate; overload;
+    function valueNull(column, value: string; nullValue: string = ''): ISqlUpdate; overload;
+    function valueNull(column: string; value: integer; nullValue: integer = 0): ISqlUpdate; overload;
 
-    function ValueDate(aColumn: string; aDate: TDate): ISqlUpdate;
-    function ValueTime(aColumn: string; aTime: TTime): ISqlUpdate;
-    function ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlUpdate;
+    function valueDate(column: string; value: TDate): ISqlUpdate;
+    function valueTime(column: string; value: TTime): ISqlUpdate;
+    function valueDateTime(column: string; value: TDateTime): ISqlUpdate;
 
-    function Where(aConditions: string): ISqlUpdate; overload;
-    function Where(aWhere: ISqlWhere): ISqlUpdate; overload;
+    function where(conditions: string): ISqlUpdate; overload;
+    function where(sqlWhere: ISqlWhere): ISqlUpdate; overload;
 
-    function ToString: string;
-    function IsEmpty: Boolean;
+    function toStr: string;
+    function isEmpty: boolean;
   end;
 
   ISqlDelete = interface
-    function From(aTarget: string): ISqlDelete;
+    function from(target: string): ISqlDelete;
 
-    function Where(aConditions: string): ISqlDelete; overload;
-    function Where(aWhere: ISqlWhere): ISqlDelete; overload;
+    function where(conditions: string): ISqlDelete; overload;
+    function where(sqlWhere: ISqlWhere): ISqlDelete; overload;
 
-    function ToString: string;
+    function toStr: string;
   end;
 
   ISqlProcedureCreate = interface
-    function name(aName: string): ISqlProcedureCreate;
-    function Input(aName, aType: string): ISqlProcedureCreate;
-    function Return(aName, aType: string): ISqlProcedureCreate;
-    function Variable(aName, aType: string): ISqlProcedureCreate;
-    function Instruction(aSqlInstruction: string): ISqlProcedureCreate;
+    function name(name: string): ISqlProcedureCreate;
+    function input(name, type_: string): ISqlProcedureCreate;
+    function return(name, type_: string): ISqlProcedureCreate;
+    function variable(name, type_: string): ISqlProcedureCreate;
+    function instruction(sqlInstruction: string): ISqlProcedureCreate;
 
-    function ToString: string;
+    function toStr: string;
   end;
 
 implementation

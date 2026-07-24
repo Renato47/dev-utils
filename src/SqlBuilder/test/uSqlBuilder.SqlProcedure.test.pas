@@ -2,50 +2,51 @@ unit uSqlBuilder.SqlProcedure.test;
 
 interface
 
-procedure SqlProcedureTest;
+procedure sqlProcedureTest;
 
 implementation
 
 uses
   uSqlBuilder, uCompare, System.SysUtils;
 
-procedure SqlProcedureTest;
+procedure sqlProcedureTest;
 var
-  sSqlCompare, sSqlBuilder: string;
+  sqlCompare, sqlBuilder: string;
 begin
-  sSqlCompare := 'GENERATE_FEES (1, NULL, NULL)';
-  sSqlBuilder := SQL.&Procedure('GENERATE_FEES')
-    .Value(1)
-    .ValueExpression('NULL')
-    .Null
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'GENERATE_FEES (1, NULL, NULL)';
+  sqlBuilder := SQL.&procedure('GENERATE_FEES')
+    .value(1)
+    .valueExpression('NULL')
+    .null
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'GENERATE_FEES (''ORDER'', NULL, 5, NULL)';
-  sSqlBuilder := SQL.&Procedure('GENERATE_FEES')
-    .ValueNull('ORDER')
-    .ValueNull('')
-    .ValueNull(5)
-    .ValueNull(0)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'GENERATE_FEES (''ORDER'', NULL, 5, NULL)';
+  sqlBuilder := SQL.&procedure('GENERATE_FEES')
+    .valueNull('ORDER')
+    .valueNull('')
+    .valueNull(5)
+    .valueNull(0)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'GENERATE_FEES (' + FormatDateTime('dd.mm.yyyy', Now).QuotedString + ', ' + FormatDateTime('hh:mm:ss', Now).QuotedString + ', ' +
-    FormatDateTime('dd.mm.yyyy hh:mm:ss', Now).QuotedString + ')';
-  sSqlBuilder := SQL.&Procedure('GENERATE_FEES')
-    .Date(Now)
-    .Time(Now)
-    .DateTime(Now)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'GENERATE_FEES (' + formatDateTime('dd.mm.yyyy', now).quotedString + ', '
+    + formatDateTime('hh:mm:ss', now).quotedString + ', '
+    + formatDateTime('dd.mm.yyyy hh:mm:ss', now).quotedString + ')';
+  sqlBuilder := SQL.&procedure('GENERATE_FEES')
+    .date(now)
+    .time(now)
+    .dateTime(now)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'GENERATE_FEES (CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP)';
-  sSqlBuilder := SQL.&Procedure('GENERATE_FEES')
-    .CurrentDate
-    .CurrentTime
-    .CurrentTimestamp
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'GENERATE_FEES (CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP)';
+  sqlBuilder := SQL.&procedure('GENERATE_FEES')
+    .currentDate
+    .currentTime
+    .currentTimestamp
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

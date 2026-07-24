@@ -8,23 +8,23 @@ uses
 type
   TSqlCase = class(TInterfacedObject, ISqlCase)
   private
-    expression: string;
-    whenThenList: TStringList;
-    alias: string;
+    fExpression: string;
+    fWhenThenList: TStringList;
+    fAlias: string;
   public
     constructor Create;
     destructor Destroy; override;
 
-    function TestExpression(aExpression: string): ISqlCase;
+    function testExpression(expression: string): ISqlCase;
 
-    function WhenThenColumn(aCondition, aColumn: string): ISqlCase;
-    function WhenThen(aCondition: string; aResult: Variant): ISqlCase;
-    function ElseColumn(aColumn: string): ISqlCase;
-    function &Else(aResult: Variant): ISqlCase;
+    function whenThenColumn(condition, column: string): ISqlCase;
+    function whenThen(condition: string; value: variant): ISqlCase;
+    function elseColumn(column: string): ISqlCase;
+    function &else(value: variant): ISqlCase;
 
-    function &As(aAlias: string): ISqlCase;
+    function &as(alias: string): ISqlCase;
 
-    function ToString: string; override;
+    function toStr: string;
   end;
 
 implementation
@@ -34,58 +34,58 @@ uses
 
 constructor TSqlCase.Create;
 begin
-  whenThenList := TStringList.Create;
+  fWhenThenList := TStringList.Create;
 end;
 
 destructor TSqlCase.Destroy;
 begin
-  whenThenList.Free;
+  fWhenThenList.free;
 
   inherited;
 end;
 
-function TSqlCase.&Else(aResult: Variant): ISqlCase;
+function TSqlCase.&else(value: variant): ISqlCase;
 begin
-  Result := Self;
-  whenThenList.Append(' ELSE ' + TSqlValue.ValueToSql(aResult));
+  result := self;
+  fWhenThenList.append(' ELSE ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlCase.ElseColumn(aColumn: string): ISqlCase;
+function TSqlCase.elseColumn(column: string): ISqlCase;
 begin
-  Result := Self;
-  whenThenList.Append(' ELSE ' + aColumn);
+  result := self;
+  fWhenThenList.append(' ELSE ' + column);
 end;
 
-function TSqlCase.&As(aAlias: string): ISqlCase;
+function TSqlCase.&as(alias: string): ISqlCase;
 begin
-  Result := Self;
-  alias := aAlias;
+  result := self;
+  fAlias := alias;
 end;
 
-function TSqlCase.TestExpression(aExpression: string): ISqlCase;
+function TSqlCase.testExpression(expression: string): ISqlCase;
 begin
-  Result := Self;
-  expression := ' ' + aExpression;
+  result := self;
+  fExpression := ' ' + expression;
 end;
 
-function TSqlCase.ToString: string;
+function TSqlCase.toStr: string;
 begin
-  Result := 'CASE' + expression + whenThenList.Text.Replace(sLineBreak, '') + ' END';
+  result := 'CASE' + fExpression + fWhenThenList.text.replace(sLineBreak, '') + ' END';
 
-  if not alias.IsEmpty then
-    Result := Result + ' AS ' + alias;
+  if not fAlias.isEmpty then
+    result := result + ' AS ' + fAlias;
 end;
 
-function TSqlCase.WhenThen(aCondition: string; aResult: Variant): ISqlCase;
+function TSqlCase.whenThen(condition: string; value: variant): ISqlCase;
 begin
-  Result := Self;
-  whenThenList.Append(' WHEN ' + aCondition + ' THEN ' + TSqlValue.ValueToSql(aResult));
+  result := self;
+  fWhenThenList.append(' WHEN ' + condition + ' THEN ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlCase.WhenThenColumn(aCondition, aColumn: string): ISqlCase;
+function TSqlCase.whenThenColumn(condition, column: string): ISqlCase;
 begin
-  Result := Self;
-  whenThenList.Append(' WHEN ' + aCondition + ' THEN ' + aColumn);
+  result := self;
+  fWhenThenList.append(' WHEN ' + condition + ' THEN ' + column);
 end;
 
 end.

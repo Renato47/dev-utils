@@ -1,219 +1,223 @@
-unit uSqlBuilder.Where.test;
+unit uSqlBuilder.where.test;
 
 interface
 
-procedure WhereTest;
+procedure whereTest;
 
 implementation
 
 uses
   uSqlBuilder, uCompare, System.SysUtils;
 
-procedure WhereTest;
+procedure whereTest;
 var
-  sSqlCompare, sSqlBuilder: string;
+  sqlCompare, sqlBuilder: string;
 begin
-  sSqlCompare := 'ID > 0';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND PRICE >= 5';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .Column('PRICE').GreaterOrEqual(5)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND PRICE >= 5';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .column('PRICE').greaterOrEqual(5)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND (PRICE >= 5 OR DESCRIPTION LIKE ''BLUE'')';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .&And(SQL.Where
-      .Column('PRICE').GreaterOrEqual(5)
-      .&Or('DESCRIPTION').Like('BLUE'))
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND (PRICE >= 5 OR DESCRIPTION LIKE ''BLUE'')';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .&and(SQL.where
+      .column('PRICE').greaterOrEqual(5)
+      .&or('DESCRIPTION').like('BLUE'))
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND (PRICE BETWEEN 5 AND 10 OR DESCRIPTION STARTING WITH ''BLUE'')';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .&And(SQL.Where
-      .Column('PRICE').Between(5, 10)
-      .&Or('DESCRIPTION').StartingWith('BLUE'))
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND (PRICE BETWEEN 5 AND 10 OR DESCRIPTION STARTING WITH ''BLUE'')';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .&and(SQL.where
+      .column('PRICE').between(5, 10)
+      .&or('DESCRIPTION').startingWith('BLUE'))
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID IS NULL OR (PRICE NOT BETWEEN 5 AND 10 OR DESCRIPTION CONTAINING ''BLUE'') AND STATUS IN (1, 2, 3)';
-  sSqlBuilder := SQL.Where
-    .Column('ID').IsNull
-    .&Or(SQL.Where
-      .Column('PRICE').NotBetween(5, 10)
-      .&Or('DESCRIPTION').Containing('BLUE'))
-    .Column('STATUS').&In([1, 2, 3])
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID IS NULL OR (PRICE NOT BETWEEN 5 AND 10 OR DESCRIPTION CONTAINING ''BLUE'') '
+    + 'AND STATUS IN (1, 2, 3)';
+  sqlBuilder := SQL.where
+    .column('ID').isNull
+    .&or(SQL.where
+      .column('PRICE').notBetween(5, 10)
+      .&or('DESCRIPTION').containing('BLUE'))
+    .column('STATUS').&in([1, 2, 3])
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID IS NULL OR (CREATED_AT BETWEEN ' + FormatDateTime('dd.mm.yyyy', Now - 1).QuotedString + ' AND ' + FormatDateTime('dd.mm.yyyy', Now).QuotedString +
-    ' AND UPDATED_AT BETWEEN ' + FormatDateTime('hh:mm:ss', Now - 1).QuotedString + ' AND ' + FormatDateTime('hh:mm:ss', Now).QuotedString + ' AND DELETED_AT BETWEEN ' +
-    FormatDateTime('dd.mm.yyyy hh:mm:ss', Now - 1).QuotedString + ' AND ' + FormatDateTime('dd.mm.yyyy hh:mm:ss', Now).QuotedString +
+  sqlCompare := 'ID IS NULL OR (CREATED_AT BETWEEN ' + formatDateTime('dd.mm.yyyy', now - 1).quotedString + ' AND ' +
+    formatDateTime('dd.mm.yyyy', now).quotedString + ' AND UPDATED_AT BETWEEN ' + formatDateTime('hh:mm:ss', now - 1)
+    .quotedString + ' AND ' + formatDateTime('hh:mm:ss', now).quotedString + ' AND DELETED_AT BETWEEN ' +
+    formatDateTime('dd.mm.yyyy hh:mm:ss', now - 1).quotedString + ' AND ' + formatDateTime('dd.mm.yyyy hh:mm:ss', now)
+    .quotedString + ' OR DESCRIPTION CONTAINING ''BLUE'') AND STATUS IN (1, 2, 3)';
+  sqlBuilder := SQL.where
+    .column('ID').isNull
+    .&or(SQL.where
+      .column('CREATED_AT').betweenDate(now - 1, now)
+      .column('UPDATED_AT').betweenTime(now - 1, now)
+      .column('DELETED_AT').betweenDateTime(now - 1, now)
+      .&or('DESCRIPTION').containing('BLUE'))
+    .column('STATUS').&in([1, 2, 3])
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
+
+  sqlCompare := 'ID IS NULL OR (CREATED_AT NOT BETWEEN ' + formatDateTime('dd.mm.yyyy', now - 1).quotedString + ' AND '
+    + formatDateTime('dd.mm.yyyy', now).quotedString + ' AND UPDATED_AT NOT BETWEEN ' +
+    formatDateTime('hh:mm:ss', now - 1).quotedString + ' AND ' + formatDateTime('hh:mm:ss', now).quotedString +
+    ' AND DELETED_AT NOT BETWEEN ' + formatDateTime('dd.mm.yyyy hh:mm:ss', now - 1).quotedString + ' AND ' +
+    formatDateTime('dd.mm.yyyy hh:mm:ss', now).quotedString +
     ' OR DESCRIPTION CONTAINING ''BLUE'') AND STATUS IN (1, 2, 3)';
-  sSqlBuilder := SQL.Where
-    .Column('ID').IsNull
-    .&Or(SQL.Where
-      .Column('CREATED_AT').BetweenDate(Now - 1, Now)
-      .Column('UPDATED_AT').BetweenTime(Now - 1, Now)
-      .Column('DELETED_AT').BetweenDateTime(Now - 1, Now)
-      .&Or('DESCRIPTION').Containing('BLUE'))
-    .Column('STATUS').&In([1, 2, 3])
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlBuilder := SQL.where
+    .column('ID').isNull
+    .&or(SQL.where
+      .column('CREATED_AT').notBetweenDate(now - 1, now)
+      .column('UPDATED_AT').notBetweenTime(now - 1, now)
+      .column('DELETED_AT').notBetweenDateTime(now - 1, now)
+      .&or('DESCRIPTION').containing('BLUE'))
+    .column('STATUS').&in([1, 2, 3])
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID IS NULL OR (CREATED_AT NOT BETWEEN ' + FormatDateTime('dd.mm.yyyy', Now - 1).QuotedString + ' AND ' + FormatDateTime('dd.mm.yyyy', Now).QuotedString +
-    ' AND UPDATED_AT NOT BETWEEN ' + FormatDateTime('hh:mm:ss', Now - 1).QuotedString + ' AND ' + FormatDateTime('hh:mm:ss', Now).QuotedString + ' AND DELETED_AT NOT BETWEEN ' +
-    FormatDateTime('dd.mm.yyyy hh:mm:ss', Now - 1).QuotedString + ' AND ' + FormatDateTime('dd.mm.yyyy hh:mm:ss', Now).QuotedString +
-    ' OR DESCRIPTION CONTAINING ''BLUE'') AND STATUS IN (1, 2, 3)';
-  sSqlBuilder := SQL.Where
-    .Column('ID').IsNull
-    .&Or(SQL.Where
-      .Column('CREATED_AT').NotBetweenDate(Now - 1, Now)
-      .Column('UPDATED_AT').NotBetweenTime(Now - 1, Now)
-      .Column('DELETED_AT').NotBetweenDateTime(Now - 1, Now)
-      .&Or('DESCRIPTION').Containing('BLUE'))
-    .Column('STATUS').&In([1, 2, 3])
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID IS NOT NULL AND EXISTS (SELECT ID FROM CATEGORY) AND STATUS IN (SELECT ID FROM PRODUCTS)';
+  sqlBuilder := SQL.where
+    .column('ID').isNotNull
+    .exists(SQL.select.column('ID').from('CATEGORY'))
+    .column('STATUS').&in(SQL.select.column('ID').from('PRODUCTS'))
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID IS NOT NULL AND EXISTS (SELECT ID FROM CATEGORY) AND STATUS IN (SELECT ID FROM PRODUCTS)';
-  sSqlBuilder := SQL.Where
-    .Column('ID').IsNotNull
-    .Exists(SQL.Select.Column('ID').From('CATEGORY'))
-    .Column('STATUS').&In(SQL.Select.Column('ID').From('PRODUCTS'))
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID IS NOT NULL AND NOT EXISTS (SELECT ID FROM CATEGORY) AND STATUS NOT IN (''A'', ''B'', ''C'')';
+  sqlBuilder := SQL.where
+    .column('ID').isNotNull
+    .notExists(SQL.select.column('ID').from('CATEGORY'))
+    .column('STATUS').notIn(['A', 'B', 'C'])
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID IS NOT NULL AND NOT EXISTS (SELECT ID FROM CATEGORY) AND STATUS NOT IN (''A'', ''B'', ''C'')';
-  sSqlBuilder := SQL.Where
-    .Column('ID').IsNotNull
-    .NotExists(SQL.Select.Column('ID').From('CATEGORY'))
-    .Column('STATUS').NotIn(['A', 'B', 'C'])
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID IS NOT NULL OR EXISTS (SELECT ID FROM CATEGORY)';
+  sqlBuilder := SQL.where
+    .column('ID').isNotNull
+    .orExists(SQL.select.column('ID').from('CATEGORY'))
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID IS NOT NULL OR EXISTS (SELECT ID FROM CATEGORY)';
-  sSqlBuilder := SQL.Where
-    .Column('ID').IsNotNull
-    .OrExists(SQL.Select.Column('ID').From('CATEGORY'))
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID IS NOT NULL OR NOT EXISTS (SELECT ID FROM CATEGORY)';
+  sqlBuilder := SQL.where
+    .column('ID').isNotNull
+    .orNotExists(SQL.select.column('ID').from('CATEGORY'))
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID IS NOT NULL OR NOT EXISTS (SELECT ID FROM CATEGORY)';
-  sSqlBuilder := SQL.Where
-    .Column('ID').IsNotNull
-    .OrNotExists(SQL.Select.Column('ID').From('CATEGORY'))
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID < 0 AND CREATED_AT > CURRENT_DATE';
+  sqlBuilder := SQL.where
+    .column('ID').less(0)
+    .column('CREATED_AT').greater.currentDate
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID < 0 AND CREATED_AT > CURRENT_DATE';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Less(0)
-    .Column('CREATED_AT').Greater.CurrentDate
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID <= 0 AND CREATED_AT >= CURRENT_DATE';
+  sqlBuilder := SQL.where
+    .column('ID').lessOrEqual(0)
+    .column('CREATED_AT').greaterOrEqual.currentDate
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID <= 0 AND CREATED_AT >= CURRENT_DATE';
-  sSqlBuilder := SQL.Where
-    .Column('ID').LessOrEqual(0)
-    .Column('CREATED_AT').GreaterOrEqual.CurrentDate
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND CREATED_AT < CURRENT_TIME';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .column('CREATED_AT').less.currentTime
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND CREATED_AT < CURRENT_TIME';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .Column('CREATED_AT').Less.CurrentTime
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND CREATED_AT <= CURRENT_TIMESTAMP';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .column('CREATED_AT').lessOrEqual.currentTimestamp
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND CREATED_AT <= CURRENT_TIMESTAMP';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .Column('CREATED_AT').LessOrEqual.CurrentTimestamp
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND CREATED_AT = ' + formatDateTime('dd.mm.yyyy', now).quotedString;
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .column('CREATED_AT').equal.date(now)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND CREATED_AT = ' + FormatDateTime('dd.mm.yyyy', Now).QuotedString;
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .Column('CREATED_AT').Equal.Date(Now)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID <> 0 AND CREATED_AT <> ' + formatDateTime('dd.mm.yyyy hh:mm:ss', now).quotedString;
+  sqlBuilder := SQL.where
+    .column('ID').different(0)
+    .column('CREATED_AT').different.dateTime(now)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID <> 0 AND CREATED_AT <> ' + FormatDateTime('dd.mm.yyyy hh:mm:ss', Now).QuotedString;
-  sSqlBuilder := SQL.Where
-    .Column('ID').Different(0)
-    .Column('CREATED_AT').Different.DateTime(Now)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID = 5 AND CREATED_AT <> NULL';
+  sqlBuilder := SQL.where
+    .column('ID').equal(5)
+    .column('CREATED_AT').different.dateTime(0)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID = 5 AND CREATED_AT <> NULL';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Equal(5)
-    .Column('CREATED_AT').Different.DateTime(0)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID = 5 AND CREATED_AT = NULL';
+  sqlBuilder := SQL.where
+    .column('ID').equal(5)
+    .column('CREATED_AT').equal.date(0)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID = 5 AND CREATED_AT = NULL';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Equal(5)
-    .Column('CREATED_AT').Equal.Date(0)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID = 5 AND CREATED_AT = ' + formatDateTime('hh:mm:ss', now).quotedString;
+  sqlBuilder := SQL.where
+    .column('ID').equal(5)
+    .column('CREATED_AT').equal.time(now)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID = 5 AND CREATED_AT = ' + FormatDateTime('hh:mm:ss', Now).QuotedString;
-  sSqlBuilder := SQL.Where
-    .Column('ID').Equal(5)
-    .Column('CREATED_AT').Equal.Time(Now)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID = 5 AND CREATED_AT = NULL';
+  sqlBuilder := SQL.where
+    .column('ID').equal(5)
+    .column('CREATED_AT').equal.time(0)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID = 5 AND CREATED_AT = NULL';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Equal(5)
-    .Column('CREATED_AT').Equal.Time(0)
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND (DESCRIPTION LIKE ''%NAME%'' AND DESCRIPTION LIKE ''%SEARCH%'')';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .column('DESCRIPTION').likeSplit('NAME SEARCH')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND (DESCRIPTION LIKE ''%NAME%'' AND DESCRIPTION LIKE ''%SEARCH%'')';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .Column('DESCRIPTION').LikeSplit('NAME SEARCH')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND DESCRIPTION LIKE ''%SEARCH%''';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .column('DESCRIPTION').likeSplit('SEARCH')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND DESCRIPTION LIKE ''%SEARCH%''';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .Column('DESCRIPTION').LikeSplit('SEARCH')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND DESCRIPTION NOT LIKE ''SEARCH''';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .column('DESCRIPTION').notLike('SEARCH')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND DESCRIPTION NOT LIKE ''SEARCH''';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .Column('DESCRIPTION').NotLike('SEARCH')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'ID > 0 AND PRICE > FEES';
+  sqlBuilder := SQL.where
+    .column('ID').greater(0)
+    .column('PRICE').greater.column('FEES')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'ID > 0 AND PRICE > FEES';
-  sSqlBuilder := SQL.Where
-    .Column('ID').Greater(0)
-    .Column('PRICE').Greater.Column('FEES')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
-
-  CompareSql(BoolToStr(True), BoolToStr(SQL.Where.IsEmpty));
-  CompareSql(BoolToStr(False), BoolToStr(SQL.Where.Column('ID').Equal(1).IsEmpty));
+  compareSql(boolToStr(true), boolToStr(SQL.where.isEmpty));
+  compareSql(boolToStr(false), boolToStr(SQL.where.column('ID').equal(1).isEmpty));
 end;
 
 end.

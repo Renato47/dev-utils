@@ -11,27 +11,27 @@ type
     fName: string;
     fInputList: string;
 
-    procedure AddInput(aValue: string);
+    procedure addInput(value: string);
   public
-    function &Procedure(aName: string): ISqlExecProcedure;
+    function &procedure(name: string): ISqlExecProcedure;
 
-    function Value(aValue: Variant): ISqlExecProcedure;
-    function ValueExpression(aExpression: string): ISqlExecProcedure;
+    function value(value: variant): ISqlExecProcedure;
+    function valueExpression(expression: string): ISqlExecProcedure;
 
-    function ValueNull(aValue: string; aNullValue: string = ''): ISqlExecProcedure; overload;
-    function ValueNull(aValue: Integer; aNullValue: Integer = 0): ISqlExecProcedure; overload;
+    function valueNull(value: string; nullValue: string = ''): ISqlExecProcedure; overload;
+    function valueNull(value: integer; nullValue: integer = 0): ISqlExecProcedure; overload;
 
-    function Null: ISqlExecProcedure;
+    function null: ISqlExecProcedure;
 
-    function Date(aDate: TDate): ISqlExecProcedure;
-    function Time(aTime: TTime): ISqlExecProcedure;
-    function DateTime(aDateTime: TDateTime): ISqlExecProcedure;
+    function date(value: TDate): ISqlExecProcedure;
+    function time(value: TTime): ISqlExecProcedure;
+    function dateTime(value: TDateTime): ISqlExecProcedure;
 
-    function CurrentDate: ISqlExecProcedure;
-    function CurrentTime: ISqlExecProcedure;
-    function CurrentTimestamp: ISqlExecProcedure;
+    function currentDate: ISqlExecProcedure;
+    function currentTime: ISqlExecProcedure;
+    function currentTimestamp: ISqlExecProcedure;
 
-    function ToString: string; override;
+    function toStr: string;
   end;
 
 implementation
@@ -39,100 +39,100 @@ implementation
 uses
   uSqlBuilder;
 
-procedure TSqlExecProcedure.AddInput(aValue: string);
+procedure TSqlExecProcedure.addInput(value: string);
 begin
-  if not fInputList.IsEmpty then
+  if not fInputList.isEmpty then
     fInputList := fInputList + ', ';
 
-  fInputList := fInputList + aValue;
+  fInputList := fInputList + value;
 end;
 
-function TSqlExecProcedure.CurrentDate: ISqlExecProcedure;
+function TSqlExecProcedure.currentDate: ISqlExecProcedure;
 begin
-  Result := Self;
-  AddInput('CURRENT_DATE');
+  result := self;
+  addInput('CURRENT_DATE');
 end;
 
-function TSqlExecProcedure.CurrentTime: ISqlExecProcedure;
+function TSqlExecProcedure.currentTime: ISqlExecProcedure;
 begin
-  Result := Self;
-  AddInput('CURRENT_TIME');
+  result := self;
+  addInput('CURRENT_TIME');
 end;
 
-function TSqlExecProcedure.CurrentTimestamp: ISqlExecProcedure;
+function TSqlExecProcedure.currentTimestamp: ISqlExecProcedure;
 begin
-  Result := Self;
-  AddInput('CURRENT_TIMESTAMP');
+  result := self;
+  addInput('CURRENT_TIMESTAMP');
 end;
 
-function TSqlExecProcedure.Date(aDate: TDate): ISqlExecProcedure;
+function TSqlExecProcedure.date(value: TDate): ISqlExecProcedure;
 begin
-  Result := Self;
-  AddInput(TSqlValue.ValueToSql(TSqlValue.AsDate(aDate)));
+  result := self;
+  addInput(TSqlValue.valueToSql(TSqlValue.asDate(value)));
 end;
 
-function TSqlExecProcedure.DateTime(aDateTime: TDateTime): ISqlExecProcedure;
+function TSqlExecProcedure.dateTime(value: TDateTime): ISqlExecProcedure;
 begin
-  Result := Self;
-  AddInput(TSqlValue.ValueToSql(TSqlValue.AsDateTime(aDateTime)));
+  result := self;
+  addInput(TSqlValue.valueToSql(TSqlValue.asDateTime(value)));
 end;
 
-function TSqlExecProcedure.Null: ISqlExecProcedure;
+function TSqlExecProcedure.null: ISqlExecProcedure;
 begin
-  Result := Self;
-  AddInput('NULL');
+  result := self;
+  addInput('NULL');
 end;
 
-function TSqlExecProcedure.&Procedure(aName: string): ISqlExecProcedure;
+function TSqlExecProcedure.&procedure(name: string): ISqlExecProcedure;
 begin
-  Result := Self;
-  fName := aName;
+  result := self;
+  fName := name;
 end;
 
-function TSqlExecProcedure.Time(aTime: TTime): ISqlExecProcedure;
+function TSqlExecProcedure.time(value: TTime): ISqlExecProcedure;
 begin
-  Result := Self;
-  AddInput(TSqlValue.ValueToSql(TSqlValue.AsTime(aTime)));
+  result := self;
+  addInput(TSqlValue.valueToSql(TSqlValue.asTime(value)));
 end;
 
-function TSqlExecProcedure.ToString: string;
+function TSqlExecProcedure.toStr: string;
 begin
-  Result := 'EXECUTE PROCEDURE ' + fName;
+  result := 'EXECUTE PROCEDURE ' + fName;
 
-  if not fInputList.IsEmpty then
-    Result := Result + ' (' + fInputList + ')';
+  if not fInputList.isEmpty then
+    result := result + ' (' + fInputList + ')';
 end;
 
-function TSqlExecProcedure.Value(aValue: Variant): ISqlExecProcedure;
+function TSqlExecProcedure.value(value: variant): ISqlExecProcedure;
 begin
-  Result := Self;
-  AddInput(TSqlValue.ValueToSql(aValue));
+  result := self;
+  addInput(TSqlValue.valueToSql(value));
 end;
 
-function TSqlExecProcedure.ValueExpression(aExpression: string): ISqlExecProcedure;
+function TSqlExecProcedure.valueExpression(expression: string): ISqlExecProcedure;
 begin
-  Result := Self;
-  AddInput(aExpression);
+  result := self;
+  addInput(expression);
 end;
 
-function TSqlExecProcedure.ValueNull(aValue, aNullValue: Integer): ISqlExecProcedure;
+function TSqlExecProcedure.valueNull(value, nullValue: integer): ISqlExecProcedure;
 begin
-  Result := Self;
+  result := self;
 
-  if aValue = aNullValue then
-    AddInput('NULL')
+  if value = nullValue then
+    addInput('NULL')
   else
-    AddInput(TSqlValue.ValueToSql(aValue));
+    addInput(TSqlValue.valueToSql(value));
 end;
 
-function TSqlExecProcedure.ValueNull(aValue, aNullValue: string): ISqlExecProcedure;
+function TSqlExecProcedure.valueNull(value, nullValue: string): ISqlExecProcedure;
 begin
-  Result := Self;
+  result := self;
 
-  if aValue = aNullValue then
-    AddInput('NULL')
+  if value = nullValue then
+    addInput('NULL')
   else
-    AddInput(TSqlValue.ValueToSql(aValue));
+    addInput(TSqlValue.valueToSql(value));
 end;
 
 end.

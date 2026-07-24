@@ -1,30 +1,30 @@
-unit uSqlBuilder.Delete.test;
+unit uSqlBuilder.delete.test;
 
 interface
 
-procedure DeleteTest;
+procedure deleteTest;
 
 implementation
 
 uses
   uSqlBuilder, uCompare;
 
-procedure DeleteTest;
+procedure deleteTest;
 var
-  sSqlCompare, sSqlBuilder: string;
+  sqlCompare, sqlBuilder: string;
 begin
-  sSqlCompare := 'DELETE FROM SESSIONS';
-  sSqlBuilder := SQL.Delete
-    .From('SESSIONS')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'DELETE FROM SESSIONS';
+  sqlBuilder := SQL.delete
+    .from('SESSIONS')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 
-  sSqlCompare := 'DELETE FROM SESSIONS WHERE USERID IS NULL';
-  sSqlBuilder := SQL.Delete
-    .From('SESSIONS')
-    .Where('USERID IS NULL')
-    .ToString;
-  CompareSql(sSqlCompare, sSqlBuilder);
+  sqlCompare := 'DELETE FROM SESSIONS WHERE USERID IS NULL';
+  sqlBuilder := SQL.delete
+    .from('SESSIONS')
+    .where('USERID IS NULL')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

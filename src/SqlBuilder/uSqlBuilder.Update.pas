@@ -8,30 +8,30 @@ uses
 type
   TSqlUpdate = class(TInterfacedObject, ISqlUpdate)
   private
-    target: string;
-    columnsValues: TStringList;
-    conditions: string;
+    fTarget: string;
+    fColumnsValues: TStringList;
+    fConditions: string;
   public
     constructor Create;
     destructor Destroy; override;
 
-    function Table(aTarget: string): ISqlUpdate;
+    function table(target: string): ISqlUpdate;
 
-    function Value(aColumn: string; aValue: Variant): ISqlUpdate;
-    function ValueExpression(aColumn, aExpression: string): ISqlUpdate;
+    function value(column: string; value: variant): ISqlUpdate;
+    function valueExpression(column, expression: string): ISqlUpdate;
 
-    function ValueNull(aColumn, aValue: string; aNullValue: string = ''): ISqlUpdate; overload;
-    function ValueNull(aColumn: string; aValue: Integer; aNullValue: Integer = 0): ISqlUpdate; overload;
+    function valueNull(column, value: string; nullValue: string = ''): ISqlUpdate; overload;
+    function valueNull(column: string; value: integer; nullValue: integer = 0): ISqlUpdate; overload;
 
-    function ValueDate(aColumn: string; aDate: TDate): ISqlUpdate;
-    function ValueTime(aColumn: string; aTime: TTime): ISqlUpdate;
-    function ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlUpdate;
+    function valueDate(column: string; value: TDate): ISqlUpdate;
+    function valueTime(column: string; value: TTime): ISqlUpdate;
+    function valueDateTime(column: string; value: TDateTime): ISqlUpdate;
 
-    function Where(aConditions: string): ISqlUpdate; overload;
-    function Where(aWhere: ISqlWhere): ISqlUpdate; overload;
+    function where(conditions: string): ISqlUpdate; overload;
+    function where(sqlWhere: ISqlWhere): ISqlUpdate; overload;
 
-    function ToString: string; override;
-    function IsEmpty: Boolean;
+    function toStr: string;
+    function isEmpty: boolean;
   end;
 
 implementation
@@ -41,102 +41,102 @@ uses
 
 constructor TSqlUpdate.Create;
 begin
-  columnsValues := TStringList.Create;
-  columnsValues.QuoteChar := #0;
-  columnsValues.StrictDelimiter := True;
+  fColumnsValues := TStringList.Create;
+  fColumnsValues.quoteChar := #0;
+  fColumnsValues.strictDelimiter := true;
 end;
 
 destructor TSqlUpdate.Destroy;
 begin
-  columnsValues.Free;
+  fColumnsValues.free;
 
   inherited;
 end;
 
-function TSqlUpdate.IsEmpty: Boolean;
+function TSqlUpdate.isEmpty: boolean;
 begin
-  Result := columnsValues.Count = 0;
+  result := fColumnsValues.count = 0;
 end;
 
-function TSqlUpdate.Table(aTarget: string): ISqlUpdate;
+function TSqlUpdate.table(target: string): ISqlUpdate;
 begin
-  Result := Self;
-  target := aTarget;
+  result := self;
+  fTarget := target;
 end;
 
-function TSqlUpdate.ToString: string;
+function TSqlUpdate.toStr: string;
 begin
-  Result := 'UPDATE ' + target + ' SET ' + columnsValues.DelimitedText;
+  result := 'UPDATE ' + fTarget + ' SET ' + fColumnsValues.delimitedText;
 
-  if not conditions.IsEmpty then
-    Result := Result + ' WHERE ' + conditions;
+  if not fConditions.isEmpty then
+    result := result + ' WHERE ' + fConditions;
 end;
 
-function TSqlUpdate.Value(aColumn: string; aValue: Variant): ISqlUpdate;
+function TSqlUpdate.value(column: string; value: variant): ISqlUpdate;
 begin
-  Result := Self;
-  columnsValues.Append(aColumn + ' = ' + TSqlValue.ValueToSql(aValue));
+  result := self;
+  fColumnsValues.append(column + ' = ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlUpdate.ValueDate(aColumn: string; aDate: TDate): ISqlUpdate;
+function TSqlUpdate.valueDate(column: string; value: TDate): ISqlUpdate;
 begin
-  if aDate = 0 then
-    Result := ValueExpression(aColumn, 'NULL')
+  if value = 0 then
+    result := valueExpression(column, 'NULL')
   else
-    Result := Value(aColumn, FormatDateTime('dd.mm.yyyy', aDate));
+    result := self.value(column, formatDateTime('dd.mm.yyyy', value));
 end;
 
-function TSqlUpdate.ValueDateTime(aColumn: string; aDateTime: TDateTime): ISqlUpdate;
+function TSqlUpdate.valueDateTime(column: string; value: TDateTime): ISqlUpdate;
 begin
-  if aDateTime = 0 then
-    Result := ValueExpression(aColumn, 'NULL')
+  if value = 0 then
+    result := valueExpression(column, 'NULL')
   else
-    Result := Value(aColumn, FormatDateTime('dd.mm.yyyy hh:mm:ss', aDateTime));
+    result := self.value(column, formatDateTime('dd.mm.yyyy hh:mm:ss', value));
 end;
 
-function TSqlUpdate.ValueExpression(aColumn, aExpression: string): ISqlUpdate;
+function TSqlUpdate.valueExpression(column, expression: string): ISqlUpdate;
 begin
-  Result := Self;
-  columnsValues.Append(aColumn + ' = ' + aExpression);
+  result := self;
+  fColumnsValues.append(column + ' = ' + expression);
 end;
 
-function TSqlUpdate.ValueNull(aColumn: string; aValue, aNullValue: Integer): ISqlUpdate;
+function TSqlUpdate.valueNull(column: string; value, nullValue: integer): ISqlUpdate;
 begin
-  Result := Self;
+  result := self;
 
-  if aValue = aNullValue then
-    columnsValues.Append(aColumn + ' = NULL')
+  if value = nullValue then
+    fColumnsValues.append(column + ' = NULL')
   else
-    columnsValues.Append(aColumn + ' = ' + TSqlValue.ValueToSql(aValue));
+    fColumnsValues.append(column + ' = ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlUpdate.ValueTime(aColumn: string; aTime: TTime): ISqlUpdate;
+function TSqlUpdate.valueTime(column: string; value: TTime): ISqlUpdate;
 begin
-  if aTime = 0 then
-    Result := ValueExpression(aColumn, 'NULL')
+  if value = 0 then
+    result := valueExpression(column, 'NULL')
   else
-    Result := Value(aColumn, FormatDateTime('hh:mm:ss', aTime));
+    result := self.value(column, formatDateTime('hh:mm:ss', value));
 end;
 
-function TSqlUpdate.ValueNull(aColumn, aValue, aNullValue: string): ISqlUpdate;
+function TSqlUpdate.valueNull(column, value, nullValue: string): ISqlUpdate;
 begin
-  Result := Self;
+  result := self;
 
-  if aValue = aNullValue then
-    columnsValues.Append(aColumn + ' = NULL')
+  if value = nullValue then
+    fColumnsValues.append(column + ' = NULL')
   else
-    columnsValues.Append(aColumn + ' = ' + TSqlValue.ValueToSql(aValue));
+    fColumnsValues.append(column + ' = ' + TSqlValue.valueToSql(value));
 end;
 
-function TSqlUpdate.Where(aWhere: ISqlWhere): ISqlUpdate;
+function TSqlUpdate.where(sqlWhere: ISqlWhere): ISqlUpdate;
 begin
-  Result := Where(aWhere.ToString);
+  result := where(sqlWhere.toStr);
 end;
 
-function TSqlUpdate.Where(aConditions: string): ISqlUpdate;
+function TSqlUpdate.where(conditions: string): ISqlUpdate;
 begin
-  Result := Self;
-  conditions := aConditions;
+  result := self;
+  fConditions := conditions;
 end;
 
 end.

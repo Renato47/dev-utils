@@ -8,15 +8,15 @@ uses
 type
   TSqlDelete = class(TInterfacedObject, ISqlDelete)
   private
-    target: string;
-    conditions: string;
+    fTarget: string;
+    fConditions: string;
   public
-    function From(aTarget: string): ISqlDelete;
+    function from(target: string): ISqlDelete;
 
-    function Where(aConditions: string): ISqlDelete; overload;
-    function Where(aWhere: ISqlWhere): ISqlDelete; overload;
+    function where(conditions: string): ISqlDelete; overload;
+    function where(sqlWhere: ISqlWhere): ISqlDelete; overload;
 
-    function ToString: string; override;
+    function toStr: string;
   end;
 
 implementation
@@ -24,29 +24,29 @@ implementation
 uses
   System.SysUtils;
 
-function TSqlDelete.From(aTarget: string): ISqlDelete;
+function TSqlDelete.from(target: string): ISqlDelete;
 begin
-  Result := Self;
-  target := aTarget;
+  result := self;
+  fTarget := target;
 end;
 
-function TSqlDelete.ToString: string;
+function TSqlDelete.toStr: string;
 begin
-  Result := 'DELETE FROM ' + target;
+  result := 'DELETE FROM ' + fTarget;
 
-  if not conditions.IsEmpty then
-    Result := Result + ' WHERE ' + conditions;
+  if not fConditions.isEmpty then
+    result := result + ' WHERE ' + fConditions;
 end;
 
-function TSqlDelete.Where(aConditions: string): ISqlDelete;
+function TSqlDelete.where(conditions: string): ISqlDelete;
 begin
-  Result := Self;
-  conditions := aConditions;
+  result := self;
+  fConditions := conditions;
 end;
 
-function TSqlDelete.Where(aWhere: ISqlWhere): ISqlDelete;
+function TSqlDelete.where(sqlWhere: ISqlWhere): ISqlDelete;
 begin
-  Result := Where(aWhere.ToString);
+  result := where(sqlWhere.toStr);
 end;
 
 end.
