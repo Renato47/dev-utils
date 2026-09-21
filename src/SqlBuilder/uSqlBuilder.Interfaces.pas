@@ -159,6 +159,7 @@ type
     function orderBy(orderList: string): ISqlSelect;
 
     function first(count: integer): ISqlSelect;
+    function limit(count: integer): ISqlSelect;
     function skip(count: integer): ISqlSelect;
     function distinct: ISqlSelect;
 

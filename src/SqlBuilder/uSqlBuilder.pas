@@ -155,6 +155,12 @@ begin
     varEmpty, varNull:
       ;
 
+    varBoolean:
+      if value then
+        result := 'true'
+      else
+        result := 'false';
+
     varSmallint, varInteger, varShortInt, varByte, varWord, varLongWord, varInt64:
       ;
 

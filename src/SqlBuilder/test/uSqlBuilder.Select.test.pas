@@ -32,6 +32,11 @@ begin
   sqlBuilder := SQL.select.first(5).column('DESCRICAO').from('GRUPOS').toStr;
   compareSql(sqlCompare, sqlBuilder);
 
+  //Limit
+  sqlCompare := 'SELECT DESCRICAO FROM GRUPOS LIMIT 5';
+  sqlBuilder := SQL.select.column('DESCRICAO').from('GRUPOS').limit(5).toStr;
+  compareSql(sqlCompare, sqlBuilder);
+
   //Skip
   sqlCompare := 'SELECT FIRST 1 SKIP 10 DESCRICAO FROM GRUPOS';
   sqlBuilder := SQL.select.first(1).skip(10).column('DESCRICAO').from('GRUPOS').toStr;

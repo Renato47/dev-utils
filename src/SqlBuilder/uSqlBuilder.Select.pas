@@ -11,6 +11,7 @@ type
     fColumns: TStringList;
     fSource: string;
     fFirstRows: string;
+    fLimitRows: string;
     fSkipRows: string;
     fDistinct: string;
     fJoinList: TStringList;
@@ -46,6 +47,7 @@ type
     function orderBy(order: string): ISqlSelect;
 
     function first(count: integer): ISqlSelect;
+    function limit(count: integer): ISqlSelect;
     function skip(count: integer): ISqlSelect;
     function distinct: ISqlSelect;
 
@@ -181,6 +183,14 @@ begin
   fJoinList.append(' LEFT JOIN ' + source + ' ON ' + conditions);
 end;
 
+function TSqlSelect.limit(count: integer): ISqlSelect;
+begin
+  result := self;
+
+  if count > 0 then
+    fLimitRows := ' LIMIT ' + intToStr(count);
+end;
+
 function TSqlSelect.orderBy(order: string): ISqlSelect;
 begin
   result := self;
@@ -214,14 +224,15 @@ end;
 function TSqlSelect.toStr: string;
 begin
   result :=
-    'SELECT ' +
-    fFirstRows + fSkipRows + fDistinct + fColumns.delimitedText +
-    ' FROM ' + fSource +
-    fJoinList.text.replace(sLineBreak, '') +
-    fConditions +
-    fGroupList +
-    fAggregateCondition +
-    fOrderList;
+    'SELECT '
+    + fFirstRows + fSkipRows + fDistinct + fColumns.delimitedText
+    + ' FROM ' + fSource
+    + fJoinList.text.replace(sLineBreak, '')
+    + fConditions
+    + fGroupList
+    + fAggregateCondition
+    + fOrderList
+    + fLimitRows;
 end;
 
 function TSqlSelect.where(sqlWhere: ISqlWhere): ISqlSelect;

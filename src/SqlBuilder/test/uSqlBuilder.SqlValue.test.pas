@@ -52,6 +52,14 @@ begin
   sqlCompare := formatDateTime('dd.mm.yyyy hh:mm:ss', now);
   sqlBuilder := TSqlValue.asDateTime(now);
   compareSql(sqlCompare, sqlBuilder);
+
+  sqlCompare := 'true';
+  sqlBuilder := TSqlValue.valueToSql(true);
+  compareSql(sqlCompare, sqlBuilder);
+
+  sqlCompare := 'false';
+  sqlBuilder := TSqlValue.valueToSql(false);
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.
