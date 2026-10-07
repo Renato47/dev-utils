@@ -9,6 +9,7 @@ type
   SQL = class
     class function select: ISqlSelect;
     class function insert: ISqlInsert;
+    class function insertSelect: ISqlInsertSelect;
     class function update(tableName: string): ISqlUpdate;
     class function updateOrInsert: ISqlUpdateOrInsert;
     class function delete: ISqlDelete;
@@ -29,6 +30,8 @@ type
     class function asDateTime(value: TDate): string;
 
     class function valueToSql(value: variant): string;
+
+    class function asTimestampWithoutZone(value: TDateTime): string;
   end;
 
 implementation
@@ -57,6 +60,11 @@ end;
 class function SQL.insert: ISqlInsert;
 begin
   result := TSqlInsert.Create;
+end;
+
+class function SQL.insertSelect: ISqlInsertSelect;
+begin
+  result := TSqlInsertSelect.Create;
 end;
 
 class function SQL.select: ISqlSelect;
@@ -120,6 +128,11 @@ begin
 
   if value <> unassigned then
     result := formatDateTime('hh:mm:ss', value);
+end;
+
+class function TSqlValue.asTimestampWithoutZone(value: TDateTime): string;
+begin
+  result := formatDateTime('yyyy"-"mm"-"dd hh":"nn":"ss', value).quotedString + '::timestamp';
 end;
 
 { class function TSqlValue.valueToSql(value: TValue): string;

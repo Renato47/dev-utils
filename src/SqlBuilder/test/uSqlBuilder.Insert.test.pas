@@ -69,6 +69,32 @@ begin
 
   compareSql(boolToStr(true), boolToStr(SQL.insert.isEmpty));
   compareSql(boolToStr(false), boolToStr(SQL.insert.value('ID', 1).isEmpty));
+
+  sqlCompare := 'INSERT INTO CATEGORY (ID,DESCRIPTION) VALUES (1,''FOOD'') RETURNING ID, DESCRIPTION';
+  sqlBuilder := SQL.insert
+    .into('CATEGORY')
+    .value('ID', 1)
+    .valueNull('DESCRIPTION', 'FOOD')
+    .returning(['ID', 'DESCRIPTION'])
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
+
+  compareSql(boolToStr(true), boolToStr(SQL.insertSelect.isEmpty));
+  compareSql(boolToStr(false), boolToStr(SQL.insertSelect.columns(['ID']).isEmpty));
+
+  sqlCompare := 'INSERT INTO CATEGORY (ID,DESCRIPTION) SELECT ID,NAME FROM SUBCATEGORY RETURNING ID, DESCRIPTION';
+  sqlBuilder := SQL.insertSelect
+    .into('CATEGORY')
+    .columns(['ID', 'DESCRIPTION'])
+    .select(SQL
+      .select
+      .column('ID')
+      .column('NAME')
+      .from('SUBCATEGORY')
+    )
+    .returning(['ID', 'DESCRIPTION'])
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

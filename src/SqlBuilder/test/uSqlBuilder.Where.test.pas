@@ -224,6 +224,12 @@ begin
 
   compareSql(boolToStr(true), boolToStr(SQL.where.isEmpty));
   compareSql(boolToStr(false), boolToStr(SQL.where.column('ID').equal(1).isEmpty));
+
+  sqlCompare := 'CREATED_AT < ' + formatDateTime('yyyy"-"mm"-"dd hh":"nn":"ss', now).quotedString + '::timestamp';;
+  sqlBuilder := SQL.where
+    .column('CREATED_AT').less.timestampWithoutZone(now)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

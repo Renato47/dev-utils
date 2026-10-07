@@ -130,6 +130,9 @@ type
     function currentTime: ISqlWhere;
     function currentTimestamp: ISqlWhere;
 
+    //timestamp postgre
+    function timestampWithoutZone(value: TDateTime): ISqlWhere;
+
     function toStr: string;
     function isEmpty: boolean;
   end;
@@ -138,6 +141,7 @@ type
     function allColumns: ISqlSelect;
     function column(name: string): ISqlSelect; overload;
     function column(case_: ISqlCase): ISqlSelect; overload;
+    function column(select: ISqlSelect; alias: string): ISqlSelect; overload;
 
     function cast(asType, alias: string): ISqlSelect;
 
@@ -161,6 +165,7 @@ type
     function first(count: integer): ISqlSelect;
     function limit(count: integer): ISqlSelect;
     function skip(count: integer): ISqlSelect;
+    function offset(count: integer): ISqlSelect;
     function distinct: ISqlSelect;
 
     function toStr: string;
@@ -178,6 +183,20 @@ type
     function valueDate(column: string; value: TDate): ISqlInsert;
     function valueTime(column: string; value: TTime): ISqlInsert;
     function valueDateTime(column: string; value: TDateTime): ISqlInsert;
+
+    function returning(columns: TArray<string>): ISqlInsert;
+
+    function toStr: string;
+    function isEmpty: boolean;
+  end;
+
+  ISqlInsertSelect = interface
+    function into(target: string): ISqlInsertSelect;
+
+    function columns(columns: TArray<string>): ISqlInsertSelect;
+    function select(sqlSelect: ISqlSelect): ISqlInsertSelect;
+
+    function returning(columns: TArray<string>): ISqlInsertSelect;
 
     function toStr: string;
     function isEmpty: boolean;

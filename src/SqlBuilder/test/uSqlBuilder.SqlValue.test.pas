@@ -60,6 +60,10 @@ begin
   sqlCompare := 'false';
   sqlBuilder := TSqlValue.valueToSql(false);
   compareSql(sqlCompare, sqlBuilder);
+
+  sqlCompare := formatDateTime('yyyy"-"mm"-"dd hh":"nn":"ss', now).quotedString + '::timestamp';
+  sqlBuilder := TSqlValue.asTimestampWithoutZone(now);
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

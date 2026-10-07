@@ -194,6 +194,32 @@ begin
     .rightJoin('CATEGORIAS C', 'C.CODIGO = CL.COD_CATEGORIA')
     .toStr;
   compareSql(sqlCompare, sqlBuilder);
+
+  //Column select
+  sqlCompare := 'SELECT I.ID,I.NOME,(SELECT MAX(DATA) FROM IMPRESSOES) AS ULT_IMPRESSAO FROM IMPRESSORAS I';
+  sqlBuilder := SQL
+    .select
+    .column('I.ID')
+    .column('I.NOME')
+    .column(SQL
+      .select
+      .column('MAX(DATA)')
+      .from('IMPRESSOES'),
+    'ULT_IMPRESSAO')
+    .from('IMPRESSORAS I')
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
+
+  //Offset
+  sqlCompare := 'SELECT * FROM IMPRESSOES I LIMIT 50 OFFSET 200';
+  sqlBuilder := SQL
+    .select
+    .allColumns
+    .from('IMPRESSOES I')
+    .limit(50)
+    .offset(200)
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

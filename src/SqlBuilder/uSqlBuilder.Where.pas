@@ -88,6 +88,9 @@ type
     function currentTime: ISqlWhere;
     function currentTimestamp: ISqlWhere;
 
+    //timestamp postgre
+    function timestampWithoutZone(value: TDateTime): ISqlWhere;
+
     function toStr: string;
     function isEmpty: boolean;
   end;
@@ -628,6 +631,19 @@ begin
     addCondition(fColumn + fComparisonOperator + TSqlValue.valueToSql(TSqlValue.asTime(value)))
   else
     addCondition(fColumn + fComparisonOperator + 'NULL');
+end;
+
+function TSqlWhere.timestampWithoutZone(value: TDateTime): ISqlWhere;
+begin
+  result := self;
+
+  if fColumn.isEmpty then
+    exit;
+
+  if fComparisonOperator.isEmpty then
+    exit;
+
+  addCondition(fColumn + fComparisonOperator + TSqlValue.asTimestampWithoutZone(value));
 end;
 
 function TSqlWhere.toStr: string;

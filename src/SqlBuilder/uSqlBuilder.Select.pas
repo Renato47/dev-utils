@@ -19,6 +19,7 @@ type
     fGroupList: string;
     fAggregateCondition: string;
     fOrderList: string;
+    fOffsetRows: string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -26,6 +27,7 @@ type
     function allColumns: ISqlSelect;
     function column(name: string): ISqlSelect; overload;
     function column(case_: ISqlCase): ISqlSelect; overload;
+    function column(select: ISqlSelect; alias: string): ISqlSelect; overload;
 
     function cast(asType, alias: string): ISqlSelect;
 
@@ -49,6 +51,7 @@ type
     function first(count: integer): ISqlSelect;
     function limit(count: integer): ISqlSelect;
     function skip(count: integer): ISqlSelect;
+    function offset(count: integer): ISqlSelect;
     function distinct: ISqlSelect;
 
     function toStr: string;
@@ -80,6 +83,12 @@ begin
 
   fColumns.strings[pred(fColumns.count)] :=
     'CAST(' + fColumns.strings[pred(fColumns.count)] + ' AS ' + asType + ') AS ' + alias;
+end;
+
+function TSqlSelect.column(select: ISqlSelect; alias: string): ISqlSelect;
+begin
+  result := self;
+  fColumns.append('(' + select.toStr + ') AS ' + alias);
 end;
 
 function TSqlSelect.column(case_: ISqlCase): ISqlSelect;
@@ -191,6 +200,14 @@ begin
     fLimitRows := ' LIMIT ' + intToStr(count);
 end;
 
+function TSqlSelect.offset(count: integer): ISqlSelect;
+begin
+  result := self;
+
+  if count > 0 then
+    fOffsetRows := ' OFFSET ' + intToStr(count);
+end;
+
 function TSqlSelect.orderBy(order: string): ISqlSelect;
 begin
   result := self;
@@ -232,7 +249,8 @@ begin
     + fGroupList
     + fAggregateCondition
     + fOrderList
-    + fLimitRows;
+    + fLimitRows
+    + fOffsetRows;
 end;
 
 function TSqlSelect.where(sqlWhere: ISqlWhere): ISqlSelect;
