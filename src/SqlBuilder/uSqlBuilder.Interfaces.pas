@@ -168,6 +168,8 @@ type
     function offset(count: integer): ISqlSelect;
     function distinct: ISqlSelect;
 
+    function unionAll(select: ISqlSelect): ISqlSelect;
+
     function toStr: string;
   end;
 

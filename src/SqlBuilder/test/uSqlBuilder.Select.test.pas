@@ -220,6 +220,54 @@ begin
     .offset(200)
     .toStr;
   compareSql(sqlCompare, sqlBuilder);
+
+  //Union all
+  sqlCompare := 'SELECT ID,NAME FROM IMPRESSOES '
+    + 'UNION ALL SELECT ID,PORTA FROM IMPRESSORAS '
+    + 'UNION ALL SELECT ID,DESCRIPTION FROM CATEGORY';
+  sqlBuilder := SQL
+    .select
+    .column('ID')
+    .column('NAME')
+    .from('IMPRESSOES')
+
+    .unionAll(SQL
+      .select
+      .column('ID')
+      .column('PORTA')
+      .from('IMPRESSORAS')
+    )
+
+    .unionAll(SQL
+      .select
+      .column('ID')
+      .column('DESCRIPTION')
+      .from('CATEGORY')
+    )
+
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
+
+  //Select from Union all
+  sqlCompare := 'SELECT * FROM (SELECT ID,PORTA FROM IMPRESSORAS UNION ALL SELECT ID,DESCRIPTION FROM CATEGORY) AS AB';
+  sqlBuilder := SQL
+    .select
+    .allColumns
+    .from(SQL
+      .select
+      .column('ID')
+      .column('PORTA')
+      .from('IMPRESSORAS')
+      .unionAll(SQL
+        .select
+        .column('ID')
+        .column('DESCRIPTION')
+        .from('CATEGORY')
+      ),
+      'AB'
+    )
+    .toStr;
+  compareSql(sqlCompare, sqlBuilder);
 end;
 
 end.

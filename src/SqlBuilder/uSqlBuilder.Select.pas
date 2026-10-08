@@ -20,6 +20,8 @@ type
     fAggregateCondition: string;
     fOrderList: string;
     fOffsetRows: string;
+
+    fUnionList: TStringList;
   public
     constructor Create;
     destructor Destroy; override;
@@ -53,6 +55,8 @@ type
     function skip(count: integer): ISqlSelect;
     function offset(count: integer): ISqlSelect;
     function distinct: ISqlSelect;
+
+    function unionAll(select: ISqlSelect): ISqlSelect;
 
     function toStr: string;
   end;
@@ -106,12 +110,17 @@ begin
   fJoinList := TStringList.Create;
   fJoinList.quoteChar := #0;
   fJoinList.strictDelimiter := true;
+
+  fUnionList := TStringList.Create;
+  fUnionList.quoteChar := #0;
+  fUnionList.strictDelimiter := true;
 end;
 
 destructor TSqlSelect.Destroy;
 begin
   fColumns.free;
   fJoinList.free;
+  fUnionList.free;
 
   inherited;
 end;
@@ -239,6 +248,8 @@ begin
 end;
 
 function TSqlSelect.toStr: string;
+var
+  unionSelect: string;
 begin
   result :=
     'SELECT '
@@ -251,6 +262,16 @@ begin
     + fOrderList
     + fLimitRows
     + fOffsetRows;
+
+  for unionSelect in fUnionList do
+    result := result + ' UNION ALL ' + unionSelect;
+end;
+
+function TSqlSelect.unionAll(select: ISqlSelect): ISqlSelect;
+begin
+  result := self;
+
+  fUnionList.add(select.toStr);
 end;
 
 function TSqlSelect.where(sqlWhere: ISqlWhere): ISqlSelect;
